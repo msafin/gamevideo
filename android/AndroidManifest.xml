@@ -39,6 +39,17 @@
             </intent-filter>
         </activity>
         
+        <activity
+            android:name=".PlayActivity"
+            android:label="@string/title_activity_main" 
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
         <!-- umeng -->
         <meta-data android:value="510fa6a152701574f2000016" android:name="UMENG_APPKEY"></meta-data>
 

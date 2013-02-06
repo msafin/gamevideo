@@ -10,6 +10,7 @@ import com.viewpagerindicator.TabPageIndicator;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -122,31 +123,46 @@ public class MainActivity extends SherlockFragmentActivity {
 		// TODO Auto-generated method stub
 		
 		if(item.getItemId() == 4)
-			UMFeedbackService.openUmengFeedbackSDK(this); 
+		{
+			UMFeedbackService.openUmengFeedbackSDK(this);
+		}
+		else if(item.getItemId() == 2)
+		{
+			gotoPlayActivity();
+		}
 		
 		return super.onMenuItemSelected(featureId, item);
 	}
 
-	   class GoogleMusicAdapter extends FragmentPagerAdapter {
-	        public GoogleMusicAdapter(FragmentManager fm) {
-	            super(fm);
-	        }
+	private void gotoPlayActivity()
+	{
+		Intent intent = new Intent(Intent.ACTION_MAIN);
+		
+		intent.setClass(this, PlayActivity.class);
+		
+		startActivity(intent);
+	}
+	
+	class GoogleMusicAdapter extends FragmentPagerAdapter {
+        public GoogleMusicAdapter(FragmentManager fm) {
+            super(fm);
+        }
 
-	        @Override
-	        public Fragment getItem(int position) {
-	            return TestFragment.newInstance(CONTENT[position % CONTENT.length]);
-	        }
+        @Override
+        public Fragment getItem(int position) {
+            return TestFragment.newInstance(CONTENT[position % CONTENT.length]);
+        }
 
-	        @Override
-	        public CharSequence getPageTitle(int position) {
-	            return CONTENT[position % CONTENT.length].toUpperCase();
-	        }
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return CONTENT[position % CONTENT.length].toUpperCase();
+        }
 
-	        @Override
-	        public int getCount() {
-	            return CONTENT.length;
-	        }
-	    }
+        @Override
+        public int getCount() {
+            return CONTENT.length;
+        }
+    }
 	   
 //	class GoogleMusicAdapter extends FragmentPagerAdapter implements IconPagerAdapter{
 //        public GoogleMusicAdapter(FragmentManager fm) {

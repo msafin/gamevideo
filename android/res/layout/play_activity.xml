@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:adsmogo="http://www.adsmogo.com"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <WebView
+        android:id="@+id/webView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="80dp"
+        android:layout_above="@+id/adsMogoView"/>
+    
+      <com.adsmogo.adview.AdsMogoLayout
+        android:id="@+id/adsMogoView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        adsmogo:appid="4d7c7927935149e99bafc99b730460c4"
+        adsmogo:express_mode="false" >
+    </com.adsmogo.adview.AdsMogoLayout>
+    
+</RelativeLayout>
