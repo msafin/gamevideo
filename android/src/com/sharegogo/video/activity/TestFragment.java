@@ -1,4 +1,6 @@
-package com.sharegogo.video;
+package com.sharegogo.video.activity;
+
+import com.sharegogo.video.game.R;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -46,10 +48,12 @@ public final class TestFragment extends Fragment {
         text.setPadding(20, 20, 20, 20);
 
         LinearLayout layout = new LinearLayout(getActivity());
+       
         layout.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         layout.setGravity(Gravity.CENTER);
         layout.addView(text);
-
+        layout.setBackgroundResource(R.drawable.ic_launcher);
+        
         return layout;
     	
     	//return inflater.inflate(R.layout.mogo_test, null);

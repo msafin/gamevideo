@@ -24,4 +24,78 @@
         <item>Videos</item>
         <item>Blog</item>
     </string-array>
+    
+    <string-array name="game">
+		<item>魔兽世界</item>
+		<item>穿越火线</item>
+		<item>天下三</item>
+		<item>巨人</item> 
+		<item>地下城与勇士</item>
+		<item>跑跑卡丁车</item>	
+		<item>梦幻西游</item>
+		<item>反恐精英OL</item>
+		<item>DOTA</item>
+		<item>洛奇</item>	
+		<item>QQ炫舞</item>
+		<item>龙之谷</item>
+		<item>轩辕传奇</item>
+		<item>星际争霸2</item>
+		<item>QQ飞车</item>
+		<item>大唐无双OL</item>
+		<item>英雄联盟</item>
+		<item>倩女幽魂</item>
+		<item>鹿鼎记</item>
+		<item>征途2</item>
+		<item>三国杀</item>
+		<item>全球使命</item>
+		<item>天龙八部</item>
+		<item>天境OL</item>
+		<item>艾尔之光</item>
+		<item>精灵传说</item>
+		<item>诛仙</item>
+		<item>完美国际</item>
+		<item>武林外传</item>
+		<item>神魔大陆</item>
+		<item>桃园</item>
+		<item>九阴真经</item>
+		<item>御龙在天</item>
+		<item>大冲锋</item>
+		<item>兵王</item>
+		<item>剑灵</item>
+		<item>传奇归来</item>
+		<item>巫师之怒</item>
+		<item>逆战</item>
+		<item>NBA2Kol</item>
+		<item>武魂</item>
+		<item>剑网3</item>
+		<item>时空裂痕</item>
+    </string-array>
+    
+    <string-array name="dota">
+        <item>海涛</item>
+		<item>冷冷</item>
+		<item>凹凸曼</item>
+		<item>小满</item>
+		<item>撒神</item> 
+		<item>2009</item> 
+		<item>七七</item> 
+		<item>咖啡</item> 
+		<item>Yuki</item> 
+		<item>傻黑</item> 
+		<item>莜莜</item>
+		<item>牛蛙</item> 
+		<item>Pis</item>
+		<item>阿川</item>
+		<item>小米</item>
+		<item>凯文</item>
+		<item>梅西</item>
+		<item>小爷不狂</item>
+		<item>820</item>
+		<item>舞儿</item>
+		<item>老鼠</item>
+		<item>情书</item>
+		<item>Miss</item>
+		<item>Kssssss</item>
+    </string-array>
+    
 </resources>
