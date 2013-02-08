@@ -1,4 +1,4 @@
-package com.sharegogo.video;
+package com.sharegogo.video.data;
 
 import android.content.Context;
 import android.database.SQLException;
@@ -31,7 +31,8 @@ public class MySqliteHelper extends OrmLiteSqliteOpenHelper{
 		
 		try
 		{
-			TableUtils.createTable(connectionSource, Account.class);
+			TableUtils.createTable(connectionSource, Game.class);
+			TableUtils.createTable(connectionSource, GamePeople.class);
 		}
 		catch(SQLException e)
 		{

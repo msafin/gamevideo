@@ -1,5 +1,6 @@
-package com.sharegogo.video;
+package com.sharegogo.video.activity;
 
+import com.sharegogo.video.game.R;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Message;
