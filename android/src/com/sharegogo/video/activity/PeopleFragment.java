@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.j256.ormlite.dao.Dao;
 import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.controller.PeopleAdapter;
@@ -58,7 +59,8 @@ public class PeopleFragment extends SherlockFragment{
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.list_layout, null);
 		
-		ListView list = (ListView)view.findViewById(android.R.id.list);
+		PullToRefreshListView pullListView = (PullToRefreshListView)view.findViewById(R.id.pull_refresh_list);
+		ListView list = pullListView.getRefreshableView();
 		
 		if(mPeopleAdapter != null)
 		{

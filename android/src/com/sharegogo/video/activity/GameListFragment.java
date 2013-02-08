@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.j256.ormlite.dao.Dao;
 import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.controller.GameAdapter;
@@ -51,7 +52,9 @@ public class GameListFragment extends SherlockFragment implements OnItemClickLis
 		
 		View view = inflater.inflate(R.layout.list_layout, null);
 		
-		ListView list = (ListView)view.findViewById(android.R.id.list);
+		PullToRefreshListView pullListView = (PullToRefreshListView)view.findViewById(R.id.pull_refresh_list);
+		
+		ListView list = pullListView.getRefreshableView();
 		
 		list.setAdapter(mGamesAdapter);
 		list.setOnItemClickListener(this);

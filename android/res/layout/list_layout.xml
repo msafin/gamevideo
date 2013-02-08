@@ -4,15 +4,17 @@
     android:layout_height="match_parent"
     android:background="#999999">
 
-    <ListView
-        android:id="@android:id/list"
+   <com.handmark.pulltorefresh.library.PullToRefreshListView
+        android:id="@+id/pull_refresh_list"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
         android:cacheColorHint="#00000000"
-        >
-        
-    </ListView>
-
+        android:divider="#19000000"
+        android:dividerHeight="4dp"
+        android:fadingEdge="none"
+        android:fastScrollEnabled="false"
+        android:footerDividersEnabled="false"
+        android:headerDividersEnabled="false"
+        android:smoothScrollbar="true" />
+   
 </RelativeLayout>
