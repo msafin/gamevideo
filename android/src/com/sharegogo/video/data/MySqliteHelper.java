@@ -33,6 +33,7 @@ public class MySqliteHelper extends OrmLiteSqliteOpenHelper{
 		{
 			TableUtils.createTable(connectionSource, Game.class);
 			TableUtils.createTable(connectionSource, GamePeople.class);
+			TableUtils.createTable(connectionSource, GameVideo.class);
 		}
 		catch(SQLException e)
 		{

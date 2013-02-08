@@ -6,7 +6,10 @@ import java.util.List;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -18,7 +21,7 @@ import com.sharegogo.video.data.GamePeople;
 import com.sharegogo.video.data.MySqliteHelper;
 import com.sharegogo.video.game.R;
 
-public class PeopleFragment extends SherlockFragment{
+public class PeopleFragment extends SherlockFragment implements OnItemClickListener{
 	private PeopleAdapter mPeopleAdapter = null;
 	
 	@Override
@@ -65,9 +68,20 @@ public class PeopleFragment extends SherlockFragment{
 		if(mPeopleAdapter != null)
 		{
 			list.setAdapter(mPeopleAdapter);
+			list.setOnItemClickListener(this);
 		}
 		
 		return view;
 	}
-	
+
+	@Override
+	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+		// TODO Auto-generated method stub
+		VideoListFragment videoListFragment = new VideoListFragment();
+		
+		this.getFragmentManager().beginTransaction()
+			.addToBackStack(null)
+			.add(R.id.dynamic_content,videoListFragment)
+			.commit();
+	}
 }
