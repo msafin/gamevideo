@@ -20,11 +20,9 @@
 		</RelativeLayout>
 		
        <TabWidget android:id="@android:id/tabs"
-           android:gravity="center_vertical"
 	       android:layout_width="fill_parent"
-	       android:layout_height="wrap_content"
-	       android:layout_alignParentBottom="true"
-      		/>
+	       android:layout_height="64dip"
+	       android:layout_alignParentBottom="true"/>
    			
 	</RelativeLayout> 
 </TabHost>

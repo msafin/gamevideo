@@ -11,6 +11,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
+import com.actionbarsherlock.view.Window;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.viewpagerindicator.IconPagerAdapter;
@@ -61,6 +62,7 @@ public class MainActivity extends SherlockFragmentActivity{
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         
         setContentView(R.layout.activity_main);
         
@@ -83,19 +85,19 @@ public class MainActivity extends SherlockFragmentActivity{
 		mTabManager = new TabManager(this, mTabHost, R.id.dynamic_content);
 		
 		TabSpec online = mTabHost.newTabSpec("online");
-		online.setIndicator(getIndicatorView("在线 视频",0));
+		online.setIndicator(getIndicatorView("在线视频",R.drawable.ic_video));
 		mTabManager.addTab(online, null, null);
 		
 		TabSpec history = mTabHost.newTabSpec("history");
-		history.setIndicator("播放历史");
+		history.setIndicator(getIndicatorView("播放历史",R.drawable.ic_history));
 		mTabManager.addTab(history, PlayHistoryFragment.class, null);
 		
 		TabSpec favorite = mTabHost.newTabSpec("favorite");
-		favorite.setIndicator("我的收藏");
+		favorite.setIndicator(getIndicatorView("我的收藏",R.drawable.ic_favorite));
 		mTabManager.addTab(favorite, FavoriteFragment.class, null);
 		
 		TabSpec more = mTabHost.newTabSpec("more");
-		more.setIndicator("更多");
+		more.setIndicator(getIndicatorView("更多",R.drawable.ic_more));
 		mTabManager.addTab(more, MoreFragment.class, null);
 		
 		TabWidget tabWidget = mTabHost.getTabWidget();
@@ -112,7 +114,7 @@ public class MainActivity extends SherlockFragmentActivity{
 		ImageView image = (ImageView)indicator.findViewById(android.R.id.icon);
 		
 		title.setText(label);
-		image.setImageResource(R.drawable.ic_launcher);
+		image.setImageResource(icon);
 		
 		return indicator;
 	}
@@ -170,8 +172,8 @@ public class MainActivity extends SherlockFragmentActivity{
         populateItem.setIcon(R.drawable.ic_action_search);
         populateItem.setActionView(R.layout.collapsible_edittext);
         
-        MenuItem clearItem = menu.add(Menu.NONE, 2, 0, "排序");
-        clearItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        //MenuItem clearItem = menu.add(Menu.NONE, 2, 0, "排序");
+        //clearItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         
         return true;
 	}

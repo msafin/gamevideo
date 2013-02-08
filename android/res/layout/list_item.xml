@@ -17,6 +17,9 @@
         android:layout_centerVertical="true"
         android:layout_toRightOf="@android:id/icon"
         android:layout_marginLeft="20dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
         android:text="TextView" />
 
     <ImageView
@@ -25,6 +28,6 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
 		android:layout_alignParentRight="true"
-        android:src="@drawable/ic_title_share_default" />
+        android:src="@drawable/ic_go_right" />
 
 </RelativeLayout>
