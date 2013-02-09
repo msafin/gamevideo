@@ -41,7 +41,8 @@ public class PeopleFragment extends SherlockFragment implements OnItemClickListe
 			try {
 				Dao<GamePeople,String> dao = helper.getDao(GamePeople.class);
 				
-				List<GamePeople> allPeople = dao.queryForEq("gameType", String.valueOf(type));
+				//List<GamePeople> allPeople = dao.queryForEq("gameType", String.valueOf(type));
+				List<GamePeople> allPeople = dao.queryForAll();
 				
 				if(allPeople != null && allPeople.size() > 0)
 				{
