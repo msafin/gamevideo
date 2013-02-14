@@ -5,6 +5,7 @@ import com.sharegogo.video.data.Game;
 import com.sharegogo.video.data.GamePeople;
 import com.sharegogo.video.data.MySqliteHelper;
 import com.sharegogo.video.http.HttpTest;
+import com.sharegogo.video.lib.LibInterface;
 import com.umeng.analytics.MobclickAgent;
 
 import android.app.Application;
@@ -25,6 +26,7 @@ public class SharegogoVideoApplication extends Application{
 		Game.makePhonyData(this);
 		GamePeople.makePhonyData(this);
 		//HttpTest.testHttp(this);
+		new LibInterface().init(this);
 	}
 
 	public void onApplicationExit()
