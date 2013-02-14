@@ -8,10 +8,12 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.j256.ormlite.dao.Dao;
 import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.controller.GameAdapter;
-import com.sharegogo.video.data.Game;
+import com.sharegogo.video.controller.VideoAdapter;
+import com.sharegogo.video.data.GameVideo;
 import com.sharegogo.video.data.MySqliteHelper;
 import com.sharegogo.video.game.R;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,9 +22,9 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-public class GameListFragment extends SherlockFragment implements OnItemClickListener{
-	private List<Game> mAllGames = null;
-	private GameAdapter mGamesAdapter = null;
+public class VideoListFragment extends SherlockFragment implements OnItemClickListener{
+	private List<GameVideo> mAllVideo = null;
+	private VideoAdapter mVideoAdapter = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -33,10 +35,10 @@ public class GameListFragment extends SherlockFragment implements OnItemClickLis
 		
 		
 		try {
-			Dao<Game,String> dao = data.getDao(Game.class);
-			mAllGames = dao.queryForAll();
-			mGamesAdapter = new GameAdapter(SharegogoVideoApplication.getApplication());
-			mGamesAdapter.setData(mAllGames);
+			Dao<GameVideo,String> dao = data.getDao(GameVideo.class);
+			mAllVideo = dao.queryForAll();
+			mVideoAdapter = new VideoAdapter(SharegogoVideoApplication.getApplication());
+			mVideoAdapter.setData(mAllVideo);
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -56,7 +58,7 @@ public class GameListFragment extends SherlockFragment implements OnItemClickLis
 		
 		ListView list = pullListView.getRefreshableView();
 		
-		list.setAdapter(mGamesAdapter);
+		list.setAdapter(mVideoAdapter);
 		list.setOnItemClickListener(this);
 		
 		return view;
@@ -89,15 +91,15 @@ public class GameListFragment extends SherlockFragment implements OnItemClickLis
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		// TODO Auto-generated method stub
-		GameFragment gameFragment = new GameFragment();
-		Bundle bundle = new Bundle();
-		bundle.putInt("type", arg2);
+		gotoPlayActivity();
+	}
+	
+	private void gotoPlayActivity()
+	{
+		Intent intent = new Intent(Intent.ACTION_MAIN);
 		
-		gameFragment.setArguments(bundle);
+		intent.setClass(getActivity(), PlayActivity.class);
 		
-		this.getFragmentManager().beginTransaction()
-			.addToBackStack(null)
-			.add(R.id.dynamic_content,gameFragment)
-			.commit();
+		startActivity(intent);
 	}
 }

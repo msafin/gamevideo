@@ -98,4 +98,18 @@
 		<item>Kssssss</item>
     </string-array>
     
+    <string-array name="dota_game">
+        <item>http://player.youku.com/player.php/sid/XNDY4OTk5ODEy/v.swf</item>
+		<item>http://player.youku.com/player.php/sid/XNDY5ODg0MDAw/v.swf</item>
+		<item>http://player.youku.com/player.php/sid/XNDcxMzIwNTIw/v.swf</item>
+		<item>http://player.youku.com/player.php/sid/XNDcxOTA2OTEy/v.swf</item>
+		<item>http://player.youku.com/player.php/sid/XNDgzNzkxMDM2/v.swf</item>
+		<item>http://player.youku.com/player.php/sid/XNDg5NzAxNDY0/v.swf</item>
+		<item>http://player.youku.com/player.php/sid/XNDk4MDYxMTk2/v.swf</item>
+		<item>http://player.youku.com/player.php/sid/XNTA2NTM1NTg0/v.swf</item>
+		<item>http://player.youku.com/player.php/sid/XNTA4NzY0MDgw/v.swf</item>
+		<item>http://player.youku.com/player.php/sid/XNTA4ODU5NDU2/v.swf</item>
+		<item>http://player.youku.com/player.php/sid/XNTA5NTgyNjg4/v.swf</item>
+		<item>http://player.youku.com/player.php/sid/XNDY4NDMyMTUy/v.swf</item>
+    </string-array>
 </resources>

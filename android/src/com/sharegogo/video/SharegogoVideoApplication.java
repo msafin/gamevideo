@@ -3,6 +3,7 @@ package com.sharegogo.video;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.sharegogo.video.data.Game;
 import com.sharegogo.video.data.GamePeople;
+import com.sharegogo.video.data.GameVideo;
 import com.sharegogo.video.data.MySqliteHelper;
 import com.sharegogo.video.http.HttpTest;
 import com.sharegogo.video.lib.LibInterface;
@@ -25,6 +26,7 @@ public class SharegogoVideoApplication extends Application{
 		
 		Game.makePhonyData(this);
 		GamePeople.makePhonyData(this);
+		GameVideo.makePhonyData(this);
 		//HttpTest.testHttp(this);
 		new LibInterface().init(this);
 	}

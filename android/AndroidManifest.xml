@@ -42,7 +42,9 @@
         <activity
             android:name="com.sharegogo.video.activity.PlayActivity"
             android:label="@string/title_activity_main" 
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:screenOrientation="landscape"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
