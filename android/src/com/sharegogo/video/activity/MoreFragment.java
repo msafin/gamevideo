@@ -2,6 +2,7 @@ package com.sharegogo.video.activity;
 
 import java.util.Arrays;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -63,6 +64,15 @@ public class MoreFragment extends SherlockFragment implements OnItemClickListene
 		super.onDestroyView();
 	}
 
+	private void gotoSettingActivity()
+	{
+		Intent intent = new Intent(Intent.ACTION_MAIN);
+			
+		intent.setClass(getActivity(), SettingActivity.class);
+			
+		startActivity(intent);
+	}
+	
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		// TODO Auto-generated method stub
@@ -82,6 +92,7 @@ public class MoreFragment extends SherlockFragment implements OnItemClickListene
 			break;
 		//设置
 		case 2:
+			gotoSettingActivity();
 			break;
 		//支持和反馈
 		case 3:
