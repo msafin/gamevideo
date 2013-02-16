@@ -112,4 +112,12 @@
 		<item>http://player.youku.com/player.php/sid/XNTA5NTgyNjg4/v.swf</item>
 		<item>http://player.youku.com/player.php/sid/XNDY4NDMyMTUy/v.swf</item>
     </string-array>
+    
+    <string-array name="more">
+        <item>精品推荐</item>
+        <item>分享</item>
+        <item>设置</item>
+        <item>支持和反馈</item>
+        <item>关于</item>
+    </string-array>
 </resources>

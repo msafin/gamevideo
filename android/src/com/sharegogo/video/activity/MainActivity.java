@@ -183,15 +183,6 @@ public class MainActivity extends SherlockFragmentActivity{
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		// TODO Auto-generated method stub
 		
-		if(item.getItemId() == 4)
-		{
-			UMFeedbackService.openUmengFeedbackSDK(this);
-		}
-		else if(item.getItemId() == 2)
-		{
-			gotoPlayActivity();
-		}
-		
 		return super.onMenuItemSelected(featureId, item);
 	}
 	
@@ -333,6 +324,13 @@ public class MainActivity extends SherlockFragmentActivity{
                 mLastTab = newTab;
                 ft.commit();
                 mActivity.getSupportFragmentManager().executePendingTransactions();
+               
+                int index = mTabHost.getCurrentTab();
+                TabWidget tabWidget = mTabHost.getTabWidget();
+                View view = tabWidget.getChildTabViewAt(index);
+                TextView title = (TextView)view .findViewById(android.R.id.title);
+                
+                mActivity.setTitle(title.getText());
             }
         }
     }

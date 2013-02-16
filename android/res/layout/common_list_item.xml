@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-	<ImageView
+    android:layout_height="match_parent" >
+    
+    <ImageView
         android:id="@android:id/icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,19 +16,9 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@android:id/icon"
-        android:layout_toLeftOf="@android:id/icon1"
         android:layout_marginLeft="20dp"
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="#FFFFFF"
         android:text="TextView" />
-	
-    <ImageView
-        android:id="@android:id/icon1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-		android:layout_alignParentRight="true"
-        android:src="@drawable/ic_go_right" />
-
-</RelativeLayout>
+</merge>
