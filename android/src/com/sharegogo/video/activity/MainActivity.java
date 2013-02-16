@@ -45,6 +45,7 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.UMFeedbackService;
 
 public class MainActivity extends SherlockFragmentActivity{
+	private final int MENU_ID_SEARCH = 1;
 	private static final String[] CONTENT = new String[] { "分类", "最新", "最热", "推荐"};
     private static final int[] ICONS = new int[] {
             R.drawable.perm_group_calendar,
@@ -167,14 +168,11 @@ public class MainActivity extends SherlockFragmentActivity{
 	@Override
 	public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
 		// TODO Auto-generated method stub
-        MenuItem populateItem = menu.add(Menu.NONE, 1, 0, "搜索");
-        populateItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-        populateItem.setIcon(R.drawable.ic_action_search);
-        populateItem.setActionView(R.layout.collapsible_edittext);
-        
-        //MenuItem clearItem = menu.add(Menu.NONE, 2, 0, "排序");
-        //clearItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        
+		
+        MenuItem searchItem = menu.add(Menu.NONE, MENU_ID_SEARCH, 0, "搜索");
+        searchItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        searchItem.setIcon(R.drawable.ic_action_search);
+
         return true;
 	}
 
@@ -182,6 +180,14 @@ public class MainActivity extends SherlockFragmentActivity{
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		// TODO Auto-generated method stub
+		switch(item.getItemId())
+		{
+		case MENU_ID_SEARCH:
+			gotoSearchActivity();
+			break;
+			default:
+				break;
+		}
 		
 		return super.onMenuItemSelected(featureId, item);
 	}
@@ -199,6 +205,15 @@ public class MainActivity extends SherlockFragmentActivity{
 		Intent intent = new Intent(Intent.ACTION_MAIN);
 		
 		intent.setClass(this, PlayActivity.class);
+		
+		startActivity(intent);
+	}
+	
+	private void gotoSearchActivity()
+	{
+		Intent intent = new Intent(Intent.ACTION_MAIN);
+		
+		intent.setClass(this, SearchActivity.class);
 		
 		startActivity(intent);
 	}
