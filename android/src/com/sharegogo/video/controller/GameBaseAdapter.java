@@ -11,7 +11,7 @@ import android.widget.BaseAdapter;
 abstract public  class GameBaseAdapter<T> extends BaseAdapter{
 	private Context mContext = null;
 	private int mLayoutId = -1;
-	private List<T> mData = null;
+	protected List<T> mData = null;
 	
 	public GameBaseAdapter(Context context,int layout)
 	{

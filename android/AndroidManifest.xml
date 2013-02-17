@@ -54,7 +54,7 @@
         <activity
             android:name="com.sharegogo.video.activity.SearchActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/CustomTitle">
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -65,7 +65,18 @@
        	<activity
             android:name="com.sharegogo.video.activity.SettingActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppThemeEx">
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
+        <activity
+            android:name="com.sharegogo.video.activity.AboutActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

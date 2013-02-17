@@ -13,9 +13,7 @@ import com.sharegogo.video.game.R;
 
 @DatabaseTable(tableName="video")
 public class GameVideo {
-	@DatabaseField(generatedId = true)
-	public long _id;
-	@DatabaseField(unique = true)
+	@DatabaseField(id = true)
 	public long id;
 	@DatabaseField
 	public int gameType;

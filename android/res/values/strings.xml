@@ -4,5 +4,15 @@
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">游记视频</string>
-
+    
+    <!-- 菜单 -->
+    <string name="menu_search">搜索</string>
+    <string name="menu_edit">编辑</string>
+    <string name="menu_clear">清除</string>
+    <string name="menu_complete">完成</string>
+     
+    <!-- 标题 -->
+	<string name="setting_title">设置</string>
+	<string name="about_title">关于</string>
+	
 </resources>

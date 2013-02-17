@@ -20,13 +20,10 @@ import com.sharegogo.video.game.R;
  */
 @DatabaseTable(tableName = "game")
 public class Game {
-	@DatabaseField(generatedId = true)
-	public long _id;
+	@DatabaseField(id = true)
+	public long id;
 	
 	@DatabaseField
-	public int type;
-	
-	@DatabaseField(unique = true)
 	public String name;
 	
 	@DatabaseField
@@ -64,7 +61,7 @@ public class Game {
 				//Log.e("test",item);
 				//这里不能共用一个game
 				Game game = new Game();
-				game.type = index;
+				game.id = index;
 				game.name = item;
 				game.status = 0;
 				game.hot = 0;

@@ -29,6 +29,8 @@ public class MoreFragment extends SherlockFragment implements OnItemClickListene
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		
+		getSherlockActivity().setSupportProgressBarIndeterminateVisibility(false);
+		
 		mAdapter = new MoreAdapter(getActivity().getApplicationContext());
 		
 		Resources res = getActivity().getResources();
@@ -73,6 +75,15 @@ public class MoreFragment extends SherlockFragment implements OnItemClickListene
 		startActivity(intent);
 	}
 	
+	private void gotoAboutActivity()
+	{
+		Intent intent = new Intent(Intent.ACTION_MAIN);
+			
+		intent.setClass(getActivity(), AboutActivity.class);
+			
+		startActivity(intent);
+	}
+	
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		// TODO Auto-generated method stub
@@ -100,6 +111,7 @@ public class MoreFragment extends SherlockFragment implements OnItemClickListene
 			break;
 		//¹ØÓÚ
 		case 4:
+			gotoAboutActivity();
 			break;
 		default:
 			break;

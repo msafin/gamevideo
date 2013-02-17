@@ -3,9 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#999999">
-
-   <com.handmark.pulltorefresh.library.PullToRefreshListView
-        android:id="@+id/pull_refresh_list"
+    
+  <ListView
+        android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:cacheColorHint="#00000000"
@@ -16,5 +16,5 @@
         android:footerDividersEnabled="true"
         android:headerDividersEnabled="false"
         android:smoothScrollbar="true" />
-   
+
 </RelativeLayout>

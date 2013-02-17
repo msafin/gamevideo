@@ -40,6 +40,26 @@ public class MoreAdapter extends GameBaseAdapter<String>{
 		
 		tag.mTitle.setText(title);
 		
+		if(position == 0)
+		{
+			tag.mLeftImageView.setImageResource(R.drawable.ic_good);
+		}
+		else if(position == 1)
+		{
+			tag.mLeftImageView.setImageResource(R.drawable.ic_share);
+		}
+		else if(position == 2)
+		{
+			tag.mLeftImageView.setImageResource(R.drawable.ic_setting);
+		}
+		else if(position == 3)
+		{
+			tag.mLeftImageView.setImageResource(R.drawable.ic_feedback);
+		}
+		else if(position == 4)
+		{
+			tag.mLeftImageView.setImageResource(R.drawable.ic_about);
+		}
 		return view;
 	}
 	

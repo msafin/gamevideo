@@ -14,6 +14,15 @@ import com.sharegogo.video.game.R;
 
 public class PlayHistoryFragment extends SherlockFragment{
 
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		
+		getSherlockActivity().setSupportProgressBarIndeterminateVisibility(false);
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 		Bundle savedInstanceState) {

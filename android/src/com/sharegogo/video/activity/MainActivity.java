@@ -45,7 +45,6 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.UMFeedbackService;
 
 public class MainActivity extends SherlockFragmentActivity{
-	private final int MENU_ID_SEARCH = 1;
 	private static final String[] CONTENT = new String[] { "分类", "最新", "最热", "推荐"};
     private static final int[] ICONS = new int[] {
             R.drawable.perm_group_calendar,
@@ -63,7 +62,9 @@ public class MainActivity extends SherlockFragmentActivity{
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        setSupportProgressBarIndeterminateVisibility(false);
         
         setContentView(R.layout.activity_main);
         
@@ -91,7 +92,7 @@ public class MainActivity extends SherlockFragmentActivity{
 		
 		TabSpec history = mTabHost.newTabSpec("history");
 		history.setIndicator(getIndicatorView("播放历史",R.drawable.ic_history));
-		mTabManager.addTab(history, PlayHistoryFragment.class, null);
+		mTabManager.addTab(history, FavoriteFragment.class, null);
 		
 		TabSpec favorite = mTabHost.newTabSpec("favorite");
 		favorite.setIndicator(getIndicatorView("我的收藏",R.drawable.ic_favorite));
@@ -169,7 +170,7 @@ public class MainActivity extends SherlockFragmentActivity{
 	public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
 		// TODO Auto-generated method stub
 		
-        MenuItem searchItem = menu.add(Menu.NONE, MENU_ID_SEARCH, 0, "搜索");
+        MenuItem searchItem = menu.add(Menu.NONE, R.id.menu_id_search, 1, R.string.menu_search);
         searchItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         searchItem.setIcon(R.drawable.ic_action_search);
 
@@ -182,7 +183,7 @@ public class MainActivity extends SherlockFragmentActivity{
 		// TODO Auto-generated method stub
 		switch(item.getItemId())
 		{
-		case MENU_ID_SEARCH:
+		case R.id.menu_id_search:
 			gotoSearchActivity();
 			break;
 			default:

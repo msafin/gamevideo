@@ -19,10 +19,10 @@ import com.sharegogo.video.game.R;
  */
 @DatabaseTable(tableName = "people")
 public class GamePeople {
-	@DatabaseField(generatedId = true)
-	public long _id;
+	@DatabaseField(id = true)
+	public long id;
 	
-	@DatabaseField(unique = true)
+	@DatabaseField
 	public String name;
 	
 	//”Œœ∑¿‡–Õ
@@ -58,13 +58,16 @@ public class GamePeople {
 				e.printStackTrace();
 			}
 			
+			int index = 0;
 			for(String item:peopleStr)
 			{
 				GamePeople people = new GamePeople();
 			
+				people.id = index;
 				people.name = item;
 				people.gameType = 8;
 				
+				index++;
 				if(dao != null)
 				{
 					try {

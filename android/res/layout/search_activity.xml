@@ -2,7 +2,29 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#999999">
-    
+    android:background="#999999" >
+
+    <include layout="@layout/activity_title" />
+
+    <EditText
+        android:id="@+id/search_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/title_bar"
+        android:layout_toLeftOf="@+id/search_btn"
+        android:layout_marginLeft="2dp"
+        android:ems="10" >
+
+        <requestFocus />
+    </EditText>
+
+    <ImageButton
+        android:id="@+id/search_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/search_text"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_action_search" />
 
 </RelativeLayout>
