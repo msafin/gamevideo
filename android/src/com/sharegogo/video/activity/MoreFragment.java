@@ -20,6 +20,9 @@ import com.umeng.socialize.bean.SocializeConfig;
 import com.umeng.socialize.controller.RequestType;
 import com.umeng.socialize.controller.UMServiceFactory;
 import com.umeng.socialize.controller.UMSocialService;
+import com.umeng.xp.common.ExchangeConstants;
+import com.umeng.xp.controller.ExchangeDataService;
+import com.umeng.xp.view.ExchangeViewManager;
 
 public class MoreFragment extends SherlockFragment implements OnItemClickListener{
 	private MoreAdapter mAdapter = null;
@@ -84,6 +87,28 @@ public class MoreFragment extends SherlockFragment implements OnItemClickListene
 		startActivity(intent);
 	}
 	
+	private void gotoShareActivity()
+	{
+		SocializeConfig config = new SocializeConfig();
+		config.setShareMail(false);
+		UMSocialService controller = UMServiceFactory.getUMSocialService("sharegogo", RequestType.SOCIAL); 
+		controller.setConfig(config);
+		
+		controller.openShare(getActivity(),false);
+	}
+	
+	private void gotoFeedbackActivity()
+	{
+		UMFeedbackService.setGoBackButtonVisible();
+		UMFeedbackService.openUmengFeedbackSDK(getActivity());
+	}
+	
+	private void gotoRecommendActivity()
+	{
+		ExchangeDataService service = new ExchangeDataService();
+		new ExchangeViewManager(getActivity(),service) .addView(ExchangeConstants.type_list_curtain, null); 
+	}
+	
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		// TODO Auto-generated method stub
@@ -91,15 +116,11 @@ public class MoreFragment extends SherlockFragment implements OnItemClickListene
 		{
 		//精品推荐
 		case 0:
+			gotoRecommendActivity();
 			break;
 		//分享
 		case 1:
-			SocializeConfig config = new SocializeConfig();
-			config.setShareMail(false);
-			UMSocialService controller = UMServiceFactory.getUMSocialService("sharegogo", RequestType.SOCIAL); 
-			controller.setConfig(config);
-			
-			controller.openShare(getActivity(),false);
+			gotoShareActivity();
 			break;
 		//设置
 		case 2:
@@ -107,7 +128,7 @@ public class MoreFragment extends SherlockFragment implements OnItemClickListene
 			break;
 		//支持和反馈
 		case 3:
-			UMFeedbackService.openUmengFeedbackSDK(getActivity());
+			gotoFeedbackActivity();
 			break;
 		//关于
 		case 4:
