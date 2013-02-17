@@ -131,10 +131,30 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 		}
 		else if(item.mode == FavoriteListItem.MODE_EDIT)
 		{
-			mAdapter.delItem(item);
+			delFavoriteItem(item);
 		}
 	}
 
+	private void delFavoriteItem(FavoriteListItem item)
+	{
+		MySqliteHelper helper = SharegogoVideoApplication.getApplication().getHelper();
+		
+		try {
+			Dao<Favorite,String> favoriteDao = null;
+			
+			favoriteDao = helper.getDao(Favorite.class);
+			Favorite deleteItem = new Favorite();
+			deleteItem.id = item.id;
+			
+			favoriteDao.delete(deleteItem);
+			
+			mAdapter.delItem(item);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	private void gotoPlayActivity()
 	{
 		Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -192,6 +212,7 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 			
 			try {
 				favorite = favoriteDao.queryForAll();
+
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
