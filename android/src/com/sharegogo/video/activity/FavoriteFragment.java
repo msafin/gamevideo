@@ -62,9 +62,14 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.favorite_fragment, null);
-		this.setEmptyText(getActivity().getResources().getString(R.string.favorite_empty));
 		
 		return view;
+	}
+
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
 	}
 
 
