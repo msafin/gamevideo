@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -17,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.Toast;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -27,6 +30,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.table.TableUtils;
 import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.controller.FavoriteAdapter;
 import com.sharegogo.video.data.Favorite;
@@ -35,8 +39,9 @@ import com.sharegogo.video.data.GameVideo;
 import com.sharegogo.video.data.MySqliteHelper;
 import com.sharegogo.video.game.R;
 
-public class FavoriteFragment extends SherlockListFragment implements LoaderManager.LoaderCallbacks<List<FavoriteListItem>>{
+public class FavoriteFragment extends SherlockListFragment implements LoaderManager.LoaderCallbacks<List<FavoriteListItem>>, OnClickListener{
 	static private final int LOADER_ID = 1;
+	
 	private FavoriteAdapter mAdapter = null;
 	
 	@Override
@@ -56,7 +61,10 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		return inflater.inflate(R.layout.favorite_fragment, null);
+		View view = inflater.inflate(R.layout.favorite_fragment, null);
+		this.setEmptyText(getActivity().getResources().getString(R.string.favorite_empty));
+		
+		return view;
 	}
 
 
@@ -81,16 +89,21 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 		case R.id.menu_id_edit:
 			if(item.getIcon() == null)
 			{
-				item.setIcon(R.drawable.ic_accept);
-				enterEditMode();
+				if(mAdapter.enterEditMode())
+				{
+					item.setIcon(R.drawable.ic_accept);
+				}
 			}
 			else
 			{
-				item.setIcon(null);
-				exitEditMode();
+				if(mAdapter.exitEditMode())
+				{
+					item.setIcon(null);
+				}
 			}
 			break;
 		case R.id.menu_id_clear:
+			showClearFavoriteDialog();
 			break;
 			default:
 				break;
@@ -99,14 +112,49 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 		return super.onOptionsItemSelected(item);
 	}
 
-	private void enterEditMode()
+	private void showClearFavoriteDialog()
 	{
-		mAdapter.enterEditMode();
+		new GameDialogFragment(
+				R.string.clear_favorite,
+				R.string.clear_favorite_confirm,
+				R.string.dialog_ok,
+				R.string.dialog_cancel,
+				this
+				).show(getFragmentManager(), null);
 	}
 	
-	private void exitEditMode()
+	private void clearFavorite()
 	{
-		mAdapter.exitEditMode();
+		MySqliteHelper helper = SharegogoVideoApplication.getApplication().getHelper();
+		
+		Dao<Favorite,String> favoriteDao = null;
+		
+		try {
+			TableUtils.clearTable(helper.getConnectionSource(), Favorite.class);
+			mAdapter.clearData();
+			
+			Toast toast = Toast.makeText(getActivity(), R.string.clear_favorite_complete, 2000);
+			toast.setGravity(Gravity.CENTER, 0, 0);
+			toast.show();
+		
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void onClick(DialogInterface dialog, int which) {
+		// TODO Auto-generated method stub
+		switch(which)
+		{
+		case DialogInterface.BUTTON_POSITIVE:
+			clearFavorite();
+			break;
+		case DialogInterface.BUTTON_NEGATIVE:
+			
+			break;
+		}
 	}
 	
 	@Override
@@ -187,6 +235,7 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 		
 	}
 
+	
 	static private class FavoriteLoader extends AsyncTaskLoader<List<FavoriteListItem>>
 	{
 		public FavoriteLoader(Context context) {

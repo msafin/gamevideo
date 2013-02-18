@@ -59,6 +59,17 @@ abstract public  class GameBaseAdapter<T> extends BaseAdapter{
 		return 0;
 	}
 
+	public void clearData()
+	{
+		if(mData != null)
+		{
+			mData.clear();
+			mData = null;
+		}
+		
+		this.notifyDataSetChanged();
+	}
+	
 	@Override
 	public View getView(int arg0, View arg1, ViewGroup arg2) {
 		// TODO Auto-generated method stub

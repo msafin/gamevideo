@@ -60,8 +60,13 @@ public class FavoriteAdapter extends GameBaseAdapter<FavoriteListItem>{
 		notifyDataSetChanged();
 	}
 	
-	public void enterEditMode()
+	public boolean enterEditMode()
 	{
+		if(mData == null)
+		{
+			return false;
+		}
+		
 		for(Object obj:mData)
 		{
 			FavoriteListItem item = (FavoriteListItem)obj;
@@ -70,18 +75,25 @@ public class FavoriteAdapter extends GameBaseAdapter<FavoriteListItem>{
 		}
 		
 		notifyDataSetChanged();
+		
+		return true;
 	}
 	
-	public void exitEditMode()
+	public boolean exitEditMode()
 	{
-		for(Object obj:mData)
+		if(mData != null)
 		{
-			FavoriteListItem item = (FavoriteListItem)obj;
+			for(Object obj:mData)
+			{
+				FavoriteListItem item = (FavoriteListItem)obj;
+				
+				item.mode = FavoriteListItem.MODE_NORMAL;
+			}
 			
-			item.mode = FavoriteListItem.MODE_NORMAL;
+			notifyDataSetChanged();
 		}
 		
-		notifyDataSetChanged();
+		return true;
 	}
 	
 	static private class ViewTag
