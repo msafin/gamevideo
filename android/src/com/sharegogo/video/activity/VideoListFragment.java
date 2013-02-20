@@ -91,14 +91,17 @@ public class VideoListFragment extends SherlockFragment implements OnItemClickLi
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		// TODO Auto-generated method stub
-		gotoPlayActivity();
+		GameVideo video = (GameVideo)mVideoAdapter.getItem(arg2-1);
+		
+		gotoPlayActivity(video.url);
 	}
 	
-	private void gotoPlayActivity()
+	private void gotoPlayActivity(String url)
 	{
 		Intent intent = new Intent(Intent.ACTION_MAIN);
 		
 		intent.setClass(getActivity(), PlayActivity.class);
+		intent.putExtra("flash_url", url);
 		
 		startActivity(intent);
 	}

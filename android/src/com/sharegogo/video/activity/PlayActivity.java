@@ -2,6 +2,7 @@ package com.sharegogo.video.activity;
 
 import com.sharegogo.video.game.R;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
 import android.os.Bundle;
@@ -19,7 +20,6 @@ import android.webkit.JsResult;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
-import android.webkit.WebChromeClient.CustomViewCallback;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebStorage.QuotaUpdater;
 import android.webkit.WebView;
@@ -28,6 +28,7 @@ import android.webkit.WebViewClient;
 
 public class PlayActivity extends FragmentActivity{
 	private WebView mWebView = null;
+	private String mUrl = null;
 	@Override
 	protected void onCreate(Bundle arg0) {
 		// TODO Auto-generated method stub
@@ -35,14 +36,17 @@ public class PlayActivity extends FragmentActivity{
 		super.onCreate(arg0);
 		setContentView(R.layout.play_activity);
 		
-		 mWebView = (WebView)findViewById(R.id.webView1);
-		 
-			mWebView.loadUrl("file:///android_asset/index.html");
-	        mWebView.getSettings().setPluginsEnabled(true);
-	        mWebView.getSettings().setJavaScriptEnabled(true);
-	        mWebView.getSettings().setPluginState(PluginState.ON);
-	        
-	        mWebView.setWebChromeClient(new WebChromeClient() {
+		mWebView = (WebView)findViewById(R.id.webView1);
+		
+		Intent intent = this.getIntent();
+		mUrl = intent.getStringExtra("flash_url");
+		
+		mWebView.loadUrl("file:///android_asset/index.html");
+        mWebView.getSettings().setPluginsEnabled(true);
+        mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.getSettings().setPluginState(PluginState.ON);
+        mWebView.addJavascriptInterface(new VideoInterface(), "VideoInterface");
+        mWebView.setWebChromeClient(new WebChromeClient() {
 	        	   public void onProgressChanged(WebView view, int progress) {
 	        	     // Activities and WebViews measure progress with different scales.
 	        	     // The progress meter will automatically disappear when we reach 100%
@@ -300,9 +304,10 @@ public class PlayActivity extends FragmentActivity{
 			@Override
 			public void onPageFinished(WebView view, String url) {
 				// TODO Auto-generated method stub
-				super.onPageFinished(view, url);
-				mWebView.loadUrl("javascript:callJS()");  //java调用js的函数
-			}
+					super.onPageFinished(view, url);
+				
+					mWebView.loadUrl("javascript:callJS()");  //java调用js的函数
+				}
 	    	 });
 	}
 
@@ -339,10 +344,26 @@ public class PlayActivity extends FragmentActivity{
 	}
 
 
+	private String buildHtml()
+	{
+		StringBuilder builder = new StringBuilder();
+		builder.append("<embed src=\"");
+		builder.append(mUrl);
+		builder.append("\" allowFullScreen=\"true\" quality=\"high\" width=\"100%\" height=\"100%\" align=\"middle\" allowScriptAccess=\"always\" type=\"application/x-shockwave-flash\"></embed>");
+		
+		return builder.toString();
+	}
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
 	}
 
+	private class VideoInterface {
+		
+		    public String getFlash() 
+		    { 
+		    	return buildHtml(); 
+		    }
+		 }
 }
