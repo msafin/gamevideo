@@ -27,6 +27,8 @@ import android.webkit.WebSettings.PluginState;
 import android.webkit.WebViewClient;
 
 public class PlayActivity extends FragmentActivity{
+	static final public String KEY_FLASH_URL = "flash_url";
+	
 	private WebView mWebView = null;
 	private String mUrl = null;
 	@Override
@@ -39,7 +41,7 @@ public class PlayActivity extends FragmentActivity{
 		mWebView = (WebView)findViewById(R.id.webView1);
 		
 		Intent intent = this.getIntent();
-		mUrl = intent.getStringExtra("flash_url");
+		mUrl = intent.getStringExtra(KEY_FLASH_URL);
 		
 		mWebView.loadUrl("file:///android_asset/index.html");
         mWebView.getSettings().setPluginsEnabled(true);

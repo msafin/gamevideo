@@ -200,15 +200,6 @@ public class MainActivity extends SherlockFragmentActivity{
 
 		super.onDestroy();
 	}
-
-	private void gotoPlayActivity()
-	{
-		Intent intent = new Intent(Intent.ACTION_MAIN);
-		
-		intent.setClass(this, PlayActivity.class);
-		
-		startActivity(intent);
-	}
 	
 	private void gotoSearchActivity()
 	{

@@ -12,6 +12,7 @@ import com.sharegogo.video.controller.VideoAdapter;
 import com.sharegogo.video.data.GameVideo;
 import com.sharegogo.video.data.MySqliteHelper;
 import com.sharegogo.video.game.R;
+import com.sharegogo.video.utils.UIUtils;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -93,16 +94,6 @@ public class VideoListFragment extends SherlockFragment implements OnItemClickLi
 		// TODO Auto-generated method stub
 		GameVideo video = (GameVideo)mVideoAdapter.getItem(arg2-1);
 		
-		gotoPlayActivity(video.url);
-	}
-	
-	private void gotoPlayActivity(String url)
-	{
-		Intent intent = new Intent(Intent.ACTION_MAIN);
-		
-		intent.setClass(getActivity(), PlayActivity.class);
-		intent.putExtra("flash_url", url);
-		
-		startActivity(intent);
+		UIUtils.gotoPlayActivity(video.url,getActivity());
 	}
 }

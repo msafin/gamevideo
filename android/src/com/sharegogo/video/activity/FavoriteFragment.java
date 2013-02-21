@@ -38,6 +38,7 @@ import com.sharegogo.video.data.FavoriteListItem;
 import com.sharegogo.video.data.GameVideo;
 import com.sharegogo.video.data.MySqliteHelper;
 import com.sharegogo.video.game.R;
+import com.sharegogo.video.utils.UIUtils;
 
 public class FavoriteFragment extends SherlockListFragment implements LoaderManager.LoaderCallbacks<List<FavoriteListItem>>, OnClickListener{
 	static private final int LOADER_ID = 1;
@@ -180,7 +181,8 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 		
 		if(item.mode == FavoriteListItem.MODE_NORMAL)
 		{
-			gotoPlayActivity();
+			GameVideo video = item.video;
+			UIUtils.gotoPlayActivity(video.url,getActivity());
 		}
 		else if(item.mode == FavoriteListItem.MODE_EDIT)
 		{
@@ -206,15 +208,6 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-	
-	private void gotoPlayActivity()
-	{
-		Intent intent = new Intent(Intent.ACTION_MAIN);
-		
-		intent.setClass(getActivity(), PlayActivity.class);
-		
-		startActivity(intent);
 	}
 	
 	@Override
