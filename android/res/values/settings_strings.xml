@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="network_setting">网络设置</string>
+    <string name="wifi_fetch_image">WiFi拉取图片</string>
+    <string name="setting_on">已开启</string>
+    <string name="setting_off">已关闭</string>
+    <string name="key_wifi_image">wifi_fetch_image</string>
+    
+</resources>

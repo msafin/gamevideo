@@ -73,7 +73,7 @@ public class MoreFragment extends SherlockFragment implements OnItemClickListene
 	{
 		Intent intent = new Intent(Intent.ACTION_MAIN);
 			
-		intent.setClass(getActivity(), SettingActivity.class);
+		intent.setClass(getActivity(), SettingsActivity.class);
 			
 		startActivity(intent);
 	}

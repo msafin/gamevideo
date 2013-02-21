@@ -63,7 +63,7 @@
         </activity>
         
        	<activity
-            android:name="com.sharegogo.video.activity.SettingActivity"
+            android:name="com.sharegogo.video.activity.SettingsActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme">
             <intent-filter>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/network_setting">
+
+        <CheckBoxPreference
+                android:key="@string/key_wifi_image"
+                android:title="@string/wifi_fetch_image"
+                android:summaryOff="@string/setting_on"
+                android:summaryOn="@string/setting_off"/>
+        
+    </PreferenceCategory>
+    
+</PreferenceScreen>
