@@ -13,7 +13,7 @@ import com.sharegogo.video.game.R;
 
 @DatabaseTable(tableName="favotie")
 public class Favorite {
-	@DatabaseField(id = true)
+	@DatabaseField(generatedId = true)
 	public long id;
 	
 	@DatabaseField(unique = true)
@@ -39,7 +39,6 @@ public class Favorite {
 		{
 			Favorite item = new Favorite();
 			
-			item.id = i;
 			item.videoId = i+1;
 			item.update = System.currentTimeMillis();
 			

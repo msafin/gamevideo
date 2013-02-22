@@ -181,8 +181,7 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 		
 		if(item.mode == FavoriteListItem.MODE_NORMAL)
 		{
-			GameVideo video = item.video;
-			UIUtils.gotoPlayActivity(video.url,getActivity());
+			UIUtils.gotoPlayActivity(item.video,getActivity());
 		}
 		else if(item.mode == FavoriteListItem.MODE_EDIT)
 		{

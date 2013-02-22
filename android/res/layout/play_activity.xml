@@ -14,7 +14,7 @@
         android:layout_above="@+id/adsMogoView"/>
     
           <ImageButton
-          android:id="@+id/imageButton1"
+          android:id="@+id/btn_favorite"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_alignParentBottom="true"
@@ -23,7 +23,7 @@
           android:src="@drawable/ic_favorite" />
 
       <ImageButton
-          android:id="@+id/imageButton3"
+          android:id="@+id/btn_recommend"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_alignParentBottom="true"
@@ -31,7 +31,7 @@
           android:src="@drawable/ic_good" />
       
       <ImageButton
-          android:id="@+id/imageButton2"
+          android:id="@+id/btn_share"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_alignParentBottom="true"

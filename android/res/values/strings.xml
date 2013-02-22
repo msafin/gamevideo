@@ -19,6 +19,8 @@
 	<string name="clear_favorite_confirm">是否清除收藏？</string>
 	<string name="clear_favorite_complete">已经清除收藏</string>
 	<string name="favorite_empty">^-^亲，还没有收藏记录！</string>
+	<string name="add_favorite_success">收藏成功</string>
+	<string name="add_favorite_fail">收藏失败</string>
 	
 	<string name="dialog_ok">确定</string>
 	<string name="dialog_cancel">取消</string>

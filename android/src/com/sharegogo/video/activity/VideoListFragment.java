@@ -94,6 +94,6 @@ public class VideoListFragment extends SherlockFragment implements OnItemClickLi
 		// TODO Auto-generated method stub
 		GameVideo video = (GameVideo)mVideoAdapter.getItem(arg2-1);
 		
-		UIUtils.gotoPlayActivity(video.url,getActivity());
+		UIUtils.gotoPlayActivity(video,getActivity());
 	}
 }

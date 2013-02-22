@@ -1,5 +1,7 @@
 package com.sharegogo.video.activity;
 
+import com.sharegogo.video.controller.FavoriteManager;
+import com.sharegogo.video.data.Favorite;
 import com.sharegogo.video.game.R;
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -11,6 +13,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.webkit.ConsoleMessage;
 import android.webkit.GeolocationPermissions.Callback;
@@ -25,12 +28,18 @@ import android.webkit.WebStorage.QuotaUpdater;
 import android.webkit.WebView;
 import android.webkit.WebSettings.PluginState;
 import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
-public class PlayActivity extends FragmentActivity{
+public class PlayActivity extends FragmentActivity implements OnClickListener{
 	static final public String KEY_FLASH_URL = "flash_url";
+	static final public String KEY_VIDEO_ID = "video_id";
 	
 	private WebView mWebView = null;
 	private String mUrl = null;
+	private long mVideoId = -1;
+	
 	@Override
 	protected void onCreate(Bundle arg0) {
 		// TODO Auto-generated method stub
@@ -38,10 +47,19 @@ public class PlayActivity extends FragmentActivity{
 		super.onCreate(arg0);
 		setContentView(R.layout.play_activity);
 		
+		ImageButton btnFavorite = (ImageButton)findViewById(R.id.btn_favorite);
+		ImageButton btnRecommend = (ImageButton)findViewById(R.id.btn_recommend);
+		ImageButton btnShare = (ImageButton)findViewById(R.id.btn_share);
+		
+		btnFavorite.setOnClickListener(this);
+		btnRecommend.setOnClickListener(this);
+		btnShare.setOnClickListener(this);
+		
 		mWebView = (WebView)findViewById(R.id.webView1);
 		
 		Intent intent = this.getIntent();
 		mUrl = intent.getStringExtra(KEY_FLASH_URL);
+		mVideoId = intent.getLongExtra(KEY_VIDEO_ID, -1);
 		
 		mWebView.loadUrl("file:///android_asset/index.html");
         mWebView.getSettings().setPluginsEnabled(true);
@@ -355,6 +373,17 @@ public class PlayActivity extends FragmentActivity{
 		
 		return builder.toString();
 	}
+	
+	private Favorite buildFavorite()
+	{
+		Favorite item = new Favorite();
+		
+		item.videoId = mVideoId;
+		item.update = System.currentTimeMillis();
+		
+		return item;
+	}
+	
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
@@ -368,4 +397,33 @@ public class PlayActivity extends FragmentActivity{
 		    	return buildHtml(); 
 		    }
 		 }
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch(v.getId())
+		{
+		case R.id.btn_favorite:
+			addFavorite();
+			break;
+		case R.id.btn_recommend:
+			break;
+		case R.id.btn_share:
+			break;
+			default:
+			break;
+		}
+	}
+	
+	private void addFavorite()
+	{
+		if(FavoriteManager.getInstance().addFavoriteItem(buildFavorite()))
+		{
+			Toast.makeText(getApplication(), R.string.add_favorite_success, 2000).show();
+		}
+		else
+		{
+			Toast.makeText(getApplication(), R.string.add_favorite_fail, 2000).show();
+		}
+	}
 }
