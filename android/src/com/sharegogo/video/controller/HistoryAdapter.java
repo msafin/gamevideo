@@ -1,17 +1,20 @@
 package com.sharegogo.video.controller;
 
-import com.sharegogo.video.activity.FavoriteFragment.FavoriteListItem;
+import com.sharegogo.video.SharegogoVideoApplication;
+import com.sharegogo.video.activity.HistoryFragment.HistoryListItem;
 import com.sharegogo.video.game.R;
 
 import android.content.Context;
+import android.support.v4.util.TimeUtils;
+import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class FavoriteAdapter extends GameBaseAdapter<FavoriteListItem>{
+public class HistoryAdapter extends GameBaseAdapter<HistoryListItem>{
 
-	public FavoriteAdapter(Context context, int layout) {
+	public HistoryAdapter(Context context, int layout) {
 		super(context, layout);
 		// TODO Auto-generated constructor stub
 	}
@@ -25,6 +28,7 @@ public class FavoriteAdapter extends GameBaseAdapter<FavoriteListItem>{
 		tag.mTitle = (TextView)view.findViewById(android.R.id.title);
 		tag.mGameName = (TextView)view.findViewById(R.id.game_name);
 		tag.mAuthorName = (TextView)view.findViewById(R.id.author_name);
+		tag.mTime = (TextView)view.findViewById(R.id.time);
 		tag.mPlay = (ImageButton)view.findViewById(R.id.play_btn);
 		tag.mDelete = (ImageButton)view.findViewById(R.id.delete_btn);
 				
@@ -34,17 +38,27 @@ public class FavoriteAdapter extends GameBaseAdapter<FavoriteListItem>{
 	@Override
 	protected View setupView(int position, View view) {
 		// TODO Auto-generated method stub
-		FavoriteListItem item = (FavoriteListItem)getItem(position);
+		HistoryListItem item = (HistoryListItem)getItem(position);
 		ViewTag tag = (ViewTag)view.getTag();
 		
 		tag.mTitle.setText(item.video.url);
 		
-		if(item.mode == FavoriteListItem.MODE_EDIT)
+		String time = DateUtils.formatDateTime(
+				SharegogoVideoApplication.getApplication(), 
+				item.time,  
+				DateUtils.FORMAT_NUMERIC_DATE | 
+				DateUtils.FORMAT_SHOW_TIME | 
+				DateUtils.FORMAT_SHOW_DATE |
+				DateUtils.FORMAT_SHOW_YEAR |
+				DateUtils.FORMAT_24HOUR);
+		tag.mTime.setText(time);
+		
+		if(item.mode == HistoryListItem.MODE_EDIT)
 		{
 			tag.mPlay.setVisibility(View.GONE);
 			tag.mDelete.setVisibility(View.VISIBLE);
 		}
-		else if(item.mode == FavoriteListItem.MODE_NORMAL)
+		else if(item.mode == HistoryListItem.MODE_NORMAL)
 		{
 			tag.mPlay.setVisibility(View.VISIBLE);
 			tag.mDelete.setVisibility(View.GONE);
@@ -53,7 +67,7 @@ public class FavoriteAdapter extends GameBaseAdapter<FavoriteListItem>{
 		return view;
 	}
 
-	public void delItem(FavoriteListItem item)
+	public void delItem(HistoryListItem item)
 	{
 		mData.remove(item);
 		
@@ -69,9 +83,9 @@ public class FavoriteAdapter extends GameBaseAdapter<FavoriteListItem>{
 		
 		for(Object obj:mData)
 		{
-			FavoriteListItem item = (FavoriteListItem)obj;
+			HistoryListItem item = (HistoryListItem)obj;
 			
-			item.mode = FavoriteListItem.MODE_EDIT;
+			item.mode = HistoryListItem.MODE_EDIT;
 		}
 		
 		notifyDataSetChanged();
@@ -85,9 +99,9 @@ public class FavoriteAdapter extends GameBaseAdapter<FavoriteListItem>{
 		{
 			for(Object obj:mData)
 			{
-				FavoriteListItem item = (FavoriteListItem)obj;
+				HistoryListItem item = (HistoryListItem)obj;
 				
-				item.mode = FavoriteListItem.MODE_NORMAL;
+				item.mode = HistoryListItem.MODE_NORMAL;
 			}
 			
 			notifyDataSetChanged();
@@ -102,6 +116,7 @@ public class FavoriteAdapter extends GameBaseAdapter<FavoriteListItem>{
 		public TextView mTitle;
 		public TextView mGameName;
 		public TextView mAuthorName;
+		public TextView mTime;
 		public ImageButton mPlay;
 		public ImageButton mDelete;
 	}

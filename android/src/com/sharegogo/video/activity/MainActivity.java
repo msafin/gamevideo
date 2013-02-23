@@ -92,7 +92,7 @@ public class MainActivity extends SherlockFragmentActivity{
 		
 		TabSpec history = mTabHost.newTabSpec("history");
 		history.setIndicator(getIndicatorView("播放历史",R.drawable.ic_history));
-		mTabManager.addTab(history, FavoriteFragment.class, null);
+		mTabManager.addTab(history, HistoryFragment.class, null);
 		
 		TabSpec favorite = mTabHost.newTabSpec("favorite");
 		favorite.setIndicator(getIndicatorView("我的收藏",R.drawable.ic_favorite));

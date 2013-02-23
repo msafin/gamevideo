@@ -22,18 +22,18 @@ import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.sharegogo.video.controller.FavoriteAdapter;
-import com.sharegogo.video.controller.FavoriteManager;
-import com.sharegogo.video.data.Favorite;
+import com.sharegogo.video.controller.HistoryAdapter;
+import com.sharegogo.video.controller.HistoryManager;
 import com.sharegogo.video.data.GameVideo;
+import com.sharegogo.video.data.History;
 import com.sharegogo.video.game.R;
 import com.sharegogo.video.utils.ResUtils;
 import com.sharegogo.video.utils.UIUtils;
 
-public class FavoriteFragment extends SherlockListFragment implements LoaderManager.LoaderCallbacks<List<FavoriteFragment.FavoriteListItem>>, OnClickListener{
+public class HistoryFragment extends SherlockListFragment implements LoaderManager.LoaderCallbacks<List<HistoryFragment.HistoryListItem>>, OnClickListener{
 	static private final int LOADER_ID = 1;
 	
-	private FavoriteAdapter mAdapter = null;
+	private HistoryAdapter mAdapter = null;
 	private TextView mEmptyText = null;
 	
 	@Override
@@ -43,7 +43,7 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 		
 		getSherlockActivity().setSupportProgressBarIndeterminateVisibility(false);
 		
-		mAdapter = new FavoriteAdapter(getActivity().getApplicationContext(),R.layout.favorite_item);
+		mAdapter = new HistoryAdapter(getActivity().getApplicationContext(),R.layout.history_item);
 		
 		this.getLoaderManager().initLoader(LOADER_ID, null, this);
 	}
@@ -101,7 +101,7 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 			}
 			break;
 		case R.id.menu_id_clear:
-			showClearFavoriteDialog();
+			showClearHistoryDialog();
 			break;
 			default:
 				break;
@@ -110,24 +110,24 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 		return super.onOptionsItemSelected(item);
 	}
 
-	private void showClearFavoriteDialog()
+	private void showClearHistoryDialog()
 	{
 		new GameDialogFragment(
-				R.string.clear_favorite,
-				R.string.clear_favorite_confirm,
+				R.string.clear_history,
+				R.string.clear_history_confirm,
 				R.string.dialog_ok,
 				R.string.dialog_cancel,
 				this
 				).show(getFragmentManager(), null);
 	}
 	
-	private void clearFavorite()
+	private void clearHistory()
 	{
-		if(FavoriteManager.getInstance().clearFavorite())
+		if(HistoryManager.getInstance().clearHistory())
 		{
 			mAdapter.clearData();
 			
-			Toast toast = Toast.makeText(getActivity(), R.string.clear_favorite_complete, 2000);
+			Toast toast = Toast.makeText(getActivity(), R.string.clear_history_complete, 2000);
 			toast.setGravity(Gravity.CENTER, 0, 0);
 			toast.show();
 		}
@@ -139,7 +139,7 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 		switch(which)
 		{
 		case DialogInterface.BUTTON_POSITIVE:
-			clearFavorite();
+			clearHistory();
 			break;
 		case DialogInterface.BUTTON_NEGATIVE:
 			
@@ -161,39 +161,39 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 		// TODO Auto-generated method stub
 		super.onListItemClick(l, v, position, id);
 		
-		FavoriteListItem item = (FavoriteListItem)mAdapter.getItem(position);
+		HistoryListItem item = (HistoryListItem)mAdapter.getItem(position);
 		
-		if(item.mode == FavoriteListItem.MODE_NORMAL)
+		if(item.mode == HistoryListItem.MODE_NORMAL)
 		{
 			UIUtils.gotoPlayActivity(item.video,getActivity());
 		}
-		else if(item.mode == FavoriteListItem.MODE_EDIT)
+		else if(item.mode == HistoryListItem.MODE_EDIT)
 		{
-			delFavoriteItem(item);
+			delHistoryItem(item);
 		}
 	}
 
-	private void delFavoriteItem(FavoriteListItem item)
+	private void delHistoryItem(HistoryListItem item)
 	{
-		Favorite delItem = new Favorite();
+		History delItem = new History();
 		delItem.id = item.id;
 		delItem.video_id = item.video.id;
 		
-		if(FavoriteManager.getInstance().delFavorite(delItem))
+		if(HistoryManager.getInstance().delHistory(delItem))
 		{
 			mAdapter.delItem(item);
 		}
 	}
 	
 	@Override
-	public Loader<List<FavoriteFragment.FavoriteListItem>> onCreateLoader(int arg0, Bundle arg1) {
+	public Loader<List<HistoryFragment.HistoryListItem>> onCreateLoader(int arg0, Bundle arg1) {
 		// TODO Auto-generated method stub
-		return new FavoriteLoader(getActivity().getApplicationContext());
+		return new HistoryLoader(getActivity().getApplicationContext());
 	}
 	
 	@Override
-	public void onLoadFinished(Loader<List<FavoriteListItem>> arg0,
-			List<FavoriteListItem> arg1) {
+	public void onLoadFinished(Loader<List<HistoryListItem>> arg0,
+			List<HistoryListItem> arg1) {
 		// TODO Auto-generated method stub
 		
 		if(arg1 != null && arg1.size() > 0)
@@ -201,35 +201,34 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 			mAdapter.setData(arg1);
 		
 			setListAdapter(mAdapter);
-			
 			mEmptyText.setVisibility(View.GONE);
 		}
 		else
 		{
 			mEmptyText.setVisibility(View.VISIBLE);
-			mEmptyText.setText(R.string.favorite_empty);
+			mEmptyText.setText(R.string.history_empty);
 		}
 	}
 
 
 	@Override
-	public void onLoaderReset(Loader<List<FavoriteListItem>> arg0) {
+	public void onLoaderReset(Loader<List<HistoryListItem>> arg0) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	
-	static private class FavoriteLoader extends AsyncTaskLoader<List<FavoriteListItem>>
+	static private class HistoryLoader extends AsyncTaskLoader<List<HistoryListItem>>
 	{
-		public FavoriteLoader(Context context) {
+		public HistoryLoader(Context context) {
 			super(context);
 			// TODO Auto-generated constructor stub
 		}
 
 		@Override
-		public List<FavoriteListItem> loadInBackground() {
+		public List<HistoryListItem> loadInBackground() {
 			// TODO Auto-generated method stub
-			return FavoriteManager.getInstance().getFavoriteList();
+			return HistoryManager.getInstance().getHistoryList();
 		}
 
 		@Override
@@ -241,15 +240,16 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 		}
 	}
 	
-	static public class FavoriteListItem {
+	static public class HistoryListItem {
 		static final public int MODE_NORMAL = 0;
 		static final public int MODE_EDIT = 1;
 		
 		public long id;
 		public GameVideo video;
 		public int mode;
+		public long time;
 		
-		public FavoriteListItem()
+		public HistoryListItem()
 		{
 			mode = MODE_NORMAL;
 		}

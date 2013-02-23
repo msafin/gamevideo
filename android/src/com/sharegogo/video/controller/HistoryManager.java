@@ -4,36 +4,31 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.view.Gravity;
-import android.widget.Toast;
-
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.j256.ormlite.table.TableUtils;
 import com.sharegogo.video.SharegogoVideoApplication;
-import com.sharegogo.video.activity.FavoriteFragment.FavoriteListItem;
-import com.sharegogo.video.data.Favorite;
+import com.sharegogo.video.activity.HistoryFragment.HistoryListItem;
 import com.sharegogo.video.data.GameVideo;
+import com.sharegogo.video.data.History;
 import com.sharegogo.video.data.MySqliteHelper;
-import com.sharegogo.video.game.R;
 
 /**
- * 收藏管理器
+ * 播放历史管理器
  * @author Raymon
  * @version 1.0
  */
-public class FavoriteManager {
-	static private FavoriteManager mInstance;
+public class HistoryManager {
+	static private HistoryManager mInstance;
 	
-	static public FavoriteManager getInstance()
+	static public HistoryManager getInstance()
 	{
 		if(mInstance == null)
 		{
-			synchronized(FavoriteManager.class)
+			synchronized(HistoryManager.class)
 			{
 				if(mInstance == null)
 				{
-					mInstance = new FavoriteManager();
+					mInstance = new HistoryManager();
 				}
 			}
 		}
@@ -42,15 +37,15 @@ public class FavoriteManager {
 	}
 	
 	
-	public boolean addFavorite(Favorite favorite)
+	public boolean addHistory(History history)
 	{
 		MySqliteHelper helper = SharegogoVideoApplication.getApplication().getHelper();
 		
 		try {
 			
-			Dao<Favorite,String> dao = helper.getDao(Favorite.class);
+			Dao<History,String> dao = helper.getDao(History.class);
 			
-			dao.createOrUpdate(favorite);
+			dao.createOrUpdate(history);
 			
 			return true;
 		} 
@@ -62,15 +57,15 @@ public class FavoriteManager {
 		return false;
 	}
 	
-	public boolean delFavorite(Favorite favorite)
+	public boolean delHistory(History history)
 	{
 		MySqliteHelper helper = SharegogoVideoApplication.getApplication().getHelper();
 		
 		try {
-			Dao<Favorite,String> favoriteDao = null;
+			Dao<History,String> historyDao = null;
 			
-			favoriteDao = helper.getDao(Favorite.class);
-			favoriteDao.delete(favorite);
+			historyDao = helper.getDao(History.class);
+			historyDao.delete(history);
 			
 			return true;
 			
@@ -82,12 +77,12 @@ public class FavoriteManager {
 		return false;
 	}
 	
-	public boolean clearFavorite()
+	public boolean clearHistory()
 	{
 		MySqliteHelper helper = SharegogoVideoApplication.getApplication().getHelper();
 		
 		try {
-			TableUtils.clearTable(helper.getConnectionSource(), Favorite.class);
+			TableUtils.clearTable(helper.getConnectionSource(), History.class);
 			
 			return true;
 			
@@ -99,20 +94,20 @@ public class FavoriteManager {
 		return false;
 	}
 	
-	public Favorite getFavorite(long videoId)
+	public History getHistory(long videoId)
 	{
 		MySqliteHelper helper = SharegogoVideoApplication.getApplication().getHelper();
 		
 		try {
-			Dao<Favorite,String> favoriteDao = null;
+			Dao<History,String> historyDao = null;
 			
-			favoriteDao = helper.getDao(Favorite.class);
+			historyDao = helper.getDao(History.class);
 			
-			List<Favorite> favorites = favoriteDao.queryForEq("video_id", videoId);
+			List<History> historys = historyDao.queryForEq("video_id", videoId);
 			
-			if(favorites != null && favorites.size() > 0)
+			if(historys != null && historys.size() > 0)
 			{
-				return favorites.get(0);
+				return historys.get(0);
 			}
 			
 		} catch (SQLException e) {
@@ -123,30 +118,30 @@ public class FavoriteManager {
 		return null;
 	}
 	
-	public List<FavoriteListItem> getFavoriteList()
+	public List<HistoryListItem> getHistoryList()
 	{
 		MySqliteHelper helper = SharegogoVideoApplication.getApplication().getHelper();
 		
-		Dao<Favorite,String> favoriteDao = null;
-		List<Favorite> favorite = null;
-		List<FavoriteListItem> data = null;
+		Dao<History,String> historyDao = null;
+		List<History> historys = null;
+		List<HistoryListItem> data = null;
 		
 		try {
-			favoriteDao = helper.getDao(Favorite.class);
+			historyDao = helper.getDao(History.class);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		try {
-			favorite = favoriteDao.queryForAll();
+			historys = historyDao.queryForAll();
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		if(favorite != null && favorite.size() > 0)
+		if(historys != null && historys.size() > 0)
 		{
 			Dao<GameVideo,String> videoDao = null;
 			
@@ -159,22 +154,23 @@ public class FavoriteManager {
 			
 			if(videoDao != null)
 			{
-				data = new ArrayList<FavoriteListItem>();
+				data = new ArrayList<HistoryListItem>();
 				
-				for(Favorite item:favorite)
+				for(History item:historys)
 				{
-					FavoriteListItem favoriteItem = new FavoriteListItem();
+					HistoryListItem historyItem = new HistoryListItem();
 				
-					favoriteItem.id = item.id;
+					historyItem.id = item.id;
+					historyItem.time = item.update;
 					
 					try {
-						favoriteItem.video = videoDao.queryForId(String.valueOf(item.video_id));
+						historyItem.video = videoDao.queryForId(String.valueOf(item.video_id));
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					
-					data.add(favoriteItem);
+					data.add(historyItem);
 				}
 			}
 		}

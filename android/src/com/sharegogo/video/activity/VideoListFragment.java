@@ -8,8 +8,10 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.j256.ormlite.dao.Dao;
 import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.controller.GameAdapter;
+import com.sharegogo.video.controller.HistoryManager;
 import com.sharegogo.video.controller.VideoAdapter;
 import com.sharegogo.video.data.GameVideo;
+import com.sharegogo.video.data.History;
 import com.sharegogo.video.data.MySqliteHelper;
 import com.sharegogo.video.game.R;
 import com.sharegogo.video.utils.UIUtils;
@@ -95,5 +97,17 @@ public class VideoListFragment extends SherlockFragment implements OnItemClickLi
 		GameVideo video = (GameVideo)mVideoAdapter.getItem(arg2-1);
 		
 		UIUtils.gotoPlayActivity(video,getActivity());
+		
+		addHistory(video);
+	}
+	
+	private void addHistory(GameVideo video)
+	{
+		History history = new History();
+		
+		history.video_id = video.id;
+		history.update = System.currentTimeMillis();
+		
+		HistoryManager.getInstance().addHistory(history);
 	}
 }
