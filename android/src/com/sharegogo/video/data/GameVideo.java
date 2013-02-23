@@ -16,7 +16,7 @@ public class GameVideo {
 	@DatabaseField(id = true)
 	public long id;
 	@DatabaseField
-	public int gameType;
+	public int game_type;
 	@DatabaseField
 	public int type;
 	@DatabaseField

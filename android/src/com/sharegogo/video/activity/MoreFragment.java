@@ -15,6 +15,7 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.sharegogo.video.controller.MoreAdapter;
 import com.sharegogo.video.game.R;
+import com.sharegogo.video.utils.UIUtils;
 import com.umeng.fb.UMFeedbackService;
 import com.umeng.socialize.bean.SocializeConfig;
 import com.umeng.socialize.controller.RequestType;
@@ -87,16 +88,6 @@ public class MoreFragment extends SherlockFragment implements OnItemClickListene
 		startActivity(intent);
 	}
 	
-	private void gotoShareActivity()
-	{
-		SocializeConfig config = new SocializeConfig();
-		config.setShareMail(false);
-		UMSocialService controller = UMServiceFactory.getUMSocialService("sharegogo", RequestType.SOCIAL); 
-		controller.setConfig(config);
-		
-		controller.openShare(getActivity(),false);
-	}
-	
 	private void gotoFeedbackActivity()
 	{
 		UMFeedbackService.setGoBackButtonVisible();
@@ -120,7 +111,7 @@ public class MoreFragment extends SherlockFragment implements OnItemClickListene
 			break;
 		//∑÷œÌ
 		case 1:
-			gotoShareActivity();
+			UIUtils.gotoShareActivity(getActivity());
 			break;
 		//…Ë÷√
 		case 2:

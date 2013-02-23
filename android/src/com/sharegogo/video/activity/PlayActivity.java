@@ -3,6 +3,8 @@ package com.sharegogo.video.activity;
 import com.sharegogo.video.controller.FavoriteManager;
 import com.sharegogo.video.data.Favorite;
 import com.sharegogo.video.game.R;
+import com.sharegogo.video.utils.UIUtils;
+
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -39,6 +41,10 @@ public class PlayActivity extends FragmentActivity implements OnClickListener{
 	private WebView mWebView = null;
 	private String mUrl = null;
 	private long mVideoId = -1;
+	private ImageButton mBtnFavorite;
+	private ImageButton mBtnRecommend;
+	private ImageButton mBtnShare;
+	private Favorite mFavorite;
 	
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -47,19 +53,26 @@ public class PlayActivity extends FragmentActivity implements OnClickListener{
 		super.onCreate(arg0);
 		setContentView(R.layout.play_activity);
 		
-		ImageButton btnFavorite = (ImageButton)findViewById(R.id.btn_favorite);
-		ImageButton btnRecommend = (ImageButton)findViewById(R.id.btn_recommend);
-		ImageButton btnShare = (ImageButton)findViewById(R.id.btn_share);
+		mBtnFavorite = (ImageButton)findViewById(R.id.btn_favorite);
+		mBtnRecommend = (ImageButton)findViewById(R.id.btn_recommend);
+		mBtnShare = (ImageButton)findViewById(R.id.btn_share);
 		
-		btnFavorite.setOnClickListener(this);
-		btnRecommend.setOnClickListener(this);
-		btnShare.setOnClickListener(this);
+		mBtnFavorite.setOnClickListener(this);
+		mBtnRecommend.setOnClickListener(this);
+		mBtnShare.setOnClickListener(this);
+		
 		
 		mWebView = (WebView)findViewById(R.id.webView1);
 		
 		Intent intent = this.getIntent();
 		mUrl = intent.getStringExtra(KEY_FLASH_URL);
 		mVideoId = intent.getLongExtra(KEY_VIDEO_ID, -1);
+		
+		mFavorite = FavoriteManager.getInstance().getFavorite(mVideoId);
+		if(mFavorite != null)
+		{
+			mBtnFavorite.setImageResource(R.drawable.ic_favorited);
+		}
 		
 		mWebView.loadUrl("file:///android_asset/index.html");
         mWebView.getSettings().setPluginsEnabled(true);
@@ -378,7 +391,7 @@ public class PlayActivity extends FragmentActivity implements OnClickListener{
 	{
 		Favorite item = new Favorite();
 		
-		item.videoId = mVideoId;
+		item.video_id = mVideoId;
 		item.update = System.currentTimeMillis();
 		
 		return item;
@@ -404,11 +417,20 @@ public class PlayActivity extends FragmentActivity implements OnClickListener{
 		switch(v.getId())
 		{
 		case R.id.btn_favorite:
-			addFavorite();
+			mFavorite = FavoriteManager.getInstance().getFavorite(mVideoId);
+			if(mFavorite != null)
+			{
+				delFavorite();
+			}
+			else
+			{
+				addFavorite();
+			}
 			break;
 		case R.id.btn_recommend:
 			break;
 		case R.id.btn_share:
+			UIUtils.gotoShareActivity(this);
 			break;
 			default:
 			break;
@@ -417,13 +439,27 @@ public class PlayActivity extends FragmentActivity implements OnClickListener{
 	
 	private void addFavorite()
 	{
-		if(FavoriteManager.getInstance().addFavoriteItem(buildFavorite()))
+		if(FavoriteManager.getInstance().addFavorite(buildFavorite()))
 		{
 			Toast.makeText(getApplication(), R.string.add_favorite_success, 2000).show();
+			mBtnFavorite.setImageResource(R.drawable.ic_favorited);
 		}
 		else
 		{
 			Toast.makeText(getApplication(), R.string.add_favorite_fail, 2000).show();
+		}
+	}
+	
+	private void delFavorite()
+	{
+		if(FavoriteManager.getInstance().delFavorite(mFavorite))
+		{
+			Toast.makeText(getApplication(), R.string.del_favorite_success, 2000).show();
+			mBtnFavorite.setImageResource(R.drawable.ic_favorite);
+		}
+		else
+		{
+			Toast.makeText(getApplication(), R.string.del_favorite_fail, 2000).show();
 		}
 	}
 }

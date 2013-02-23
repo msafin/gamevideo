@@ -27,7 +27,7 @@ public class GamePeople {
 	
 	//游戏类型
 	@DatabaseField
-	public int gameType;
+	public int game_type;
 	
 	//解说或者比赛
 	@DatabaseField
@@ -65,7 +65,7 @@ public class GamePeople {
 			
 				people.id = index;
 				people.name = item;
-				people.gameType = 8;
+				people.game_type = 8;
 				
 				index++;
 				if(dao != null)

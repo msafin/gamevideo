@@ -17,7 +17,7 @@ public class Favorite {
 	public long id;
 	
 	@DatabaseField(unique = true)
-	public long videoId;
+	public long video_id;
 	
 	@DatabaseField
 	public long update;
@@ -39,7 +39,7 @@ public class Favorite {
 		{
 			Favorite item = new Favorite();
 			
-			item.videoId = i+1;
+			item.video_id = i+1;
 			item.update = System.currentTimeMillis();
 			
 			if(dao != null)

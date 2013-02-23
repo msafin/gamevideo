@@ -21,6 +21,8 @@
 	<string name="favorite_empty">^-^亲，还没有收藏记录！</string>
 	<string name="add_favorite_success">收藏成功</string>
 	<string name="add_favorite_fail">收藏失败</string>
+	<string name="del_favorite_success">取消收藏成功</string>
+	<string name="del_favorite_fail">取消收藏失败</string>
 	
 	<string name="dialog_ok">确定</string>
 	<string name="dialog_cancel">取消</string>

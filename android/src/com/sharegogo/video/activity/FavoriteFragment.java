@@ -33,6 +33,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.table.TableUtils;
 import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.controller.FavoriteAdapter;
+import com.sharegogo.video.controller.FavoriteManager;
 import com.sharegogo.video.data.Favorite;
 import com.sharegogo.video.data.FavoriteListItem;
 import com.sharegogo.video.data.GameVideo;
@@ -131,21 +132,13 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 	
 	private void clearFavorite()
 	{
-		MySqliteHelper helper = SharegogoVideoApplication.getApplication().getHelper();
-		
-		Dao<Favorite,String> favoriteDao = null;
-		
-		try {
-			TableUtils.clearTable(helper.getConnectionSource(), Favorite.class);
+		if(FavoriteManager.getInstance().clearFavorite())
+		{
 			mAdapter.clearData();
 			
 			Toast toast = Toast.makeText(getActivity(), R.string.clear_favorite_complete, 2000);
 			toast.setGravity(Gravity.CENTER, 0, 0);
 			toast.show();
-		
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 	
@@ -191,21 +184,13 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 
 	private void delFavoriteItem(FavoriteListItem item)
 	{
-		MySqliteHelper helper = SharegogoVideoApplication.getApplication().getHelper();
+		Favorite delItem = new Favorite();
+		delItem.id = item.id;
+		delItem.video_id = item.video.id;
 		
-		try {
-			Dao<Favorite,String> favoriteDao = null;
-			
-			favoriteDao = helper.getDao(Favorite.class);
-			Favorite deleteItem = new Favorite();
-			deleteItem.id = item.id;
-			
-			favoriteDao.delete(deleteItem);
-			
+		if(FavoriteManager.getInstance().delFavorite(delItem))
+		{
 			mAdapter.delItem(item);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 	
@@ -286,7 +271,7 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 						favoriteItem.id = item.id;
 						
 						try {
-							favoriteItem.video = videoDao.queryForId(String.valueOf(item.videoId));
+							favoriteItem.video = videoDao.queryForId(String.valueOf(item.video_id));
 						} catch (SQLException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();

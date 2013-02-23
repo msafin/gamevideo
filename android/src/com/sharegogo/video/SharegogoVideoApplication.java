@@ -29,7 +29,7 @@ public class SharegogoVideoApplication extends Application{
 		Game.makePhonyData(this);
 		GamePeople.makePhonyData(this);
 		GameVideo.makePhonyData(this);
-		Favorite.makePhonyData(this);
+		//Favorite.makePhonyData(this);
 		
 		//HttpTest.testHttp(this);
 		new LibInterface().init(this);
