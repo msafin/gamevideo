@@ -13,6 +13,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.controller.MoreAdapter;
 import com.sharegogo.video.game.R;
 import com.sharegogo.video.utils.UIUtils;
@@ -124,6 +125,10 @@ public class MoreFragment extends SherlockFragment implements OnItemClickListene
 		//¹ØÓÚ
 		case 4:
 			gotoAboutActivity();
+			break;
+		//ÍË³ö
+		case 5:
+			SharegogoVideoApplication.getApplication().onApplicationExit();
 			break;
 		default:
 			break;

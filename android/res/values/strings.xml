@@ -15,6 +15,7 @@
 	<string name="setting_title">设置</string>
 	<string name="about_title">关于</string>
 	
+	<!-- 收藏 -->
 	<string name="clear_favorite">清除收藏</string>
 	<string name="clear_favorite_confirm">是否清除收藏？</string>
 	<string name="clear_favorite_complete">已经清除收藏</string>
@@ -24,11 +25,17 @@
 	<string name="del_favorite_success">取消收藏成功</string>
 	<string name="del_favorite_fail">取消收藏失败</string>
 	
+	<!-- 播放历史 -->
 	<string name="clear_history">清除播放历史</string>
 	<string name="clear_history_confirm">是否清除播放历史？</string>
 	<string name="clear_history_complete">已经清除播放历史</string>
 	<string name="history_empty">^-^亲，还没有播放历史！</string>
 	
+	<string name="flash_not_installed">您未安装flash插件无法播放视频，点击下载安装</string>
+	<string name="flash_install_note">安装后如果无法播放，请退出应用重新进入</string>
+	
 	<string name="dialog_ok">确定</string>
 	<string name="dialog_cancel">取消</string>
+	<string name="menu_search">搜索</string>
+	<string name="menu_quit">退出</string>
 </resources>

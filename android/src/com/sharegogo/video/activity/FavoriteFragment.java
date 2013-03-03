@@ -24,6 +24,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.sharegogo.video.controller.FavoriteAdapter;
 import com.sharegogo.video.controller.FavoriteManager;
+import com.sharegogo.video.controller.HistoryManager;
 import com.sharegogo.video.data.Favorite;
 import com.sharegogo.video.data.GameVideo;
 import com.sharegogo.video.game.R;
@@ -166,6 +167,15 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 		if(item.mode == FavoriteListItem.MODE_NORMAL)
 		{
 			UIUtils.gotoPlayActivity(item.video,getActivity());
+			
+			if(HistoryManager.getInstance().addHistory(item.video.id))
+			{
+				Toast.makeText(getActivity(), "success", 1000).show();
+			}
+			else
+			{
+				Toast.makeText(getActivity(), "failed", 1000).show();
+			}
 		}
 		else if(item.mode == FavoriteListItem.MODE_EDIT)
 		{

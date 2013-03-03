@@ -1,5 +1,9 @@
 package com.sharegogo.video.activity;
 
+import java.util.List;
+
+import com.sharegogo.config.HttpConfig;
+import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.controller.FavoriteManager;
 import com.sharegogo.video.data.Favorite;
 import com.sharegogo.video.game.R;
@@ -7,13 +11,19 @@ import com.sharegogo.video.utils.UIUtils;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -45,7 +55,7 @@ public class PlayActivity extends FragmentActivity implements OnClickListener{
 	private ImageButton mBtnRecommend;
 	private ImageButton mBtnShare;
 	private Favorite mFavorite;
-	
+	private View mDownloadNote;
 	@Override
 	protected void onCreate(Bundle arg0) {
 		// TODO Auto-generated method stub
@@ -56,6 +66,9 @@ public class PlayActivity extends FragmentActivity implements OnClickListener{
 		mBtnFavorite = (ImageButton)findViewById(R.id.btn_favorite);
 		mBtnRecommend = (ImageButton)findViewById(R.id.btn_recommend);
 		mBtnShare = (ImageButton)findViewById(R.id.btn_share);
+		mDownloadNote = findViewById(R.id.flash_downlaod_note);
+		ImageButton download = (ImageButton)findViewById(R.id.download);
+		download.setOnClickListener(this);
 		
 		mBtnFavorite.setOnClickListener(this);
 		mBtnRecommend.setOnClickListener(this);
@@ -374,6 +387,14 @@ public class PlayActivity extends FragmentActivity implements OnClickListener{
 		
 		mWebView.resumeTimers();
 
+		if(isFlashInstalled())
+		{
+			mDownloadNote.setVisibility(View.INVISIBLE);
+		}
+		else
+		{
+			mDownloadNote.setVisibility(View.VISIBLE);
+		}
 	}
 
 
@@ -432,6 +453,9 @@ public class PlayActivity extends FragmentActivity implements OnClickListener{
 		case R.id.btn_share:
 			UIUtils.gotoShareActivity(this);
 			break;
+		case R.id.download:
+			downloadFlashPlugin();
+			break;
 			default:
 			break;
 		}
@@ -461,5 +485,68 @@ public class PlayActivity extends FragmentActivity implements OnClickListener{
 		{
 			Toast.makeText(getApplication(), R.string.del_favorite_fail, 2000).show();
 		}
+	}
+	
+	private boolean isFlashInstalled()
+	{
+		PackageManager pm = getPackageManager();  
+		
+        List<PackageInfo> infoList = pm  .getInstalledPackages(PackageManager.GET_SERVICES);  
+        for (PackageInfo info : infoList) 
+        {  
+            if ("com.adobe.flashplayer".equals(info.packageName)) 
+            {  
+                return true;  
+            }  
+        }  
+        
+        return false;  
+	}
+	
+	private void downloadFlashPlugin()
+	{
+		Uri uri = Uri.parse(HttpConfig.flash_download_url);
+		
+		Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+		
+		startActivity(intent);
+	}
+
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		MenuInflater inflater = this.getMenuInflater();
+		
+		inflater.inflate(R.menu.play_activity, menu);
+		
+		return true;
+	}
+
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		switch(item.getItemId())
+		{
+		case R.id.menu_search:
+			gotoSearchActivity();
+			break;
+		case R.id.menu_quit:
+			SharegogoVideoApplication.getApplication().onApplicationExit();
+			break;
+		default:
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
+	private void gotoSearchActivity()
+	{
+		Intent intent = new Intent(Intent.ACTION_MAIN);
+		
+		intent.setClass(this, SearchActivity.class);
+		
+		startActivity(intent);
 	}
 }

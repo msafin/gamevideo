@@ -36,6 +36,15 @@ public class HistoryManager {
 		return mInstance;
 	}
 	
+	public boolean addHistory(long videoId)
+	{
+		History history = new History();
+		
+		history.video_id = videoId;
+		history.update = System.currentTimeMillis();
+		
+		return addHistory(history);
+	}
 	
 	public boolean addHistory(History history)
 	{

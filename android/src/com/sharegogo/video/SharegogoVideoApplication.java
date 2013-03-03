@@ -43,6 +43,8 @@ public class SharegogoVideoApplication extends Application{
 			OpenHelperManager.releaseHelper();
 			mDataHelper = null;
 		}
+		
+		android.os.Process.killProcess(android.os.Process.myPid());
 	}
 	
 	static public SharegogoVideoApplication getApplication()
