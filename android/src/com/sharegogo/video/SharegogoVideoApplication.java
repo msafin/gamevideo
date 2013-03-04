@@ -9,6 +9,7 @@ import com.sharegogo.video.data.MySqliteHelper;
 import com.sharegogo.video.http.HttpTest;
 import com.sharegogo.video.lib.LibInterface;
 import com.sharegogo.video.utils.DeviceInfo;
+import com.sharegogo.video.utils.HttpUtils;
 import com.umeng.analytics.MobclickAgent;
 
 import android.app.Application;
@@ -35,6 +36,7 @@ public class SharegogoVideoApplication extends Application{
 		new LibInterface().init(this);
 		
 		DeviceInfo.test();
+		HttpUtils.httpUtilsTest();
 	}
 
 	public void onApplicationExit()
