@@ -3,6 +3,7 @@ package com.sharegogo.video.activity;
 import java.util.List;
 
 import com.sharegogo.config.HttpConfig;
+import com.sharegogo.config.HttpConstants;
 import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.controller.FavoriteManager;
 import com.sharegogo.video.data.Favorite;
@@ -505,7 +506,7 @@ public class PlayActivity extends FragmentActivity implements OnClickListener{
 	
 	private void downloadFlashPlugin()
 	{
-		Uri uri = Uri.parse(HttpConfig.flash_download_url);
+		Uri uri = Uri.parse(HttpConstants.FLASH_DOWNLOAD_URL);
 		
 		Intent intent = new Intent(Intent.ACTION_VIEW,uri);
 		

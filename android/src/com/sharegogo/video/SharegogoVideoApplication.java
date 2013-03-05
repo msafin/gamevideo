@@ -6,7 +6,6 @@ import com.sharegogo.video.data.Game;
 import com.sharegogo.video.data.GamePeople;
 import com.sharegogo.video.data.GameVideo;
 import com.sharegogo.video.data.MySqliteHelper;
-import com.sharegogo.video.http.HttpTest;
 import com.sharegogo.video.lib.LibInterface;
 import com.sharegogo.video.utils.DeviceInfo;
 import com.sharegogo.video.utils.HttpUtils;
