@@ -1,7 +1,8 @@
 package com.sharegogo.video.utils;
 
+import android.util.Log;
+
 import com.sharegogo.video.game.BuildConfig;
-import com.umeng.common.Log;
 
 /**
  * LogÏà¹Øº¯Êý

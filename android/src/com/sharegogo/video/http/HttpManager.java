@@ -6,11 +6,21 @@ import android.os.Looper;
 import android.os.Message;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.http.HttpRequest;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import com.sharegogo.config.BuildingConfig;
+import com.sharegogo.video.utils.DeviceInfo;
+import com.sharegogo.video.utils.HttpUtils;
 
 /**
  * This class creates pools of background threads for downloading
@@ -70,6 +80,8 @@ public class HttpManager {
     // A single instance of HttpManager, used to implement the singleton pattern
     private static HttpManager sInstance = null;
 
+    private List<NameValuePair> mHeaders = null;
+    
     // A static block that sets class fields
     static {
         
@@ -78,6 +90,11 @@ public class HttpManager {
         
         // Creates a single static instance of HttpManager
         sInstance = new HttpManager();
+    }
+    
+    static public void test()
+    {
+    	getInstance().doRequest();
     }
     /**
      * Constructs the work queues and thread pools used to download and decode images.
@@ -121,8 +138,24 @@ public class HttpManager {
             public void handleMessage(Message inputMessage) {
             }
         };
+        
+        mHeaders = getHeaders();
     }
 
+    private List<NameValuePair> getHeaders()
+    {
+    	List<NameValuePair> headers = new ArrayList<NameValuePair>();
+    	
+    	NameValuePair acceptEncoding = new BasicNameValuePair("Accept-Encoding","gzip,deflate,sdch");
+    	NameValuePair clientVersion = new BasicNameValuePair("ClientVersion",BuildingConfig.client_version);
+    	NameValuePair userAgent = new BasicNameValuePair("User-Agent",HttpUtils.getUserAgent());
+    	
+    	headers.add(acceptEncoding);
+    	headers.add(clientVersion);
+    	headers.add(userAgent);
+    	
+    	return headers;
+    }
     /**
      * Returns the HttpManager object
      * @return The global HttpManager object
@@ -201,10 +234,10 @@ public class HttpManager {
      * @param downloaderTask The download task associated with the Thread
      * @param pictureURL The URL being downloaded
      */
-    static public void removeDownload(HttpTask httpTask, URL pictureURL) {
+    static public void removeDownload(HttpTask httpTask, HttpRequest request) {
 
         // If the Thread object still exists and the download matches the specified URL
-        if (httpTask != null && httpTask.getImageURL().equals(pictureURL)) {
+        if (httpTask != null && httpTask.getHttpRequest() == request) {
 
             /*
              * Locks on this class to ensure that other processes aren't mutating Threads.
@@ -245,7 +278,7 @@ public class HttpManager {
         }
 
         // Initializes the task
-        httpTask.initializeDownloaderTask(HttpManager.sInstance);
+        httpTask.initializeHttpTask(HttpManager.sInstance,null,sInstance.mHeaders,null);
         
         /*
          * "Executes" the tasks' download Runnable in order to download the image. If no

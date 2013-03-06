@@ -1,6 +1,11 @@
 package com.sharegogo.video.http;
 
 import java.net.URL;
+import java.util.List;
+
+import org.apache.http.HttpRequest;
+import org.apache.http.NameValuePair;
+
 import com.sharegogo.video.http.HttpRunnable.TaskRunnableHttpMethods;
 
 /**
@@ -12,8 +17,21 @@ import com.sharegogo.video.http.HttpRunnable.TaskRunnableHttpMethods;
  * run a decode, and then start over again. This class can be pooled and reused as necessary.
  */
 public class HttpTask implements TaskRunnableHttpMethods{
-    // The image's URL
-    private URL mImageURL;
+    /*
+     * request
+     */
+    private HttpRequest mHttpRequest;
+    
+    /*
+     * headers
+     */
+    private List<NameValuePair> mHeaders;
+    
+    /*
+     *params 
+     */
+    private List<NameValuePair> mParams;
+    
     /*
      * Field containing the Thread this task is running on.
      */
@@ -31,7 +49,7 @@ public class HttpTask implements TaskRunnableHttpMethods{
     /*
      * An object that contains the ThreadPool singleton.
      */
-    private static HttpManager sPhotoManager;
+    private static HttpManager sHttpManager;
 
     /**
      * Creates an HttpTask containing a download object and a decoder object.
@@ -39,7 +57,7 @@ public class HttpTask implements TaskRunnableHttpMethods{
     HttpTask() {
         // Create the runnables
         mHttpRunnable = new HttpRunnable(this);
-        sPhotoManager = HttpManager.getInstance();
+        sHttpManager = HttpManager.getInstance();
     }
     
     /**
@@ -49,19 +67,16 @@ public class HttpTask implements TaskRunnableHttpMethods{
      * @param photoView An ImageView instance that shows the downloaded image
      * @param cacheFlag Whether caching is enabled
      */
-    void initializeDownloaderTask(HttpManager photoManager)
+    void initializeHttpTask(HttpManager httpManager,HttpRequest httpRequest,List<NameValuePair> headers,List<NameValuePair> params)
     {
         // Sets this object's ThreadPool field to be the input argument
-        sPhotoManager = photoManager;
+    	sHttpManager = httpManager;
+    	mHttpRequest = httpRequest;
+    	mHeaders = headers;
+    	mParams = params;
+    	
     }
     
-    // Implements HTTPDownloaderRunnable.getByteBuffer
-    @Override
-    public byte[] getByteBuffer() {
-        
-        // Returns the global field
-        return null;
-    }
     
     /**
      * Recycles an HttpTask object before it's put back into the pool. One reason to do
@@ -71,12 +86,24 @@ public class HttpTask implements TaskRunnableHttpMethods{
         
     }
 
-    // Implements HttpRunnable.getImageURL. Returns the global Image URL.
     @Override
-    public URL getImageURL() {
-        return mImageURL;
-    }
+	public HttpRequest getHttpRequest() {
+		// TODO Auto-generated method stub
+		return mHttpRequest;
+	}
+    
+    @Override
+	public List<NameValuePair> getHeaders() {
+		// TODO Auto-generated method stub
+		return mHeaders;
+	}
 
+	@Override
+	public List<NameValuePair> getParams() {
+		// TODO Auto-generated method stub
+		return mParams;
+	}
+	
     // Implements HttpRunnable.setByteBuffer. Sets the image buffer to a buffer object.
     @Override
     public void setByteBuffer(byte[] imageBuffer) {
@@ -85,7 +112,7 @@ public class HttpTask implements TaskRunnableHttpMethods{
     
     // Delegates handling the current state of the task to the HttpManager object
     void handleState(int state) {
-        sPhotoManager.handleState(this, state);
+    	sHttpManager.handleState(this, state);
     }
 
     // Returns the instance that downloaded the image
@@ -100,7 +127,7 @@ public class HttpTask implements TaskRunnableHttpMethods{
      * changed by processes outside of this app.
      */
     public Thread getCurrentThread() {
-        synchronized(sPhotoManager) {
+        synchronized(sHttpManager) {
             return mCurrentThread;
         }
     }
@@ -110,7 +137,7 @@ public class HttpTask implements TaskRunnableHttpMethods{
      * notes for getCurrentThread()
      */
     public void setCurrentThread(Thread thread) {
-        synchronized(sPhotoManager) {
+        synchronized(sHttpManager) {
             mCurrentThread = thread;
         }
     }

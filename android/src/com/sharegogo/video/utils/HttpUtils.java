@@ -35,7 +35,7 @@ public class HttpUtils {
 		builder.append("/");
 		builder.append(DeviceInfo.getDeviceName());
 		builder.append("/");
-		builder.append(DeviceInfo.getDeviceName());
+		builder.append(DeviceInfo.getChannel());
 		builder.append("/");
 		builder.append(BuildingConfig.client_version);
 		

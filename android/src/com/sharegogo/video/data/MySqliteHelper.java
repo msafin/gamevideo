@@ -14,7 +14,7 @@ public class MySqliteHelper extends OrmLiteSqliteOpenHelper{
 
 	public MySqliteHelper(Context context)
 	{
-		this(context, "ormlite_test", null, 1);
+		this(context, "game_video", null, 1);
 	}
 	
 	public MySqliteHelper(Context context, String databaseName,

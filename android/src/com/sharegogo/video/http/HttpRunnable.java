@@ -21,8 +21,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
+
+import org.apache.http.HttpRequest;
+import org.apache.http.NameValuePair;
+
+import android.os.Build;
 
 import com.sharegogo.video.utils.HttpUtils;
+import com.sharegogo.video.utils.LogUtils;
 
 /**
  * This task downloads bytes from a resource addressed by a URL.  When the task
@@ -35,6 +42,7 @@ import com.sharegogo.video.utils.HttpUtils;
  * HttpRunnable object communicate through the fields of the PhotoTask.
  */
 class HttpRunnable implements Runnable {
+	static final private String TAG = "http";
     // Sets the size for each read action (bytes)
     private static final int READ_SIZE = 1024 * 2;
 
@@ -59,17 +67,27 @@ class HttpRunnable implements Runnable {
      */
     interface TaskRunnableHttpMethods {
         
+    	/**
+    	 * get httprequest
+    	 * @return
+    	 */
+    	 HttpRequest getHttpRequest();
+    	 
+    	 /**
+    	  * get header
+    	  */
+    	 List<NameValuePair> getHeaders();
+    	 
+    	 /**
+    	  * get params
+    	  */
+    	 List<NameValuePair> getParams();
+    	 
         /**
          * Sets the Thread that this instance is running on
          * @param currentThread the current Thread
          */
         void setHttpThread(Thread currentThread);
-        
-        /**
-         * Returns the current contents of the download buffer
-         * @return The byte array downloaded from the URL in the last read
-         */
-        byte[] getByteBuffer();
         
         /**
          * Sets the current contents of the download buffer
@@ -82,12 +100,6 @@ class HttpRunnable implements Runnable {
          * @param state The current state of the task
          */
         void handleHttpState(int state);
-        
-        /**
-         * Gets the URL for the image being downloaded
-         * @return The image URL
-         */
-        URL getImageURL();
     }
     
     /**
@@ -100,6 +112,31 @@ class HttpRunnable implements Runnable {
         mHttpTask = httpTask;
     }
     
+    private void disableConnectionReuseIfNecessary() {
+    	   // Work around pre-Froyo bugs in HTTP connection reuse.
+    	   if (Integer.parseInt(Build.VERSION.SDK) < Build.VERSION_CODES.FROYO) {
+    	     System.setProperty("http.keepAlive", "false");
+    	   
+    }}
+    
+    private void printRequest(HttpRequest httpRequest,List<NameValuePair> headers,List<NameValuePair> params)
+    {
+    	if(headers != null)
+    	{
+    		for(NameValuePair header:headers)
+    		{
+    			LogUtils.e(TAG, header.getName() + ":" + header.getValue());
+    		}
+    	}
+    	
+     	if(params != null)
+    	{
+    		for(NameValuePair param:params)
+    		{
+    			LogUtils.e(TAG, param.getName() + ":" + param.getValue());
+    		}
+    	}
+    }
     /*
      * Defines this object's task, which is a set of instructions designed to be run on a Thread.
      */
@@ -120,7 +157,7 @@ class HttpRunnable implements Runnable {
          * Gets the image cache buffer object from the PhotoTask instance. This makes the
          * to both HttpRunnable and PhotoTask.
          */
-        byte[] byteBuffer = mHttpTask.getByteBuffer();
+        byte[] byteBuffer = null;
 
         /*
          * A try block that downloads a Picasa image from a URL. The URL value is in the field
@@ -150,9 +187,20 @@ class HttpRunnable implements Runnable {
                 // Downloads the image and catches IO errors
                 try {
 
+                	disableConnectionReuseIfNecessary();
                     // Opens an HTTP connection to the image's URL
-                    HttpURLConnection httpConn =
-                            (HttpURLConnection) mHttpTask.getImageURL().openConnection();
+                	HttpRequest httpRequest = mHttpTask.getHttpRequest();
+                	List<NameValuePair> headers = mHttpTask.getHeaders();
+                	List<NameValuePair> params = mHttpTask.getParams();
+                	printRequest(httpRequest,headers,params);
+                	if(httpRequest == null)
+                	{
+                		return;
+                	}
+                	
+                	URL url = new URL(httpRequest.getRequestLine().getUri().toString());
+                    HttpURLConnection httpConn =  (HttpURLConnection)url.openConnection();
+                           
 
                     // Sets the user agent to report to the server
                     httpConn.setRequestProperty("User-Agent", HttpUtils.getUserAgent());
