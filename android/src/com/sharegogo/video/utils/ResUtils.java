@@ -4,6 +4,11 @@ import android.content.Context;
 
 import com.sharegogo.video.SharegogoVideoApplication;
 
+/**
+ * 资源相关辅助函数
+ * @author Raymon
+ *
+ */
 public class ResUtils {
 	static public String getString(int resId)
 	{

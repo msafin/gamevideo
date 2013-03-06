@@ -1,7 +1,10 @@
 package com.sharegogo.video.data;
 
-public class AutoRegisterResponse {
-	public int status;;
+/**
+ * ×Ô¶¯×¢²áÓ¦´ð
+ * @author Raymon
+ *
+ */
+public class AutoRegisterResponse extends BaseResponse{
 	public String token;
-	public String msg;
 }

@@ -14,8 +14,13 @@ import org.apache.http.params.HttpParams;
 
 import android.util.Log;
 
-import com.sharegogo.config.BuildConfig;
+import com.sharegogo.config.BuildingConfig;
 
+/**
+ * httpÏà¹Ø¸¨Öúº¯Êý
+ * @author Raymon
+ *
+ */
 public class HttpUtils {
 	
 	static public String getUserAgent()
@@ -24,7 +29,7 @@ public class HttpUtils {
 		
 		builder.append(DeviceInfo.getSystemVersion());
 		builder.append("/");
-		builder.append(BuildConfig.client_name);
+		builder.append(BuildingConfig.client_name);
 		builder.append("/");
 		builder.append(DeviceInfo.getManufacturer());
 		builder.append("/");
@@ -32,7 +37,7 @@ public class HttpUtils {
 		builder.append("/");
 		builder.append(DeviceInfo.getDeviceName());
 		builder.append("/");
-		builder.append(BuildConfig.client_version);
+		builder.append(BuildingConfig.client_version);
 		
 		return builder.toString();
 	}

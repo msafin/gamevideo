@@ -12,6 +12,11 @@ import android.util.Log;
 
 import com.sharegogo.video.SharegogoVideoApplication;
 
+/**
+ * 获取设备相关信息
+ * @author Raymon
+ *
+ */
 public class DeviceInfo {
 	
 	static public String getDeviceImei()

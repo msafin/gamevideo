@@ -11,6 +11,11 @@ import com.umeng.socialize.controller.RequestType;
 import com.umeng.socialize.controller.UMServiceFactory;
 import com.umeng.socialize.controller.UMSocialService;
 
+/**
+ * UIÏà¹Ø¸¨Öúº¯Êý
+ * @author Raymon
+ *
+ */
 public class UIUtils {
 	
 	static public void gotoPlayActivity(GameVideo video,Context context)
