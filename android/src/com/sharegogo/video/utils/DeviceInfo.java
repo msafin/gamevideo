@@ -25,6 +25,7 @@ public class DeviceInfo {
 		
 		TelephonyManager telephonyMgr = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
 		
+		LogUtils.e("http","imei = " + telephonyMgr.getDeviceId());
 		return telephonyMgr.getDeviceId();
 	}
 	
@@ -34,6 +35,7 @@ public class DeviceInfo {
 		
 		TelephonyManager telephonyMgr = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
 		
+		LogUtils.e("http","imsi = " + telephonyMgr.getSubscriberId());
 		return telephonyMgr.getSubscriberId();
 	}
 	

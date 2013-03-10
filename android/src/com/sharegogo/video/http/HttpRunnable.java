@@ -16,18 +16,24 @@
 
 package com.sharegogo.video.http;
 
+import java.io.BufferedOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
 import org.apache.http.HttpRequest;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 
 import android.os.Build;
 
+import com.sharegogo.video.data.AutoRegisterResponse;
 import com.sharegogo.video.utils.HttpUtils;
 import com.sharegogo.video.utils.LogUtils;
 
@@ -137,6 +143,13 @@ class HttpRunnable implements Runnable {
     		}
     	}
     }
+    
+    private boolean isGetRequest(HttpRequest request)
+    {
+    	
+    	return request.getRequestLine().getMethod().contentEquals(HttpGet.METHOD_NAME);
+    	
+    }
     /*
      * Defines this object's task, which is a set of instructions designed to be run on a Thread.
      */
@@ -198,12 +211,50 @@ class HttpRunnable implements Runnable {
                 		return;
                 	}
                 	
-                	URL url = new URL(httpRequest.getRequestLine().getUri().toString());
+                	String requestUrl = httpRequest.getRequestLine().getUri().toString();
+                	StringBuilder builder = new StringBuilder(requestUrl);
+                	
+                	if(isGetRequest(httpRequest))
+                	{
+	                	builder.append("?");
+	                	int i = 0 ;
+	                	for(NameValuePair pair:params)
+	                    {
+	                    	builder.append(pair.getName() + "=" + pair.getValue());
+	                    	if(i < params.size() -1)
+	                    	{
+	                    		builder.append("&");
+	                    	}
+	                    	
+	                    	i++;
+	                    }
+                	}
+                	
+                	LogUtils.e("http", builder.toString());
+                	
+                	URL url = new URL(builder.toString());
+                	
+                	
                     HttpURLConnection httpConn =  (HttpURLConnection)url.openConnection();
-                           
-
+                    UrlEncodedFormEntity formEntity = null;
+                    httpConn.setDoInput(true);
+                    if(isGetRequest(httpRequest))
+                    {
+                    	httpConn.setDoOutput(false);
+                    }
+                    else
+                    {
+                    	httpConn.setDoOutput(true);
+                    	
+                        formEntity = new UrlEncodedFormEntity(params);
+                    }
+                    
                     // Sets the user agent to report to the server
-                    httpConn.setRequestProperty("User-Agent", HttpUtils.getUserAgent());
+                    for(NameValuePair pair:headers)
+                    {
+                    	httpConn.setRequestProperty(pair.getName(), pair.getValue());
+                    }
+                    //httpConn.setRequestProperty("User-Agent", HttpUtils.getUserAgent());
 
                     // Before continuing, checks to see that the Thread
                     // hasn't been interrupted
@@ -211,6 +262,22 @@ class HttpRunnable implements Runnable {
                      
                         throw new InterruptedException();
                     }
+                    
+                    OutputStream out = new BufferedOutputStream(httpConn.getOutputStream());
+                    
+                    InputStream entityInput = formEntity.getContent();
+                    int count = entityInput.available();
+                    byte[] entityBuffer = new byte[count];
+                    entityInput.read(entityBuffer);
+                    String enityString = new String(entityBuffer);
+                    
+                    
+                    LogUtils.e("http", enityString);
+                    formEntity.writeTo(out);
+                    
+                    
+                    out.flush();
+                    
                     // Gets the input stream containing the image
                     byteStream = httpConn.getInputStream();
 
@@ -405,7 +472,9 @@ class HttpRunnable implements Runnable {
              * Stores the downloaded bytes in the byte buffer in the PhotoTask instance.
              */
             mHttpTask.setByteBuffer(byteBuffer);
-
+            String response = new String(byteBuffer);
+            LogUtils.e("http", response);
+            AutoRegisterResponse autoRegisterResponse = AutoRegisterResponse.fromJson(response);
             /*
              * Sets the status message in the PhotoTask instance. This sets the
              * ImageView background to indicate that the image is being

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Base64;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -16,11 +17,17 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpRequest;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.message.BasicNameValuePair;
 
+
 import com.sharegogo.config.BuildingConfig;
+import com.sharegogo.config.HttpConstants;
 import com.sharegogo.video.utils.DeviceInfo;
 import com.sharegogo.video.utils.HttpUtils;
+import com.sharegogo.video.utils.LogUtils;
 
 /**
  * This class creates pools of background threads for downloading
@@ -94,7 +101,24 @@ public class HttpManager {
     
     static public void test()
     {
-    	getInstance().doRequest();
+    	HttpRequest request = new BasicHttpRequest(HttpPost.METHOD_NAME, HttpConstants.URL_AUTO_REGISTER);
+    	List<NameValuePair> params = new ArrayList<NameValuePair>();
+    	
+    	String imsi = DeviceInfo.getDeviceImsi();
+    	//需要指定NO_WRAP否者会以换行结束
+    	String regid = Base64.encodeToString(imsi.getBytes(), Base64.NO_WRAP);
+    	LogUtils.e("http", "regid=" + regid);
+    	NameValuePair regidPair = new BasicNameValuePair("regid",regid);
+    	
+    	String imei = DeviceInfo.getDeviceImei();
+    	String regimei = Base64.encodeToString(imei.getBytes(), Base64.NO_WRAP);
+    	LogUtils.e("http", "regimei=" + regimei);
+    	NameValuePair imeiPair = new BasicNameValuePair("regimei",regimei);
+    	
+    	params.add(regidPair);
+    	params.add(imeiPair);
+    	
+    	doRequest(request,params);
     }
     /**
      * Constructs the work queues and thread pools used to download and decode images.
@@ -266,7 +290,7 @@ public class HttpManager {
      * @param cacheFlag Determines if caching should be used
      * @return The task instance that will handle the work
      */
-    static public HttpTask doRequest() {
+    static public HttpTask doRequest(HttpRequest request,List<NameValuePair> params) {
         /*
          * Gets a task from the pool of tasks, returning null if the pool is empty
          */
@@ -278,7 +302,7 @@ public class HttpManager {
         }
 
         // Initializes the task
-        httpTask.initializeHttpTask(HttpManager.sInstance,null,sInstance.mHeaders,null);
+        httpTask.initializeHttpTask(HttpManager.sInstance,request,sInstance.mHeaders,params);
         
         /*
          * "Executes" the tasks' download Runnable in order to download the image. If no
