@@ -38,4 +38,9 @@
 	<string name="dialog_cancel">取消</string>
 	<string name="menu_search">搜索</string>
 	<string name="menu_quit">退出</string>
+	
+	<string name="msg_data_failed">获取数据失败</string>
+	<string name="msg_save_failed">保存数据失败</string>
+	<string name="msg_parse_error">数据解析失败</string>
+	<string name="msg_data_success">获取数据成功</string>
 </resources>

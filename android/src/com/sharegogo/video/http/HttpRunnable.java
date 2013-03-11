@@ -472,9 +472,6 @@ class HttpRunnable implements Runnable {
              * Stores the downloaded bytes in the byte buffer in the PhotoTask instance.
              */
             mHttpTask.setByteBuffer(byteBuffer);
-            String response = new String(byteBuffer);
-            LogUtils.e("http", response);
-            AutoRegisterResponse autoRegisterResponse = AutoRegisterResponse.fromJson(response);
             /*
              * Sets the status message in the PhotoTask instance. This sets the
              * ImageView background to indicate that the image is being

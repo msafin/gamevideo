@@ -33,6 +33,20 @@ public class HttpTask implements TaskRunnableHttpMethods{
     private List<NameValuePair> mParams;
     
     /*
+     * UI层的处理接口
+     */
+    ResponseHandler mResponseHandler;
+    
+    /*
+     * 读取的数据
+     */
+    private byte[] mBuffer;
+    
+    /*
+     * 需要解析的数据类
+     */
+    Class mCls;
+    /*
      * Field containing the Thread this task is running on.
      */
     Thread mThreadThis;
@@ -67,13 +81,15 @@ public class HttpTask implements TaskRunnableHttpMethods{
      * @param photoView An ImageView instance that shows the downloaded image
      * @param cacheFlag Whether caching is enabled
      */
-    void initializeHttpTask(HttpManager httpManager,HttpRequest httpRequest,List<NameValuePair> headers,List<NameValuePair> params)
+    void initializeHttpTask(HttpManager httpManager,HttpRequest httpRequest,List<NameValuePair> headers,List<NameValuePair> params,ResponseHandler handler,Class cls)
     {
         // Sets this object's ThreadPool field to be the input argument
     	sHttpManager = httpManager;
     	mHttpRequest = httpRequest;
     	mHeaders = headers;
     	mParams = params;
+    	mResponseHandler = handler;
+    	mCls = cls;
     	
     }
     
@@ -104,10 +120,15 @@ public class HttpTask implements TaskRunnableHttpMethods{
 		return mParams;
 	}
 	
+	public byte[] getByteBuffer()
+	{
+		return mBuffer;
+	}
+	
     // Implements HttpRunnable.setByteBuffer. Sets the image buffer to a buffer object.
     @Override
-    public void setByteBuffer(byte[] imageBuffer) {
-    	
+    public void setByteBuffer(byte[] buffer) {
+    	mBuffer = buffer;
     }
     
     // Delegates handling the current state of the task to the HttpManager object
@@ -151,6 +172,7 @@ public class HttpTask implements TaskRunnableHttpMethods{
     /*
      * Implements HttpRunnable.handleHTTPState(). Passes the download state to the
      * ThreadPool object.
+     * 这里运行在http线程
      */
     
     @Override

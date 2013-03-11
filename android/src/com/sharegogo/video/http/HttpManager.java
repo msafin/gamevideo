@@ -22,9 +22,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.message.BasicNameValuePair;
 
-
 import com.sharegogo.config.BuildingConfig;
 import com.sharegogo.config.HttpConstants;
+import com.sharegogo.video.data.AutoRegisterResponse;
+import com.sharegogo.video.json.GsonParser;
 import com.sharegogo.video.utils.DeviceInfo;
 import com.sharegogo.video.utils.HttpUtils;
 import com.sharegogo.video.utils.LogUtils;
@@ -56,7 +57,6 @@ public class HttpManager {
     static final int DOWNLOAD_FAILED = -1;
     static final int DOWNLOAD_STARTED = 1;
     static final int DOWNLOAD_COMPLETE = 2;
-    static final int DECODE_STARTED = 3;
     static final int TASK_COMPLETE = 4;
 
     
@@ -118,7 +118,7 @@ public class HttpManager {
     	params.add(regidPair);
     	params.add(imeiPair);
     	
-    	doRequest(request,params);
+    	doRequest(request,params,new BasicResponseHandler(),AutoRegisterResponse.class);
     }
     /**
      * Constructs the work queues and thread pools used to download and decode images.
@@ -153,13 +153,46 @@ public class HttpManager {
          * does the constructor and the Handler.
          */
         mHandler = new Handler(Looper.getMainLooper()) {
-
+        	
             /*
              * handleMessage() defines the operations to perform when the
              * Handler receives a new Message to process.
              */
             @Override
             public void handleMessage(Message inputMessage) {
+            	HttpTask httpTask = (HttpTask) inputMessage.obj;
+            	
+            	 switch (inputMessage.what) {
+                 // If the download has started, sets background color to dark green
+                 case DOWNLOAD_STARTED:
+                     break;
+
+                 /*
+                  * If the download is complete, but the decode is waiting, sets the
+                  * background color to golden yellow
+                  */
+                 case DOWNLOAD_COMPLETE:
+                     // Sets background color to golden yellow
+                	 recycleTask(httpTask);
+                     break;
+                 /*
+                  * The decoding is done, so this sets the
+                  * ImageView's bitmap to the bitmap in the
+                  * incoming message
+                  */
+                 case TASK_COMPLETE:
+                     recycleTask(httpTask);
+                     break;
+                 // The download failed, sets the background color to dark red
+                 case DOWNLOAD_FAILED:
+                     
+                     // Attempts to re-use the Task object
+                     recycleTask(httpTask);
+                     break;
+                 default:
+                     // Otherwise, calls the super method
+                     super.handleMessage(inputMessage);
+             }
             }
         };
         
@@ -193,6 +226,7 @@ public class HttpManager {
      * Handles state messages for a particular task object
      * @param photoTask A task object
      * @param state The state of the task
+     * 这里运行在http线程，我们将获取到的数据转化成具体的数据格式
      */
     @SuppressLint("HandlerLeak")
     public void handleState(HttpTask httpTask, int state) {
@@ -207,7 +241,16 @@ public class HttpManager {
             
             // The task finished downloading the image
             case DOWNLOAD_COMPLETE:
-            
+            	byte[] byteBuffer = httpTask.getByteBuffer();
+                String response = new String(byteBuffer);
+                LogUtils.e("http", response);
+                Object data = GsonParser.fromJson(response, httpTask.mCls);
+                AutoRegisterResponse autoRegister = (AutoRegisterResponse)data;
+                //数据持久
+                if(httpTask.mResponseHandler != null)
+                {
+                	httpTask.mResponseHandler.onPersistent(data);
+                }
             // In all other cases, pass along the message without any other action.
             default:
                 mHandler.obtainMessage(state, httpTask).sendToTarget();
@@ -290,7 +333,7 @@ public class HttpManager {
      * @param cacheFlag Determines if caching should be used
      * @return The task instance that will handle the work
      */
-    static public HttpTask doRequest(HttpRequest request,List<NameValuePair> params) {
+    static public HttpTask doRequest(HttpRequest request,List<NameValuePair> params,ResponseHandler handler,Class cls) {
         /*
          * Gets a task from the pool of tasks, returning null if the pool is empty
          */
@@ -302,7 +345,7 @@ public class HttpManager {
         }
 
         // Initializes the task
-        httpTask.initializeHttpTask(HttpManager.sInstance,request,sInstance.mHeaders,params);
+        httpTask.initializeHttpTask(HttpManager.sInstance,request,sInstance.mHeaders,params,handler,cls);
         
         /*
          * "Executes" the tasks' download Runnable in order to download the image. If no
