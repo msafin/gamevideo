@@ -7,7 +7,7 @@ import com.sharegogo.video.json.GsonParser;
  * @author Raymon
  *
  */
-public class AutoRegisterResponse extends BaseResponse{
+public class AutoRegister extends BaseResponse{
 	
 	public String token;
 }

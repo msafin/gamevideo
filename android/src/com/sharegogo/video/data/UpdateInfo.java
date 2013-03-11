@@ -5,7 +5,7 @@ package com.sharegogo.video.data;
  * @author Raymon
  *
  */
-public class CheckUpdateResponse extends BaseResponse{
+public class UpdateInfo extends BaseResponse{
 	public String version;
 	public int type;
 	public String desc;

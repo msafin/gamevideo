@@ -1,17 +1,22 @@
 package com.sharegogo.video.data;
 
 /**
- * 视频列表应答
+ * 搜索应答
  * @author Raymon
  *
  */
-public class VideoListResponse extends BaseResponse{
+public class SearchResult extends BaseResponse{
+	public int status;
+	public String msg;
 	public int count;
-	public VideoListItem[] list;
+	public int listType;
+	public int asc;
+	public SearchListItem[] list;
 	
-	static public class VideoListItem
+	static public class SearchListItem
 	{
 		public long id;
+		public String name;
 		public String author;
 		public String from;
 		public long hot;

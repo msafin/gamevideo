@@ -33,7 +33,7 @@ import org.apache.http.client.methods.HttpPost;
 
 import android.os.Build;
 
-import com.sharegogo.video.data.AutoRegisterResponse;
+import com.sharegogo.video.data.AutoRegister;
 import com.sharegogo.video.utils.HttpUtils;
 import com.sharegogo.video.utils.LogUtils;
 
@@ -125,25 +125,6 @@ class HttpRunnable implements Runnable {
     	   
     }}
     
-    private void printRequest(HttpRequest httpRequest,List<NameValuePair> headers,List<NameValuePair> params)
-    {
-    	if(headers != null)
-    	{
-    		for(NameValuePair header:headers)
-    		{
-    			LogUtils.e(TAG, header.getName() + ":" + header.getValue());
-    		}
-    	}
-    	
-     	if(params != null)
-    	{
-    		for(NameValuePair param:params)
-    		{
-    			LogUtils.e(TAG, param.getName() + ":" + param.getValue());
-    		}
-    	}
-    }
-    
     private boolean isGetRequest(HttpRequest request)
     {
     	
@@ -184,286 +165,281 @@ class HttpRunnable implements Runnable {
                 
                 throw new InterruptedException();
             }
-            
-            // If there's no cache buffer for this image
-            if (null == byteBuffer) {
+
+            /*
+             * Calls the PhotoTask implementation of {@link #handleDownloadState} to
+             * set the state of the download
+             */
+        	mHttpTask.handleHttpState(HTTP_STATE_STARTED);
+
+            // Defines a handle for the byte download stream
+            InputStream byteStream = null;
+	
+            try {
+
+            	disableConnectionReuseIfNecessary();
+            	
+            	HttpRequest httpRequest = mHttpTask.getHttpRequest();
+            	List<NameValuePair> headers = mHttpTask.getHeaders();
+            	List<NameValuePair> params = mHttpTask.getParams();
+            	
+            	//获取请求URL
+            	String requestUrl = httpRequest.getRequestLine().getUri().toString();
+            	StringBuilder builder = new StringBuilder(requestUrl);
+            	
+            	UrlEncodedFormEntity formEntity = null;
+
+            	if(params != null && params.size() > 0)
+            	{
+	                formEntity = new UrlEncodedFormEntity(params);
+
+            	}
+            	
+            	//增加get参数
+            	if(isGetRequest(httpRequest))
+            	{
+            		if(formEntity != null)
+            		{
+		            	InputStream entityInput = formEntity.getContent();
+		                int count = entityInput.available();
+		                byte[] paramsBuffer = new byte[count];
+		                
+		                entityInput.read(paramsBuffer);
+	                	String formParams = new String(paramsBuffer);
+	                	
+	                	builder.append("?");
+	                	builder.append(formParams);
+	                	
+	                	 LogUtils.e("http", "params = " + formParams);
+            		}
+            	}
+            	
+            	URL url = new URL(builder.toString());
+            		
+                HttpURLConnection httpConn =  (HttpURLConnection)url.openConnection();
+ 
+                LogUtils.e("http", "url = " + builder.toString());
+                
+                httpConn.setDoInput(true);
+                
+                if(isGetRequest(httpRequest))
+                {
+                	httpConn.setDoOutput(false);
+                }
+                else
+                {
+                	httpConn.setDoOutput(true);
+                }
+                
+                // Sets the user agent to report to the server
+                if(headers != null)
+                {
+	                for(NameValuePair pair:headers)
+	                {
+	                	httpConn.setRequestProperty(pair.getName(), pair.getValue());
+	                }
+                }
+
+                // Before continuing, checks to see that the Thread
+                // hasn't been interrupted
+                if (Thread.interrupted()) {
+                 
+                    throw new InterruptedException();
+                }
+                
+                //post方法
+                if(!isGetRequest(httpRequest))
+                {
+	                OutputStream out = new BufferedOutputStream(httpConn.getOutputStream());
+	                formEntity.writeTo(out);
+	                
+	                out.flush();
+                }
+                // Gets the input stream containing the image
+                byteStream = httpConn.getInputStream();
+
+                if (Thread.interrupted()) {
+                 
+                	throw new InterruptedException();
+                }
+                /*
+                 * Gets the size of the file being downloaded. This
+                 * may or may not be returned.
+                 */
+                int contentSize = httpConn.getContentLength();
 
                 /*
-                 * Calls the PhotoTask implementation of {@link #handleDownloadState} to
-                 * set the state of the download
+                 * If the size of the image isn't available
                  */
-            	mHttpTask.handleHttpState(HTTP_STATE_STARTED);
+                if (-1 == contentSize) {
 
-                // Defines a handle for the byte download stream
-                InputStream byteStream = null;
+                    // Allocates a temporary buffer
+                    byte[] tempBuffer = new byte[READ_SIZE];
 
-                // Downloads the image and catches IO errors
-                try {
-
-                	disableConnectionReuseIfNecessary();
-                    // Opens an HTTP connection to the image's URL
-                	HttpRequest httpRequest = mHttpTask.getHttpRequest();
-                	List<NameValuePair> headers = mHttpTask.getHeaders();
-                	List<NameValuePair> params = mHttpTask.getParams();
-                	printRequest(httpRequest,headers,params);
-                	if(httpRequest == null)
-                	{
-                		return;
-                	}
-                	
-                	String requestUrl = httpRequest.getRequestLine().getUri().toString();
-                	StringBuilder builder = new StringBuilder(requestUrl);
-                	
-                	if(isGetRequest(httpRequest))
-                	{
-	                	builder.append("?");
-	                	int i = 0 ;
-	                	for(NameValuePair pair:params)
-	                    {
-	                    	builder.append(pair.getName() + "=" + pair.getValue());
-	                    	if(i < params.size() -1)
-	                    	{
-	                    		builder.append("&");
-	                    	}
-	                    	
-	                    	i++;
-	                    }
-                	}
-                	
-                	LogUtils.e("http", builder.toString());
-                	
-                	URL url = new URL(builder.toString());
-                	
-                	
-                    HttpURLConnection httpConn =  (HttpURLConnection)url.openConnection();
-                    UrlEncodedFormEntity formEntity = null;
-                    httpConn.setDoInput(true);
-                    if(isGetRequest(httpRequest))
-                    {
-                    	httpConn.setDoOutput(false);
-                    }
-                    else
-                    {
-                    	httpConn.setDoOutput(true);
-                    	
-                        formEntity = new UrlEncodedFormEntity(params);
-                    }
-                    
-                    // Sets the user agent to report to the server
-                    for(NameValuePair pair:headers)
-                    {
-                    	httpConn.setRequestProperty(pair.getName(), pair.getValue());
-                    }
-                    //httpConn.setRequestProperty("User-Agent", HttpUtils.getUserAgent());
-
-                    // Before continuing, checks to see that the Thread
-                    // hasn't been interrupted
-                    if (Thread.interrupted()) {
-                     
-                        throw new InterruptedException();
-                    }
-                    
-                    OutputStream out = new BufferedOutputStream(httpConn.getOutputStream());
-                    
-                    InputStream entityInput = formEntity.getContent();
-                    int count = entityInput.available();
-                    byte[] entityBuffer = new byte[count];
-                    entityInput.read(entityBuffer);
-                    String enityString = new String(entityBuffer);
-                    
-                    
-                    LogUtils.e("http", enityString);
-                    formEntity.writeTo(out);
-                    
-                    
-                    out.flush();
-                    
-                    // Gets the input stream containing the image
-                    byteStream = httpConn.getInputStream();
-
-                    if (Thread.interrupted()) {
-                     
-                        throw new InterruptedException();
-                    }
-                    /*
-                     * Gets the size of the file being downloaded. This
-                     * may or may not be returned.
-                     */
-                    int contentSize = httpConn.getContentLength();
+                    // Records the initial amount of available space
+                    int bufferLeft = tempBuffer.length;
 
                     /*
-                     * If the size of the image isn't available
+                     * Defines the initial offset of the next available
+                     * byte in the buffer, and the initial result of
+                     * reading the binary
                      */
-                    if (-1 == contentSize) {
+                    int bufferOffset = 0;
+                    int readResult = 0;
 
-                        // Allocates a temporary buffer
-                        byte[] tempBuffer = new byte[READ_SIZE];
+                    /*
+                     * The "outer" loop continues until all the bytes
+                     * have been downloaded. The inner loop continues
+                     * until the temporary buffer is full, and then
+                     * allocates more buffer space.
+                     */
+                    outer: do {
+                        while (bufferLeft > 0) {
 
-                        // Records the initial amount of available space
-                        int bufferLeft = tempBuffer.length;
-
-                        /*
-                         * Defines the initial offset of the next available
-                         * byte in the buffer, and the initial result of
-                         * reading the binary
-                         */
-                        int bufferOffset = 0;
-                        int readResult = 0;
-
-                        /*
-                         * The "outer" loop continues until all the bytes
-                         * have been downloaded. The inner loop continues
-                         * until the temporary buffer is full, and then
-                         * allocates more buffer space.
-                         */
-                        outer: do {
-                            while (bufferLeft > 0) {
-
-                                /*
-                                 * Reads from the URL location into
-                                 * the temporary buffer, starting at the
-                                 * next available free byte and reading as
-                                 * many bytes as are available in the
-                                 * buffer.
-                                 */
-                                readResult = byteStream.read(tempBuffer, bufferOffset,
-                                        bufferLeft);
-
-                                /*
-                                 * InputStream.read() returns zero when the
-                                 * file has been completely read.
-                                 */
-                                if (readResult < 0) {
-                                    // The read is finished, so this breaks
-                                    // the to "outer" loop
-                                    break outer;
-                                }
-
-                                /*
-                                 * The read isn't finished. This sets the
-                                 * next available open position in the
-                                 * buffer (the buffer index is 0-based).
-                                 */
-                                bufferOffset += readResult;
-
-                                // Subtracts the number of bytes read from
-                                // the amount of buffer left
-                                bufferLeft -= readResult;
-
-                                if (Thread.interrupted()) {
-                                    
-                                    throw new InterruptedException();
-                                }
-                            }
                             /*
-                             * The temporary buffer is full, so the
-                             * following code creates a new buffer that can
-                             * contain the existing contents plus the next
-                             * read cycle.
+                             * Reads from the URL location into
+                             * the temporary buffer, starting at the
+                             * next available free byte and reading as
+                             * many bytes as are available in the
+                             * buffer.
                              */
-
-                            // Resets the amount of buffer left to be the
-                            // max buffer size
-                            bufferLeft = READ_SIZE;
+                            readResult = byteStream.read(tempBuffer, bufferOffset,
+                                    bufferLeft);
 
                             /*
-                             * Sets a new size that can contain the existing
-                             * buffer's contents plus space for the next
-                             * read cycle.
-                             */
-                            int newSize = tempBuffer.length + READ_SIZE;
-
-                            /*
-                             * Creates a new temporary buffer, moves the
-                             * contents of the old temporary buffer into it,
-                             * and then points the temporary buffer variable
-                             * to the new buffer.
-                             */
-                            byte[] expandedBuffer = new byte[newSize];
-                            System.arraycopy(tempBuffer, 0, expandedBuffer, 0,
-                                    tempBuffer.length);
-                            tempBuffer = expandedBuffer;
-                        } while (true);
-
-                        /*
-                         * When the entire image has been read, this creates
-                         * a permanent byte buffer with the same size as
-                         * the number of used bytes in the temporary buffer
-                         * (equal to the next open byte, because tempBuffer
-                         * is 0=based).
-                         */
-                        byteBuffer = new byte[bufferOffset];
-
-                        // Copies the temporary buffer to the image buffer
-                        System.arraycopy(tempBuffer, 0, byteBuffer, 0, bufferOffset);
-
-                        /*
-                         * The download size is available, so this creates a
-                         * permanent buffer of that length.
-                         */
-                    } else {
-                        byteBuffer = new byte[contentSize];
-
-                        // How much of the buffer still remains empty
-                        int remainingLength = contentSize;
-
-                        // The next open space in the buffer
-                        int bufferOffset = 0;
-
-                        /*
-                         * Reads into the buffer until the number of bytes
-                         * equal to the length of the buffer (the size of
-                         * the image) have been read.
-                         */
-                        while (remainingLength > 0) {
-                            int readResult = byteStream.read(
-                                    byteBuffer,
-                                    bufferOffset,
-                                    remainingLength);
-                            /*
-                             * EOF should not occur, because the loop should
-                             * read the exact # of bytes in the image
+                             * InputStream.read() returns zero when the
+                             * file has been completely read.
                              */
                             if (readResult < 0) {
-
-                                // Throws an EOF Exception
-                                throw new EOFException();
+                                // The read is finished, so this breaks
+                                // the to "outer" loop
+                                break outer;
                             }
 
-                            // Moves the buffer offset to the next open byte
+                            /*
+                             * The read isn't finished. This sets the
+                             * next available open position in the
+                             * buffer (the buffer index is 0-based).
+                             */
                             bufferOffset += readResult;
 
-                            // Subtracts the # of bytes read from the
-                            // remaining length
-                            remainingLength -= readResult;
+                            // Subtracts the number of bytes read from
+                            // the amount of buffer left
+                            bufferLeft -= readResult;
 
                             if (Thread.interrupted()) {
                                 
                                 throw new InterruptedException();
                             }
                         }
-                    }
+                        /*
+                         * The temporary buffer is full, so the
+                         * following code creates a new buffer that can
+                         * contain the existing contents plus the next
+                         * read cycle.
+                         */
 
-                    if (Thread.interrupted()) {
-                        
-                        throw new InterruptedException();
-                    }
+                        // Resets the amount of buffer left to be the
+                        // max buffer size
+                        bufferLeft = READ_SIZE;
 
-                    // If an IO error occurs, returns immediately
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return;
+                        /*
+                         * Sets a new size that can contain the existing
+                         * buffer's contents plus space for the next
+                         * read cycle.
+                         */
+                        int newSize = tempBuffer.length + READ_SIZE;
+
+                        /*
+                         * Creates a new temporary buffer, moves the
+                         * contents of the old temporary buffer into it,
+                         * and then points the temporary buffer variable
+                         * to the new buffer.
+                         */
+                        byte[] expandedBuffer = new byte[newSize];
+                        System.arraycopy(tempBuffer, 0, expandedBuffer, 0,
+                                tempBuffer.length);
+                        tempBuffer = expandedBuffer;
+                    } while (true);
 
                     /*
-                     * If the input stream is still open, close it
+                     * When the entire image has been read, this creates
+                     * a permanent byte buffer with the same size as
+                     * the number of used bytes in the temporary buffer
+                     * (equal to the next open byte, because tempBuffer
+                     * is 0=based).
                      */
-                } finally {
-                    if (null != byteStream) {
-                        try {
-                            byteStream.close();
-                        } catch (Exception e) {
+                    byteBuffer = new byte[bufferOffset];
 
+                    // Copies the temporary buffer to the image buffer
+                    System.arraycopy(tempBuffer, 0, byteBuffer, 0, bufferOffset);
+
+                    /*
+                     * The download size is available, so this creates a
+                     * permanent buffer of that length.
+                     */
+                } else {
+                    byteBuffer = new byte[contentSize];
+
+                    // How much of the buffer still remains empty
+                    int remainingLength = contentSize;
+
+                    // The next open space in the buffer
+                    int bufferOffset = 0;
+
+                    /*
+                     * Reads into the buffer until the number of bytes
+                     * equal to the length of the buffer (the size of
+                     * the image) have been read.
+                     */
+                    while (remainingLength > 0) {
+                        int readResult = byteStream.read(
+                                byteBuffer,
+                                bufferOffset,
+                                remainingLength);
+                        /*
+                         * EOF should not occur, because the loop should
+                         * read the exact # of bytes in the image
+                         */
+                        if (readResult < 0) {
+
+                            // Throws an EOF Exception
+                            throw new EOFException();
                         }
+
+                        // Moves the buffer offset to the next open byte
+                        bufferOffset += readResult;
+
+                        // Subtracts the # of bytes read from the
+                        // remaining length
+                        remainingLength -= readResult;
+
+                        if (Thread.interrupted()) {
+                            
+                            throw new InterruptedException();
+                        }
+                    }
+                }
+
+                if (Thread.interrupted()) {
+                    
+                    throw new InterruptedException();
+                }
+
+                // If an IO error occurs, returns immediately
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+
+                /*
+                 * If the input stream is still open, close it
+                 */
+            } finally {
+                if (null != byteStream) {
+                    try {
+                        byteStream.close();
+                    } catch (Exception e) {
+
                     }
                 }
             }

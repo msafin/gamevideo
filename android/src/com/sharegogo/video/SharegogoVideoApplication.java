@@ -1,6 +1,11 @@
 package com.sharegogo.video;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.sharegogo.video.controller.NotifyManager;
+import com.sharegogo.video.controller.SearchManager;
+import com.sharegogo.video.controller.UpdateManager;
+import com.sharegogo.video.controller.UserManager;
+import com.sharegogo.video.controller.VideoManager;
 import com.sharegogo.video.data.Favorite;
 import com.sharegogo.video.data.Game;
 import com.sharegogo.video.data.GamePeople;
@@ -26,6 +31,7 @@ public class SharegogoVideoApplication extends Application{
 		MobclickAgent.updateOnlineConfig(this);
 		
 		mInstance = this;
+		UserManager.getInstance();
 		
 		Game.makePhonyData(this);
 		GamePeople.makePhonyData(this);
@@ -35,9 +41,12 @@ public class SharegogoVideoApplication extends Application{
 		//HttpTest.testHttp(this);
 		new LibInterface().init(this);
 		
-		DeviceInfo.test();
-		HttpUtils.httpUtilsTest();
-		HttpManager.test();
+		//DeviceInfo.test();
+		//HttpUtils.httpUtilsTest();
+		//VideoManager.test();
+		//SearchManager.test();
+		//UpdateManager.test();
+		//NotifyManager.test();
 	}
 
 	public void onApplicationExit()

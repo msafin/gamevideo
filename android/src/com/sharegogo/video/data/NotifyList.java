@@ -5,7 +5,7 @@ package com.sharegogo.video.data;
  * @author Raymon
  *
  */
-public class NotifyListResponse extends BaseResponse{
+public class NotifyList extends BaseResponse{
 	public int count;
 	public NotifyListItem[] list;
 	

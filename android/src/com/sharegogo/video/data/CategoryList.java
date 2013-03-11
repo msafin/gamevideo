@@ -5,7 +5,7 @@ package com.sharegogo.video.data;
  * @author Raymon
  *
  */
-public class CategoryListResponse extends BaseResponse{
+public class CategoryList extends BaseResponse{
 	public CategoryListItem[] list;
 	
 	static public class CategoryListItem

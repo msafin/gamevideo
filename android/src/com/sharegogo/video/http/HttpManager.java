@@ -24,7 +24,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import com.sharegogo.config.BuildingConfig;
 import com.sharegogo.config.HttpConstants;
-import com.sharegogo.video.data.AutoRegisterResponse;
+import com.sharegogo.video.data.AutoRegister;
 import com.sharegogo.video.json.GsonParser;
 import com.sharegogo.video.utils.DeviceInfo;
 import com.sharegogo.video.utils.HttpUtils;
@@ -99,27 +99,6 @@ public class HttpManager {
         sInstance = new HttpManager();
     }
     
-    static public void test()
-    {
-    	HttpRequest request = new BasicHttpRequest(HttpPost.METHOD_NAME, HttpConstants.URL_AUTO_REGISTER);
-    	List<NameValuePair> params = new ArrayList<NameValuePair>();
-    	
-    	String imsi = DeviceInfo.getDeviceImsi();
-    	//需要指定NO_WRAP否者会以换行结束
-    	String regid = Base64.encodeToString(imsi.getBytes(), Base64.NO_WRAP);
-    	LogUtils.e("http", "regid=" + regid);
-    	NameValuePair regidPair = new BasicNameValuePair("regid",regid);
-    	
-    	String imei = DeviceInfo.getDeviceImei();
-    	String regimei = Base64.encodeToString(imei.getBytes(), Base64.NO_WRAP);
-    	LogUtils.e("http", "regimei=" + regimei);
-    	NameValuePair imeiPair = new BasicNameValuePair("regimei",regimei);
-    	
-    	params.add(regidPair);
-    	params.add(imeiPair);
-    	
-    	doRequest(request,params,new BasicResponseHandler(),AutoRegisterResponse.class);
-    }
     /**
      * Constructs the work queues and thread pools used to download and decode images.
      */
@@ -245,7 +224,6 @@ public class HttpManager {
                 String response = new String(byteBuffer);
                 LogUtils.e("http", response);
                 Object data = GsonParser.fromJson(response, httpTask.mCls);
-                AutoRegisterResponse autoRegister = (AutoRegisterResponse)data;
                 //数据持久
                 if(httpTask.mResponseHandler != null)
                 {

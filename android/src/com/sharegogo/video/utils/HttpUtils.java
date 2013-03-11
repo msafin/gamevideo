@@ -15,6 +15,7 @@ import org.apache.http.params.HttpParams;
 import android.util.Log;
 
 import com.sharegogo.config.BuildingConfig;
+import com.sharegogo.video.controller.UserManager;
 
 /**
  * httpÏà¹Ø¸¨Öúº¯Êý
@@ -40,6 +41,14 @@ public class HttpUtils {
 		builder.append(BuildingConfig.client_version);
 		
 		return builder.toString();
+	}
+	
+	
+	static public NameValuePair getTokenPair()
+	{
+		NameValuePair token = new BasicNameValuePair("token",UserManager.getInstance().getToken());
+		
+		return token;
 	}
 	
 	static public void httpUtilsTest()

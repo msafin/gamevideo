@@ -18,7 +18,7 @@ public class HttpConstants {
 	
 	static final public String HTTP_HOST = "http://www.sharegogo.com";
 	static final public String URL_AUTO_REGISTER = HTTP_HOST + "/json/autoregister.php";
-	static final public String URL_CATEGORY_LIST = HTTP_HOST + "/yjclient/GetCategoryList.Action";
+	static final public String URL_CATEGORY_LIST = HTTP_HOST + "/json/category_list.php";
 	static final public String URL_VIDEO_LIST = HTTP_HOST + "/yjclient/GetResourceList.action";
 	static final public String URL_VIDEO_DETAIL = HTTP_HOST + "/yjclient/GetVideoDeTail.action";
 	static final public String URL_SEARCH = HTTP_HOST + "/search/videoSearch.action";

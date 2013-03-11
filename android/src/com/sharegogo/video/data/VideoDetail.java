@@ -5,7 +5,7 @@ package com.sharegogo.video.data;
  * @author Raymon
  *
  */
-public class VideoDetailResponse extends BaseResponse{
+public class VideoDetail extends BaseResponse{
 	public long id;
 	public String name;
 	public String author;
