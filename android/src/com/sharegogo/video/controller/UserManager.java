@@ -112,6 +112,8 @@ public class UserManager extends BasicResponseHandler {
 	@Override
 	public void onSuccess(Object data) {
 		// TODO Auto-generated method stub
+		super.onSuccess(data);
+		
 		synchronized(mInstance)
 		{
 			bRegistering = false;

@@ -57,7 +57,6 @@ public class HttpManager {
     static final int DOWNLOAD_FAILED = -1;
     static final int DOWNLOAD_STARTED = 1;
     static final int DOWNLOAD_COMPLETE = 2;
-    static final int TASK_COMPLETE = 4;
 
     
     // Sets the amount of time an idle thread will wait for a task before terminating
@@ -139,7 +138,7 @@ public class HttpManager {
              */
             @Override
             public void handleMessage(Message inputMessage) {
-            	HttpTask httpTask = (HttpTask) inputMessage.obj;
+            	final HttpTask httpTask = (HttpTask) inputMessage.obj;
             	
             	 switch (inputMessage.what) {
                  // If the download has started, sets background color to dark green
@@ -151,20 +150,20 @@ public class HttpManager {
                   * background color to golden yellow
                   */
                  case DOWNLOAD_COMPLETE:
-                     // Sets background color to golden yellow
+                	 if(httpTask.mResponseHandler != null)
+                	 {
+                		 httpTask.mResponseHandler.onSuccess(httpTask.mData);
+                	 }
+                	 
                 	 recycleTask(httpTask);
-                     break;
-                 /*
-                  * The decoding is done, so this sets the
-                  * ImageView's bitmap to the bitmap in the
-                  * incoming message
-                  */
-                 case TASK_COMPLETE:
-                     recycleTask(httpTask);
+                	 
                      break;
                  // The download failed, sets the background color to dark red
                  case DOWNLOAD_FAILED:
-                     
+                  	 if(httpTask.mResponseHandler != null)
+                	 {
+                		 httpTask.mResponseHandler.onFailed(DOWNLOAD_FAILED,"获取数据失败");
+                	 }
                      // Attempts to re-use the Task object
                      recycleTask(httpTask);
                      break;
@@ -210,24 +209,17 @@ public class HttpManager {
     @SuppressLint("HandlerLeak")
     public void handleState(HttpTask httpTask, int state) {
         switch (state) {
-            
-            // The task finished downloading and decoding the image
-            case TASK_COMPLETE:
-                // Gets a Message object, stores the state in it, and sends it to the Handler
-                Message completeMessage = mHandler.obtainMessage(state, httpTask);
-                completeMessage.sendToTarget();
-                break;
-            
             // The task finished downloading the image
             case DOWNLOAD_COMPLETE:
             	byte[] byteBuffer = httpTask.getByteBuffer();
                 String response = new String(byteBuffer);
                 LogUtils.e("http", response);
                 Object data = GsonParser.fromJson(response, httpTask.mCls);
+                httpTask.mData = data;
                 //数据持久
                 if(httpTask.mResponseHandler != null)
                 {
-                	httpTask.mResponseHandler.onPersistent(data);
+                	httpTask.mResponseHandler.onPersistent(httpTask.mData);
                 }
             // In all other cases, pass along the message without any other action.
             default:

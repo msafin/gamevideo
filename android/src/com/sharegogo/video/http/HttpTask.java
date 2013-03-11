@@ -46,6 +46,11 @@ public class HttpTask implements TaskRunnableHttpMethods{
      * 需要解析的数据类
      */
     Class mCls;
+    
+    /*
+     * 和mCls对应的数据
+     */
+    Object mData;
     /*
      * Field containing the Thread this task is running on.
      */
@@ -99,7 +104,12 @@ public class HttpTask implements TaskRunnableHttpMethods{
      * this is to avoid memory leaks.
      */
     void recycle() {
-        
+        mHttpRequest = null;
+        mHeaders = null;
+        mParams = null;
+        mResponseHandler = null;
+        mBuffer = null;
+        mCls = null;
     }
 
     @Override
