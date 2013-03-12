@@ -44,7 +44,7 @@ import android.widget.TextView;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.UMFeedbackService;
 
-public class MainActivity extends SherlockFragmentActivity{
+public class MainActivity extends BaseActivity{
 	private static final String[] CONTENT = new String[] { "分类", "最新", "最热", "推荐"};
     private static final int[] ICONS = new int[] {
             R.drawable.perm_group_calendar,

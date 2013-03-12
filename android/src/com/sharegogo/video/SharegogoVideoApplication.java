@@ -1,6 +1,7 @@
 package com.sharegogo.video;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.sharegogo.video.activity.BaseActivity;
 import com.sharegogo.video.controller.NotifyManager;
 import com.sharegogo.video.controller.SearchManager;
 import com.sharegogo.video.controller.UpdateManager;
@@ -55,6 +56,8 @@ public class SharegogoVideoApplication extends Application{
 			OpenHelperManager.releaseHelper();
 			mDataHelper = null;
 		}
+	
+		BaseActivity.onAppExit();
 		
 		android.os.Process.killProcess(android.os.Process.myPid());
 	}
