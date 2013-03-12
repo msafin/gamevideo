@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.Proxy;
 import java.net.URL;
 import java.util.List;
 
@@ -36,6 +37,7 @@ import android.os.Build;
 import com.sharegogo.video.data.AutoRegister;
 import com.sharegogo.video.utils.HttpUtils;
 import com.sharegogo.video.utils.LogUtils;
+import com.sharegogo.video.utils.NetworkUtils;
 
 /**
  * This task downloads bytes from a resource addressed by a URL.  When the task
@@ -210,14 +212,42 @@ class HttpRunnable implements Runnable {
 	                	builder.append("?");
 	                	builder.append(formParams);
 	                	
-	                	 LogUtils.e("http", "params = " + formParams);
+	                	LogUtils.e("http", "params = " + formParams);
             		}
             	}
             	
-            	URL url = new URL(builder.toString());
-            		
-                HttpURLConnection httpConn =  (HttpURLConnection)url.openConnection();
- 
+            	String strUrl = builder.toString();
+            	URL url = new URL(strUrl);
+            	
+            	Proxy proxy = HttpProxy.getProxy();
+            	
+            	HttpURLConnection httpConn = null;
+            	 
+            	//wap下设置代理
+            	if(NetworkUtils.isWap() && proxy!= null)
+            	{
+        			int currNetWorkType = NetworkUtils.getNetType();
+        			//电信wap
+        			if(currNetWorkType == NetworkUtils.TYPE_CTWAP)
+        			{
+        				httpConn = (HttpURLConnection)url.openConnection(proxy);
+        			}
+        			else
+        			{
+        				int contentBeginIdx = strUrl.indexOf('/', 7);  	
+        				String temp = HttpProxy.getProxyString() + strUrl.substring(contentBeginIdx);
+        				
+        				URL urltemp = new URL(temp); 
+        				httpConn = (HttpURLConnection)urltemp.openConnection();
+        				
+        				httpConn.setRequestProperty("X-Online-Host",strUrl.substring(7, contentBeginIdx));
+        			}
+        		}
+        		else
+        		{
+        			httpConn = (HttpURLConnection)url.openConnection();
+        		}
+            	
                 LogUtils.e("http", "url = " + builder.toString());
                 
                 httpConn.setDoInput(true);
@@ -255,6 +285,7 @@ class HttpRunnable implements Runnable {
 	                
 	                out.flush();
                 }
+                
                 // Gets the input stream containing the image
                 byteStream = httpConn.getInputStream();
 
