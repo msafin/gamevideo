@@ -68,7 +68,7 @@ public class MainActivity extends BaseActivity{
         
         setContentView(R.layout.activity_main);
         
-		mGoogleMusicAdapter = new GoogleMusicAdapter(getSupportFragmentManager());
+		mGoogleMusicAdapter = new OnlineVideoAdapter(getSupportFragmentManager());
         mPager = (ViewPager)findViewById(R.id.pager);
         mPager.setAdapter(mGoogleMusicAdapter);
 
@@ -87,19 +87,19 @@ public class MainActivity extends BaseActivity{
 		mTabManager = new TabManager(this, mTabHost, R.id.dynamic_content);
 		
 		TabSpec online = mTabHost.newTabSpec("online");
-		online.setIndicator(getIndicatorView("在线视频",R.drawable.ic_video));
+		online.setIndicator(getIndicatorView(getString(R.string.online_video),R.drawable.ic_video));
 		mTabManager.addTab(online, null, null);
 		
 		TabSpec history = mTabHost.newTabSpec("history");
-		history.setIndicator(getIndicatorView("播放历史",R.drawable.ic_history));
+		history.setIndicator(getIndicatorView(getString(R.string.play_history),R.drawable.ic_history));
 		mTabManager.addTab(history, HistoryFragment.class, null);
 		
 		TabSpec favorite = mTabHost.newTabSpec("favorite");
-		favorite.setIndicator(getIndicatorView("我的收藏",R.drawable.ic_favorite));
+		favorite.setIndicator(getIndicatorView(getString(R.string.my_favorite),R.drawable.ic_favorite));
 		mTabManager.addTab(favorite, FavoriteFragment.class, null);
 		
 		TabSpec more = mTabHost.newTabSpec("more");
-		more.setIndicator(getIndicatorView("更多",R.drawable.ic_more));
+		more.setIndicator(getIndicatorView(getString(R.string.more_info),R.drawable.ic_more));
 		mTabManager.addTab(more, MoreFragment.class, null);
 		
 		TabWidget tabWidget = mTabHost.getTabWidget();
@@ -210,9 +210,9 @@ public class MainActivity extends BaseActivity{
 		startActivity(intent);
 	}
 	
-   class GoogleMusicAdapter extends FragmentStatePagerAdapter {
+   class OnlineVideoAdapter extends FragmentStatePagerAdapter {
 
-        public GoogleMusicAdapter(FragmentManager fm) {
+        public OnlineVideoAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -220,7 +220,7 @@ public class MainActivity extends BaseActivity{
         public Fragment getItem(int position) {
         	if(position == 0)
         	{
-        		return new GameListFragment();
+        		return new GameCategoryFragment();
         	}
         	
             return TestFragment.newInstance(CONTENT[position % CONTENT.length]);

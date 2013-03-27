@@ -1,6 +1,6 @@
 package com.sharegogo.video.controller;
 
-import com.sharegogo.video.data.Game;
+import com.sharegogo.video.data.CategoryList.CategoryListItem;
 import com.sharegogo.video.game.R;
 
 import android.content.Context;
@@ -8,14 +8,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class GameAdapter extends GameBaseAdapter<Game>{
+public class GameCategoryAdapter extends GameBaseAdapter<CategoryListItem>{
 
-	public GameAdapter(Context context)
+	public GameCategoryAdapter(Context context)
 	{
 		this(context,R.layout.list_item);
 	}
 	
-	public GameAdapter(Context context, int layout) {
+	public GameCategoryAdapter(Context context, int layout) {
 		super(context, layout);
 		// TODO Auto-generated constructor stub
 	}
@@ -37,7 +37,7 @@ public class GameAdapter extends GameBaseAdapter<Game>{
 		// TODO Auto-generated method stub
 		ViewTag tag = (ViewTag)view.getTag();
 		
-		Game game = (Game)getItem(position);
+		CategoryListItem game = (CategoryListItem)getItem(position);
 		
 		tag.mTitle.setText(game.name);
 		

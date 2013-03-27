@@ -16,5 +16,5 @@ public interface ResponseHandler {
 	 * 数据的持久性，运行在工作线程
 	 * @param data
 	 */
-	public void onPersistent(Object data);
+	public boolean onPersistent(Object data);
 }

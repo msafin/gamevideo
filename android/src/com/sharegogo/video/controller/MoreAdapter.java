@@ -1,6 +1,5 @@
 package com.sharegogo.video.controller;
 
-import com.sharegogo.video.data.Game;
 import com.sharegogo.video.game.R;
 
 import android.content.Context;

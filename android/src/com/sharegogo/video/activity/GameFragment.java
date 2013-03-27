@@ -1,30 +1,16 @@
 package com.sharegogo.video.activity;
 
-import java.sql.SQLException;
-import java.util.List;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.LinearLayout.LayoutParams;
 
 import com.actionbarsherlock.app.SherlockFragment;
-import com.j256.ormlite.dao.Dao;
 import com.sharegogo.video.SharegogoVideoApplication;
-import com.sharegogo.video.activity.MainActivity.GoogleMusicAdapter;
-import com.sharegogo.video.controller.PeopleAdapter;
-import com.sharegogo.video.data.GamePeople;
-import com.sharegogo.video.data.MySqliteHelper;
 import com.sharegogo.video.game.R;
 import com.viewpagerindicator.TabPageIndicator;
 

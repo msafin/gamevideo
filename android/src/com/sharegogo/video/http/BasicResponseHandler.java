@@ -19,9 +19,9 @@ public class BasicResponseHandler implements ResponseHandler{
 	}
 
 	@Override
-	public void onPersistent(Object data) {
+	public boolean onPersistent(Object data) {
 		// TODO Auto-generated method stub
-		
+		return true;
 	}
 
 }

@@ -10,8 +10,10 @@ import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.message.BasicNameValuePair;
 
 import android.util.Base64;
+import android.widget.Toast;
 
 import com.sharegogo.config.HttpConstants;
+import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.data.AutoRegister;
 import com.sharegogo.video.http.BasicResponseHandler;
 import com.sharegogo.video.http.HttpManager;
@@ -140,6 +142,11 @@ public class UserManager extends BasicResponseHandler {
 			for(TokenObserver observer:mObservers)
 			{
 				observer.onFailed();
+			}
+		
+			if(msg != null && msg instanceof String)
+			{
+				Toast.makeText(SharegogoVideoApplication.getApplication(), (String)msg, 1000).show();
 			}
 			
 			mObservers.clear();

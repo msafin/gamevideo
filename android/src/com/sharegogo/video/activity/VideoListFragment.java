@@ -7,7 +7,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.j256.ormlite.dao.Dao;
 import com.sharegogo.video.SharegogoVideoApplication;
-import com.sharegogo.video.controller.GameAdapter;
+import com.sharegogo.video.controller.GameCategoryAdapter;
 import com.sharegogo.video.controller.HistoryManager;
 import com.sharegogo.video.controller.VideoAdapter;
 import com.sharegogo.video.data.GameVideo;

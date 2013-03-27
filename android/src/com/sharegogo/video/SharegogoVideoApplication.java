@@ -1,24 +1,13 @@
 package com.sharegogo.video;
 
+import android.app.Application;
+
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.sharegogo.video.activity.BaseActivity;
-import com.sharegogo.video.controller.NotifyManager;
-import com.sharegogo.video.controller.SearchManager;
-import com.sharegogo.video.controller.UpdateManager;
 import com.sharegogo.video.controller.UserManager;
-import com.sharegogo.video.controller.VideoManager;
-import com.sharegogo.video.data.Favorite;
-import com.sharegogo.video.data.Game;
-import com.sharegogo.video.data.GamePeople;
-import com.sharegogo.video.data.GameVideo;
 import com.sharegogo.video.data.MySqliteHelper;
-import com.sharegogo.video.http.HttpManager;
 import com.sharegogo.video.lib.LibInterface;
-import com.sharegogo.video.utils.DeviceInfo;
-import com.sharegogo.video.utils.HttpUtils;
 import com.umeng.analytics.MobclickAgent;
-
-import android.app.Application;
 
 public class SharegogoVideoApplication extends Application{
 	private MySqliteHelper mDataHelper = null;
@@ -34,9 +23,8 @@ public class SharegogoVideoApplication extends Application{
 		mInstance = this;
 		UserManager.getInstance();
 		
-		Game.makePhonyData(this);
-		GamePeople.makePhonyData(this);
-		GameVideo.makePhonyData(this);
+		//GamePeople.makePhonyData(this);
+		//GameVideo.makePhonyData(this);
 		//Favorite.makePhonyData(this);
 		
 		//HttpTest.testHttp(this);

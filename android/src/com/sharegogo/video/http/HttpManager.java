@@ -25,10 +25,13 @@ import org.apache.http.message.BasicNameValuePair;
 import com.sharegogo.config.BuildingConfig;
 import com.sharegogo.config.HttpConstants;
 import com.sharegogo.video.data.AutoRegister;
+import com.sharegogo.video.data.BaseResponse;
+import com.sharegogo.video.game.R;
 import com.sharegogo.video.json.GsonParser;
 import com.sharegogo.video.utils.DeviceInfo;
 import com.sharegogo.video.utils.HttpUtils;
 import com.sharegogo.video.utils.LogUtils;
+import com.sharegogo.video.utils.ResUtils;
 
 /**
  * This class creates pools of background threads for downloading
@@ -162,7 +165,7 @@ public class HttpManager {
                  case DOWNLOAD_FAILED:
                   	 if(httpTask.mResponseHandler != null)
                 	 {
-                		 httpTask.mResponseHandler.onFailed(DOWNLOAD_FAILED,"获取数据失败");
+                		 httpTask.mResponseHandler.onFailed(DOWNLOAD_FAILED,httpTask.mData);
                 	 }
                      // Attempts to re-use the Task object
                      recycleTask(httpTask);
@@ -213,13 +216,38 @@ public class HttpManager {
             case DOWNLOAD_COMPLETE:
             	byte[] byteBuffer = httpTask.getByteBuffer();
                 String response = new String(byteBuffer);
-                LogUtils.e("http", response);
                 Object data = GsonParser.fromJson(response, httpTask.mCls);
-                httpTask.mData = data;
-                //数据持久
-                if(httpTask.mResponseHandler != null)
+                if(data != null)
                 {
-                	httpTask.mResponseHandler.onPersistent(httpTask.mData);
+                	BaseResponse baseResponse = (BaseResponse)data;
+                	
+                	if(baseResponse.status == BaseResponse.STATUS_OK)
+                	{
+		                httpTask.mData = data;
+		                //数据持久
+		                if(httpTask.mResponseHandler != null)
+		                {
+		                	boolean result = httpTask.mResponseHandler.onPersistent(httpTask.mData);
+		                	/*
+		                	 * 保存失败
+		                	 */
+		                	if(!result)
+		                	{
+		                		state = DOWNLOAD_FAILED;
+		                		httpTask.mData = ResUtils.getString(R.string.msg_save_failed);
+		                	}
+		                }
+                	}
+                	else
+                	{
+                		state = DOWNLOAD_FAILED;
+                		httpTask.mData = baseResponse.msg;
+                	}
+                }
+                else
+                {
+                	state = DOWNLOAD_FAILED;
+                	httpTask.mData = ResUtils.getString(R.string.msg_data_failed);
                 }
             // In all other cases, pass along the message without any other action.
             default:
