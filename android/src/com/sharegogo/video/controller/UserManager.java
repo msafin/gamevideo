@@ -91,9 +91,17 @@ public class UserManager extends BasicResponseHandler {
     	List<NameValuePair> params = new ArrayList<NameValuePair>();
     	
     	String imsi = DeviceInfo.getDeviceImsi();
+    	NameValuePair regidPair = null;
     	//需要指定NO_WRAP否者会以换行结束
-    	String regid = Base64.encodeToString(imsi.getBytes(), Base64.NO_WRAP);
-    	NameValuePair regidPair = new BasicNameValuePair("regid",regid);
+    	if(imsi != null)
+    	{
+	    	String regid = Base64.encodeToString(imsi.getBytes(), Base64.NO_WRAP);
+	    	regidPair = new BasicNameValuePair("regid",regid);
+    	}
+    	else
+    	{
+    		regidPair = new BasicNameValuePair("regid","");
+    	}
     	
     	String imei = DeviceInfo.getDeviceImei();
     	String regimei = Base64.encodeToString(imei.getBytes(), Base64.NO_WRAP);
@@ -107,8 +115,8 @@ public class UserManager extends BasicResponseHandler {
 	
 	static public interface TokenObserver
 	{
-		public void onSuccess();
-		public void onFailed();
+		public void onTokenSuccess();
+		public void onTokenFailed();
 	}
 
 	@Override
@@ -125,7 +133,7 @@ public class UserManager extends BasicResponseHandler {
 			
 			for(TokenObserver observer:mObservers)
 			{
-				observer.onSuccess();
+				observer.onTokenSuccess();
 			}
 			
 			mObservers.clear();
@@ -141,7 +149,7 @@ public class UserManager extends BasicResponseHandler {
 			
 			for(TokenObserver observer:mObservers)
 			{
-				observer.onFailed();
+				observer.onTokenFailed();
 			}
 		
 			if(msg != null && msg instanceof String)
