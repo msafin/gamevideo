@@ -57,7 +57,7 @@ public class MainActivity extends BaseActivity{
     private TabManager mTabManager;
     private ViewPager mPager = null;
     private TabPageIndicator mIndicator = null;
-    private FragmentStatePagerAdapter mGoogleMusicAdapter = null;
+    private FragmentStatePagerAdapter mOnlineVideoAdapter = null;
     
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,9 +68,9 @@ public class MainActivity extends BaseActivity{
         
         setContentView(R.layout.activity_main);
         
-		mGoogleMusicAdapter = new OnlineVideoAdapter(getSupportFragmentManager());
+        mOnlineVideoAdapter = new OnlineVideoAdapter(getSupportFragmentManager());
         mPager = (ViewPager)findViewById(R.id.pager);
-        mPager.setAdapter(mGoogleMusicAdapter);
+        mPager.setAdapter(mOnlineVideoAdapter);
 
         mIndicator = (TabPageIndicator)findViewById(R.id.indicator);
         mIndicator.setViewPager(mPager);

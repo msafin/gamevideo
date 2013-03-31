@@ -26,7 +26,7 @@ import com.sharegogo.video.controller.FavoriteAdapter;
 import com.sharegogo.video.controller.FavoriteManager;
 import com.sharegogo.video.controller.HistoryManager;
 import com.sharegogo.video.data.Favorite;
-import com.sharegogo.video.data.GameVideo;
+import com.sharegogo.video.data.VideoList.VideoListItem;
 import com.sharegogo.video.game.R;
 import com.sharegogo.video.utils.ResUtils;
 import com.sharegogo.video.utils.UIUtils;
@@ -44,7 +44,7 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 		
 		getSherlockActivity().setSupportProgressBarIndeterminateVisibility(false);
 		
-		mAdapter = new FavoriteAdapter(getActivity().getApplicationContext(),R.layout.favorite_item);
+		mAdapter = new FavoriteAdapter(R.layout.favorite_item);
 		
 		this.getLoaderManager().initLoader(LOADER_ID, null, this);
 	}
@@ -208,7 +208,7 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 		
 		if(arg1 != null && arg1.size() > 0)
 		{
-			mAdapter.setData(arg1);
+			mAdapter.addData(arg1);
 		
 			setListAdapter(mAdapter);
 			
@@ -256,7 +256,7 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 		static final public int MODE_EDIT = 1;
 		
 		public long id;
-		public GameVideo video;
+		public VideoListItem video;
 		public int mode;
 		
 		public FavoriteListItem()

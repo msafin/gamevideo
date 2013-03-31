@@ -10,13 +10,13 @@ import android.widget.TextView;
 
 public class GameCategoryAdapter extends GameBaseAdapter<CategoryListItem>{
 
-	public GameCategoryAdapter(Context context)
+	public GameCategoryAdapter()
 	{
-		this(context,R.layout.list_item);
+		this(R.layout.list_item);
 	}
 	
-	public GameCategoryAdapter(Context context, int layout) {
-		super(context, layout);
+	public GameCategoryAdapter(int layout) {
+		super(layout);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -39,6 +39,7 @@ public class GameCategoryAdapter extends GameBaseAdapter<CategoryListItem>{
 		
 		CategoryListItem game = (CategoryListItem)getItem(position);
 		
+		tag.mLeftImageView.setVisibility(View.GONE);
 		tag.mTitle.setText(game.name);
 		
 		return view;

@@ -3,6 +3,7 @@ package com.sharegogo.video.controller;
 import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.activity.HistoryFragment.HistoryListItem;
 import com.sharegogo.video.game.R;
+import com.sharegogo.video.utils.UIUtils;
 
 import android.content.Context;
 import android.support.v4.util.TimeUtils;
@@ -14,8 +15,8 @@ import android.widget.TextView;
 
 public class HistoryAdapter extends GameBaseAdapter<HistoryListItem>{
 
-	public HistoryAdapter(Context context, int layout) {
-		super(context, layout);
+	public HistoryAdapter(int layout) {
+		super(layout);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -41,7 +42,21 @@ public class HistoryAdapter extends GameBaseAdapter<HistoryListItem>{
 		HistoryListItem item = (HistoryListItem)getItem(position);
 		ViewTag tag = (ViewTag)view.getTag();
 		
-		tag.mTitle.setText(item.video.url);
+		if(item.video != null)
+		{
+			if(item.video.name != null)
+				tag.mTitle.setText(item.video.name);
+			
+			if(item.video.author != null)
+				tag.mAuthorName.setText(item.video.author);
+			
+			if(item.video.img != null)
+				UIUtils.DisplayImage(item.video.img, tag.mLeftImageView, R.drawable.ic_launcher);
+			
+			if(item.video.categoryName != null)
+				tag.mGameName.setText(item.video.categoryName);
+		}
+			
 		
 		String time = DateUtils.formatDateTime(
 				SharegogoVideoApplication.getApplication(), 

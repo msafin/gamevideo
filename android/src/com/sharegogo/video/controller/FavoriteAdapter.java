@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 public class FavoriteAdapter extends GameBaseAdapter<FavoriteListItem>{
 
-	public FavoriteAdapter(Context context, int layout) {
-		super(context, layout);
+	public FavoriteAdapter(int layout) {
+		super(layout);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -37,7 +37,7 @@ public class FavoriteAdapter extends GameBaseAdapter<FavoriteListItem>{
 		FavoriteListItem item = (FavoriteListItem)getItem(position);
 		ViewTag tag = (ViewTag)view.getTag();
 		
-		tag.mTitle.setText(item.video.url);
+		tag.mTitle.setText(item.video.name);
 		
 		if(item.mode == FavoriteListItem.MODE_EDIT)
 		{

@@ -8,9 +8,9 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.table.TableUtils;
 import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.activity.HistoryFragment.HistoryListItem;
-import com.sharegogo.video.data.GameVideo;
 import com.sharegogo.video.data.History;
 import com.sharegogo.video.data.MySqliteHelper;
+import com.sharegogo.video.data.VideoList.VideoListItem;
 
 /**
  * 播放历史管理器
@@ -152,10 +152,10 @@ public class HistoryManager {
 		
 		if(historys != null && historys.size() > 0)
 		{
-			Dao<GameVideo,String> videoDao = null;
+			Dao<VideoListItem,String> videoDao = null;
 			
 			try {
-				videoDao = helper.getDao(GameVideo.class);
+				videoDao = helper.getDao(VideoListItem.class);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

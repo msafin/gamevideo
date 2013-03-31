@@ -31,6 +31,7 @@
         <activity
             android:name="com.sharegogo.video.activity.MainActivity"
             android:label="@string/title_activity_main" 
+            android:screenOrientation="portrait"
             android:theme="@style/AppThemeEx">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -54,6 +55,7 @@
         <activity
             android:name="com.sharegogo.video.activity.SearchActivity"
             android:label="@string/title_activity_main"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -65,6 +67,7 @@
        	<activity
             android:name="com.sharegogo.video.activity.SettingsActivity"
             android:label="@string/title_activity_main"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -76,6 +79,7 @@
         <activity
             android:name="com.sharegogo.video.activity.AboutActivity"
             android:label="@string/title_activity_main"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

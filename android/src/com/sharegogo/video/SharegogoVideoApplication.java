@@ -3,6 +3,9 @@ package com.sharegogo.video;
 import android.app.Application;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.sharegogo.video.activity.BaseActivity;
 import com.sharegogo.video.controller.UserManager;
 import com.sharegogo.video.data.MySqliteHelper;
@@ -29,7 +32,17 @@ public class SharegogoVideoApplication extends Application{
 		
 		//HttpTest.testHttp(this);
 		new LibInterface().init(this);
+		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
+        .threadPoolSize(3) // default
+        .threadPriority(Thread.NORM_PRIORITY - 1) // default
+        .denyCacheImageMultipleSizesInMemory()
+        .memoryCacheSize(3 * 1024 * 1024)
+        .discCacheFileCount(100)
+        .discCacheFileNameGenerator(new Md5FileNameGenerator()) // default
+        .enableLogging()
+        .build();
 		
+		ImageLoader.getInstance().init(config);
 		//DeviceInfo.test();
 		//HttpUtils.httpUtilsTest();
 		//VideoManager.test();

@@ -1,11 +1,16 @@
 package com.sharegogo.video.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.widget.ImageView;
 
-import com.sharegogo.video.SharegogoVideoApplication;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.sharegogo.video.activity.PlayActivity;
-import com.sharegogo.video.data.GameVideo;
+import com.sharegogo.video.data.VideoList.VideoListItem;
 import com.umeng.socialize.bean.SocializeConfig;
 import com.umeng.socialize.controller.RequestType;
 import com.umeng.socialize.controller.UMServiceFactory;
@@ -18,12 +23,14 @@ import com.umeng.socialize.controller.UMSocialService;
  */
 public class UIUtils {
 	
-	static public void gotoPlayActivity(GameVideo video,Context context)
+	static public void gotoPlayActivity(VideoListItem video,Context context)
 	{
 		Intent intent = new Intent(Intent.ACTION_MAIN);
 		
 		intent.setClass(context, PlayActivity.class);
-		intent.putExtra(PlayActivity.KEY_FLASH_URL, video.url);
+		intent.putExtra(PlayActivity.KEY_VIDEO_NAME, video.name);
+		intent.putExtra(PlayActivity.KEY_VIDEO_AUTHOR, video.author);
+		intent.putExtra(PlayActivity.KEY_VIDEO_SOURCE, video.from);
 		intent.putExtra(PlayActivity.KEY_VIDEO_ID,video.id);
 		
 		context.startActivity(intent);
@@ -37,5 +44,29 @@ public class UIUtils {
 		controller.setConfig(config);
 		
 		controller.openShare(context,false);
+	}
+	
+	static public void gotoBrowserActivity(Activity activity,String url)
+	{
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		intent.setData(Uri.parse(url));
+		
+		activity.startActivity(intent);
+	}
+	
+	static public void DisplayImage(String uri,ImageView imageView,int defaultImage)
+	{
+		DisplayImageOptions options = new DisplayImageOptions.Builder()
+        .showStubImage(defaultImage)
+        .resetViewBeforeLoading()
+        .delayBeforeLoading(1000)
+        .cacheInMemory()
+        .cacheOnDisc()
+        .imageScaleType(ImageScaleType.EXACTLY)
+        .build();
+		
+		ImageLoader.getInstance().displayImage(uri, imageView, options);
 	}
 }

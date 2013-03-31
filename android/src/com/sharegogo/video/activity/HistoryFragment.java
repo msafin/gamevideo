@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +17,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
@@ -24,10 +24,9 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.sharegogo.video.controller.HistoryAdapter;
 import com.sharegogo.video.controller.HistoryManager;
-import com.sharegogo.video.data.GameVideo;
 import com.sharegogo.video.data.History;
+import com.sharegogo.video.data.VideoList.VideoListItem;
 import com.sharegogo.video.game.R;
-import com.sharegogo.video.utils.ResUtils;
 import com.sharegogo.video.utils.UIUtils;
 
 public class HistoryFragment extends SherlockListFragment implements LoaderManager.LoaderCallbacks<List<HistoryFragment.HistoryListItem>>, OnClickListener{
@@ -43,7 +42,7 @@ public class HistoryFragment extends SherlockListFragment implements LoaderManag
 		
 		getSherlockActivity().setSupportProgressBarIndeterminateVisibility(false);
 		
-		mAdapter = new HistoryAdapter(getActivity().getApplicationContext(),R.layout.history_item);
+		mAdapter = new HistoryAdapter(R.layout.history_item);
 		
 		this.getLoaderManager().initLoader(LOADER_ID, null, this);
 	}
@@ -198,7 +197,7 @@ public class HistoryFragment extends SherlockListFragment implements LoaderManag
 		
 		if(arg1 != null && arg1.size() > 0)
 		{
-			mAdapter.setData(arg1);
+			mAdapter.addData(arg1);
 		
 			setListAdapter(mAdapter);
 			mEmptyText.setVisibility(View.GONE);
@@ -245,7 +244,7 @@ public class HistoryFragment extends SherlockListFragment implements LoaderManag
 		static final public int MODE_EDIT = 1;
 		
 		public long id;
-		public GameVideo video;
+		public VideoListItem video;
 		public int mode;
 		public long time;
 		

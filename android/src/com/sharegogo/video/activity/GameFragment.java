@@ -18,7 +18,7 @@ public class GameFragment extends SherlockFragment{
 	private static final String[] CONTENT = new String[] { "解说", "最新", "最热", "专辑"};
     private ViewPager mPager = null;
     private TabPageIndicator mIndicator = null;
-    private FragmentStatePagerAdapter mGoogleMusicAdapter = null;
+    private FragmentStatePagerAdapter mGameAdapter = null;
     
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -32,9 +32,9 @@ public class GameFragment extends SherlockFragment{
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.game_fragment, null);
 		
-		mGoogleMusicAdapter = new GoogleMusicAdapter(getFragmentManager());
+		mGameAdapter = new GameAdapter(getFragmentManager());
         mPager = (ViewPager)view.findViewById(R.id.game_pager);
-        mPager.setAdapter(mGoogleMusicAdapter);
+        mPager.setAdapter(mGameAdapter);
 
         mIndicator = (TabPageIndicator)view.findViewById(R.id.indicator);
         mIndicator.setViewPager(mPager);
@@ -67,10 +67,10 @@ public class GameFragment extends SherlockFragment{
 		super.onResume();
 	}
 	
-	class GoogleMusicAdapter extends FragmentStatePagerAdapter {
+	class GameAdapter extends FragmentStatePagerAdapter {
 		  FragmentManager mFm = null;
 		  
-	        public GoogleMusicAdapter(FragmentManager fm) {
+	        public GameAdapter(FragmentManager fm) {
 	            super(fm);
 	            mFm = fm;
 	        }
@@ -81,7 +81,7 @@ public class GameFragment extends SherlockFragment{
 	        	{
 	        		SharegogoVideoApplication context =SharegogoVideoApplication.getApplication();
 	        		
-	        		return Fragment.instantiate(context, PeopleFragment.class.getName(), getArguments());
+	        		return Fragment.instantiate(context, AuthorFragment.class.getName(), getArguments());
 	        	}
 	        	
 	            return TestFragment.newInstance(CONTENT[position % CONTENT.length]);

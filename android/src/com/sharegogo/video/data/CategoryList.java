@@ -18,6 +18,9 @@ public class CategoryList extends BaseResponse{
 		public long id;
 		
 		@DatabaseField
+		public long parentId;
+		
+		@DatabaseField
 		public String name;
 		
 		@DatabaseField

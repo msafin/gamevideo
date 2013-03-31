@@ -36,12 +36,12 @@ public class MoreFragment extends SherlockFragment implements OnItemClickListene
 		
 		getSherlockActivity().setSupportProgressBarIndeterminateVisibility(false);
 		
-		mAdapter = new MoreAdapter(getActivity().getApplicationContext());
+		mAdapter = new MoreAdapter();
 		
 		Resources res = getActivity().getResources();
 		String[] more = res.getStringArray(R.array.more);
 		
-		mAdapter.setData(Arrays.asList(more));
+		mAdapter.addData(Arrays.asList(more));
 	}
 
 	@Override

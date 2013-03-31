@@ -1,22 +1,23 @@
 package com.sharegogo.video.controller;
 
-import com.sharegogo.video.data.GameVideo;
+import com.sharegogo.video.data.VideoList.VideoListItem;
 import com.sharegogo.video.game.R;
+import com.sharegogo.video.utils.UIUtils;
 
 import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class VideoAdapter extends GameBaseAdapter<GameVideo>{
+public class VideoAdapter extends GameBaseAdapter<VideoListItem>{
 
-	public VideoAdapter(Context context)
+	public VideoAdapter()
 	{
-		this(context,R.layout.list_item);
+		this(R.layout.video_list_item);
 	}
 	
-	public VideoAdapter(Context context, int layout) {
-		super(context, layout);
+	public VideoAdapter(int layout) {
+		super(layout);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -27,6 +28,7 @@ public class VideoAdapter extends GameBaseAdapter<GameVideo>{
 		
 		tag.mLeftImageView = (ImageView)view.findViewById(android.R.id.icon);
 		tag.mTitle = (TextView)view.findViewById(android.R.id.title);
+		tag.mSource = (TextView)view.findViewById(R.id.source);
 		tag.mRightImageView = (ImageView)view.findViewById(android.R.id.icon1);
 		
 		return tag;
@@ -37,9 +39,13 @@ public class VideoAdapter extends GameBaseAdapter<GameVideo>{
 		// TODO Auto-generated method stub
 		ViewTag tag = (ViewTag)view.getTag();
 		
-		GameVideo video = (GameVideo)getItem(position);
+		VideoListItem video = (VideoListItem)getItem(position);
 		
-		tag.mTitle.setText(video.url);
+		tag.mTitle.setText(video.name);
+		if(video.from != null)
+			tag.mSource.setText("ю╢вт:" + video.from.trim());
+		
+		UIUtils.DisplayImage(video.img, tag.mLeftImageView, R.drawable.ic_launcher);
 		
 		return view;
 	}
@@ -48,6 +54,7 @@ public class VideoAdapter extends GameBaseAdapter<GameVideo>{
 	{
 		public ImageView mLeftImageView;
 		public TextView mTitle;
+		public TextView mSource;
 		public ImageView mRightImageView;
 	}
 }

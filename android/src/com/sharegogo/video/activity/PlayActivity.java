@@ -6,8 +6,11 @@ import com.sharegogo.config.HttpConfig;
 import com.sharegogo.config.HttpConstants;
 import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.controller.FavoriteManager;
+import com.sharegogo.video.controller.VideoManager;
 import com.sharegogo.video.data.Favorite;
+import com.sharegogo.video.data.VideoDetail;
 import com.sharegogo.video.game.R;
+import com.sharegogo.video.http.ResponseHandler;
 import com.sharegogo.video.utils.UIUtils;
 
 import android.annotation.TargetApi;
@@ -45,8 +48,10 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-public class PlayActivity extends FragmentActivity implements OnClickListener{
-	static final public String KEY_FLASH_URL = "flash_url";
+public class PlayActivity extends FragmentActivity implements OnClickListener, ResponseHandler{
+	static final public String KEY_VIDEO_AUTHOR = "video_author";
+	static final public String KEY_VIDEO_NAME = "video_name";
+	static final public String KEY_VIDEO_SOURCE = "video_source";
 	static final public String KEY_VIDEO_ID = "video_id";
 	
 	private WebView mWebView = null;
@@ -57,6 +62,7 @@ public class PlayActivity extends FragmentActivity implements OnClickListener{
 	private ImageButton mBtnShare;
 	private Favorite mFavorite;
 	private View mDownloadNote;
+	
 	@Override
 	protected void onCreate(Bundle arg0) {
 		// TODO Auto-generated method stub
@@ -79,7 +85,6 @@ public class PlayActivity extends FragmentActivity implements OnClickListener{
 		mWebView = (WebView)findViewById(R.id.webView1);
 		
 		Intent intent = this.getIntent();
-		mUrl = intent.getStringExtra(KEY_FLASH_URL);
 		mVideoId = intent.getLongExtra(KEY_VIDEO_ID, -1);
 		
 		mFavorite = FavoriteManager.getInstance().getFavorite(mVideoId);
@@ -244,7 +249,6 @@ public class PlayActivity extends FragmentActivity implements OnClickListener{
 	        mWebView.setWebViewClient(new WebViewClient() {
 	    	   public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) 
 	    	   {
-	    		   Log.e("flash", description);
 	    	   }
 
 	    	   
@@ -353,9 +357,12 @@ public class PlayActivity extends FragmentActivity implements OnClickListener{
 				// TODO Auto-generated method stub
 					super.onPageFinished(view, url);
 				
-					mWebView.loadUrl("javascript:callJS()");  //java调用js的函数
+					VideoManager.getInstance().getVideoDetail(mVideoId, PlayActivity.this);
 				}
 	    	 });
+	        
+	        
+	        
 	}
 
 	
@@ -549,5 +556,40 @@ public class PlayActivity extends FragmentActivity implements OnClickListener{
 		intent.setClass(this, SearchActivity.class);
 		
 		startActivity(intent);
+	}
+
+
+	@Override
+	public void onSuccess(Object data) {
+		// TODO Auto-generated method stub
+		VideoDetail videoDetail = (VideoDetail)data;
+		
+		mUrl = videoDetail.flashUrl;
+		
+		if(mUrl != null)
+		{
+			mWebView.loadUrl("javascript:callJS()");  //java调用js的函数
+		}
+		else if(videoDetail.playurl != null)
+		{
+			UIUtils.gotoBrowserActivity(this,videoDetail.playurl);
+		}
+	}
+
+
+	@Override
+	public void onFailed(int what, Object msg) {
+		// TODO Auto-generated method stub
+		if(msg != null && msg instanceof String)
+		{
+			Toast.makeText(getApplicationContext(), (String)msg, 1000).show();
+		}
+	}
+
+
+	@Override
+	public boolean onPersistent(Object data) {
+		// TODO Auto-generated method stub
+		return true;
 	}
 }

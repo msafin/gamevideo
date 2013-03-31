@@ -1,6 +1,9 @@
 package com.sharegogo.video.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.sharegogo.video.SharegogoVideoApplication;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,17 +16,21 @@ abstract public  class GameBaseAdapter<T> extends BaseAdapter{
 	private int mLayoutId = -1;
 	protected List<T> mData = null;
 	
-	public GameBaseAdapter(Context context,int layout)
+	public GameBaseAdapter(int layout)
 	{
-		mContext = context;
+		mContext = SharegogoVideoApplication.getApplication();
 		mLayoutId = layout;
+		mData = new ArrayList<T>();
 	}
 	
-	public void setData(List<T> data)
+	public void addData(List<T> data)
 	{
-		mData = data;
-		
-		this.notifyDataSetChanged();
+		if(data != null)
+		{
+			mData.addAll(data);
+			
+			this.notifyDataSetChanged();
+		}
 	}
 	
 	@Override

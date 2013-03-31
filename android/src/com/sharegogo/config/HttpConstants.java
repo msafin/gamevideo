@@ -7,8 +7,8 @@ public class HttpConstants {
 	static final public String HTTP_HOST = "http://www.sharegogo.cn/yj2";
 	static final public String URL_AUTO_REGISTER = HTTP_HOST + "/autoregister.action";
 	static final public String URL_CATEGORY_LIST = HTTP_HOST + "/getcategorylist.action";
-	static final public String URL_VIDEO_LIST = HTTP_HOST + "/yjclient/GetResourceList.action";
-	static final public String URL_VIDEO_DETAIL = HTTP_HOST + "/yjclient/GetVideoDeTail.action";
+	static final public String URL_VIDEO_LIST = HTTP_HOST + "/getresourcelist.action";
+	static final public String URL_VIDEO_DETAIL = HTTP_HOST + "/getvideodetail.action";
 	static final public String URL_SEARCH = HTTP_HOST + "/search/videoSearch.action";
 	static final public String URL_UPDATE = HTTP_HOST + "/update/GetUpdateInfo.action";
 	static final public String URL_NOTIFY_LIST = HTTP_HOST + "/system/GetNotifyList.action";

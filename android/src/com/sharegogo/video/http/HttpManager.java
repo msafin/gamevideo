@@ -221,7 +221,7 @@ public class HttpManager {
                 {
                 	BaseResponse baseResponse = (BaseResponse)data;
                 	
-                	if(baseResponse.status == BaseResponse.STATUS_OK)
+                	if(baseResponse instanceof AutoRegister || baseResponse.status == BaseResponse.STATUS_OK)
                 	{
 		                httpTask.mData = data;
 		                //Êý¾Ý³Ö¾Ã

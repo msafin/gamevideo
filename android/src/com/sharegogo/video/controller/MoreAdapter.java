@@ -9,13 +9,13 @@ import android.widget.TextView;
 
 public class MoreAdapter extends GameBaseAdapter<String>{
 
-	public MoreAdapter(Context context)
+	public MoreAdapter()
 	{
-		this(context,R.layout.more_list_item);
+		this(R.layout.more_list_item);
 	}
 	
-	public MoreAdapter(Context context, int layout) {
-		super(context, layout);
+	public MoreAdapter(int layout) {
+		super(layout);
 		// TODO Auto-generated constructor stub
 	}
 

@@ -6,8 +6,8 @@ package com.sharegogo.video.data;
  *
  */
 public class BaseResponse {
-	static final public int STATUS_OK = 1;
-	static final public int STATUS_ERROR = 0;
+	static final public int STATUS_OK = 0;
+	static final public int STATUS_ERROR = 1;
 	
 	public int status;
 	public String msg;

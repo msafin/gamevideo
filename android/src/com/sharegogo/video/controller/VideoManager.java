@@ -16,6 +16,7 @@ import com.sharegogo.video.data.VideoDetail;
 import com.sharegogo.video.data.VideoList;
 import com.sharegogo.video.http.BasicResponseHandler;
 import com.sharegogo.video.http.HttpManager;
+import com.sharegogo.video.http.HttpTask;
 import com.sharegogo.video.http.ResponseHandler;
 import com.sharegogo.video.utils.HttpUtils;
 
@@ -25,10 +26,6 @@ import com.sharegogo.video.utils.HttpUtils;
  *
  */
 public class VideoManager {
-	static final public int TYPE_LIST_HOT = 0;
-	static final public int TYPE_LIST_LATEST = 1;
-	static final public int TYPE_LIST_RECOMMEND = 2;
-	
 	static private VideoManager mInstance;
 	
 	private VideoManager()
@@ -52,7 +49,7 @@ public class VideoManager {
 		return mInstance;
 	}
 	
-	public void getVideoCategory(int cid,ResponseHandler handler)
+	public HttpTask getVideoCategory(int cid,ResponseHandler handler)
 	{
 		HttpRequest httpRequest = new BasicHttpRequest(HttpGet.METHOD_NAME, HttpConstants.URL_CATEGORY_LIST);
 		
@@ -63,17 +60,17 @@ public class VideoManager {
 		params.add(HttpUtils.getTokenPair());
 		params.add(cidPair);
 		
-		HttpManager.doRequest(httpRequest, params, handler, CategoryList.class);
+		return HttpManager.doRequest(httpRequest, params, handler, CategoryList.class);
 	}
 	
-	public void getVideoLis(int cid,int listType,int pageNum,int pageSize,int asc,ResponseHandler handler)
+	public void getVideoList(long cid,int listType,int pageNum,int pageSize,int asc,ResponseHandler handler)
 	{
 		HttpRequest httpRequest = new BasicHttpRequest(HttpGet.METHOD_NAME, HttpConstants.URL_VIDEO_LIST);
 		
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		
 		NameValuePair cidPair = new BasicNameValuePair("cid",String.valueOf(cid)); 
-		NameValuePair listTypePair = new BasicNameValuePair("listType",String.valueOf(TYPE_LIST_HOT));
+		NameValuePair listTypePair = new BasicNameValuePair("listType",String.valueOf(listType));
 		NameValuePair pageNumPair = new BasicNameValuePair("pageNum",String.valueOf(pageNum));
 		NameValuePair pageSizePair = new BasicNameValuePair("pageSize",String.valueOf(pageSize));
 		NameValuePair ascPair = new BasicNameValuePair("asc",String.valueOf(asc));
@@ -94,7 +91,7 @@ public class VideoManager {
 		
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		
-		NameValuePair cidPair = new BasicNameValuePair("id",String.valueOf(videoId));
+		NameValuePair cidPair = new BasicNameValuePair("cid",String.valueOf(videoId));
 		
 		params.add(HttpUtils.getTokenPair());
 		params.add(cidPair);
@@ -105,7 +102,7 @@ public class VideoManager {
 	static public void test()
 	{
 		getInstance().getVideoCategory(0, new BasicResponseHandler());
-		getInstance().getVideoLis(0, TYPE_LIST_HOT, 0, 10, 0, new BasicResponseHandler());
+		getInstance().getVideoList(0, VideoList.TYPE_LIST_HOT, 0, 10, 0, new BasicResponseHandler());
 		getInstance().getVideoDetail(0,  new BasicResponseHandler());
 	}
 }

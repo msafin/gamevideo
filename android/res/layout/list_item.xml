@@ -18,6 +18,7 @@
         android:layout_toRightOf="@android:id/icon"
         android:layout_toLeftOf="@android:id/icon1"
         android:layout_marginLeft="20dp"
+        android:layout_alignWithParentIfMissing="true"
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="#FFFFFF"

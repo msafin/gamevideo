@@ -17,7 +17,7 @@ public class VideoDetail extends BaseResponse{
 	public int state;
 	public String desc;
 	public String playurl;
-	public String flashurl;
+	public String flashUrl;
 	public int length;
 	public long lastUpdateTime;
 	public String type;
