@@ -86,7 +86,6 @@ ResponseHandler, TokenObserver,LoaderManager.LoaderCallbacks<List<CategoryListIt
 		View view = inflater.inflate(R.layout.list_layout, null);
 		
 		PullToRefreshListView pullListView = (PullToRefreshListView)view.findViewById(R.id.pull_refresh_list);
-		
 		pullListView.setMode(Mode.DISABLED);
 		
 		mListView = pullListView.getRefreshableView();
@@ -151,13 +150,15 @@ ResponseHandler, TokenObserver,LoaderManager.LoaderCallbacks<List<CategoryListIt
 	@Override
 	public void onSuccess(Object data) {
 		// TODO Auto-generated method stub
-		this.getLoaderManager().restartLoader(CATEGORYLIST_LOADER, null, this);
+		if(this.isAdded())
+			getLoaderManager().restartLoader(CATEGORYLIST_LOADER, null, this);
 	}
 
 	@Override
 	public void onFailed(int what, Object msg) {
 		// TODO Auto-generated method stub
-		this.getLoaderManager().restartLoader(CATEGORYLIST_LOADER, null, this);
+		if(this.isAdded())
+			getLoaderManager().restartLoader(CATEGORYLIST_LOADER, null, this);
 	}
 
 	/*

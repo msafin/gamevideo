@@ -221,7 +221,7 @@ public class HttpManager {
                 {
                 	BaseResponse baseResponse = (BaseResponse)data;
                 	
-                	if(baseResponse instanceof AutoRegister || baseResponse.status == BaseResponse.STATUS_OK)
+                	if(baseResponse.status == BaseResponse.STATUS_OK)
                 	{
 		                httpTask.mData = data;
 		                //Êý¾Ý³Ö¾Ã
@@ -312,6 +312,7 @@ public class HttpManager {
                 // Gets the Thread that the downloader task is running on
                 Thread thread = httpTask.getCurrentThread();
 
+                httpTask.mResponseHandler = null;
                 // If the Thread exists, posts an interrupt to it
                 if (null != thread)
                     thread.interrupt();

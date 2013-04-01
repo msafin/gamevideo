@@ -9,6 +9,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -37,10 +38,12 @@ import com.sharegogo.video.utils.NetworkUtils;
 import com.sharegogo.video.utils.UIUtils;
 
 public class VideoListFragment extends SherlockFragment implements OnItemClickListener,
-	LoaderManager.LoaderCallbacks<VideoList>, ResponseHandler, OnPullEventListener<ListView>{
+	LoaderManager.LoaderCallbacks<VideoList>, ResponseHandler,OnClickListener{
 	private static final int PAGE_SIZE = 15;
 	private VideoAdapter mVideoAdapter = null;
 	private ListView mListView = null;
+	private View mLoadMore = null;
+	private View mLoading = null;
 	private long mCID = -1;
 	private int mListType = VideoList.TYPE_LIST_LATEST;
 	private String mCategoryName = null;
@@ -73,20 +76,48 @@ public class VideoListFragment extends SherlockFragment implements OnItemClickLi
 	}
 
 
+	private void showLoading()
+	{
+		mLoading.setVisibility(View.VISIBLE);
+		mLoadMore.setVisibility(View.GONE);
+	}
+	
+	private void showLoadMore(boolean show)
+	{
+		if(show)
+		{
+			mLoadMore.setVisibility(View.VISIBLE);
+			mLoading.setVisibility(View.GONE);
+		}
+		else
+		{
+			mLoadMore.setVisibility(View.GONE);
+			mLoading.setVisibility(View.GONE);
+		}
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		
 		View view = inflater.inflate(R.layout.list_layout, null);
+		View footerView = inflater.inflate(R.layout.load_more, null);
 		
 		PullToRefreshListView pullListView = (PullToRefreshListView)view.findViewById(R.id.pull_refresh_list);
-		pullListView.setOnPullEventListener(this);
-		pullListView.setPullToRefreshOverScrollEnabled(false);
+		pullListView.setMode(Mode.DISABLED);
+		
+		mLoadMore = footerView.findViewById(R.id.load_more);
+		mLoading = footerView.findViewById(R.id.loading_more);
+		
+		mLoadMore.setOnClickListener(this);
 		
 		mListView = pullListView.getRefreshableView();
-		
 		mListView.setOnItemClickListener(this);
+		mListView.addFooterView(footerView);
+		mListView.setFooterDividersEnabled(true);
+		
+		showLoadMore(false);
 		
 		return view;
 	}
@@ -171,6 +202,11 @@ public class VideoListFragment extends SherlockFragment implements OnItemClickLi
 			}
 			
 			mVideoAdapter.addData(Arrays.asList(videoList.list));
+			
+			if(mVideoAdapter.getCount() < mVideoCount)
+			{
+				showLoadMore(true);
+			}
 		}
 	}
 
@@ -211,19 +247,14 @@ public class VideoListFragment extends SherlockFragment implements OnItemClickLi
 		return false;
 	}
 
-
 	@Override
-	public void onPullEvent(PullToRefreshBase<ListView> refreshView,
-			State state, Mode direction) {
+	public void onClick(View arg0) {
 		// TODO Auto-generated method stub
-		switch(state)
+		switch(arg0.getId())
 		{
-		case PULL_TO_REFRESH:
-			mPageNum++;
-			VideoManager.getInstance().getVideoList(mCID, mListType,mPageNum , PAGE_SIZE, 1, this);
+		case R.id.load_more:
+			showLoading();
 			break;
-			default:
-				break;
 		}
 	}
 }

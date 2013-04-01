@@ -71,7 +71,6 @@ abstract public  class GameBaseAdapter<T> extends BaseAdapter{
 		if(mData != null)
 		{
 			mData.clear();
-			mData = null;
 		}
 		
 		this.notifyDataSetChanged();

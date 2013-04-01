@@ -1,12 +1,13 @@
 package com.sharegogo.video.activity;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.view.Window;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageButton;
 
 import com.sharegogo.video.game.R;
 
-public class SearchActivity extends NoTitleActivity{
+public class SearchActivity extends NoTitleActivity implements OnClickListener{
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -14,6 +15,8 @@ public class SearchActivity extends NoTitleActivity{
 		super.onCreate(arg0);
 		
 		setContentView(R.layout.search_activity);
+		ImageButton search = (ImageButton)findViewById(R.id.search);
+		search.setOnClickListener(this);
 	}
 
 	@Override
@@ -26,5 +29,11 @@ public class SearchActivity extends NoTitleActivity{
 	protected String getCustomTitle() {
 		// TODO Auto-generated method stub
 		return "ËÑË÷";
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		
 	}
 }

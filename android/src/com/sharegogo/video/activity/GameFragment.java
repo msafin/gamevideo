@@ -35,7 +35,8 @@ public class GameFragment extends SherlockFragment{
 		mGameAdapter = new GameAdapter(getFragmentManager());
         mPager = (ViewPager)view.findViewById(R.id.game_pager);
         mPager.setAdapter(mGameAdapter);
-
+        mPager.setOffscreenPageLimit(3);
+        
         mIndicator = (TabPageIndicator)view.findViewById(R.id.indicator);
         mIndicator.setViewPager(mPager);
 

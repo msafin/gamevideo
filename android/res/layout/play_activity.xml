@@ -64,7 +64,8 @@
           android:layout_height="wrap_content"
           android:layout_alignParentBottom="true"
           android:layout_centerHorizontal="true"
-          android:src="@drawable/ic_good" />
+          android:src="@drawable/ic_good"
+          android:visibility="gone"/>
       
       <ImageButton
           android:id="@+id/btn_share"

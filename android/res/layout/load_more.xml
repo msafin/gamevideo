@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#999999">
+
+    <Button
+        android:id="@+id/load_more"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+		android:layout_centerInParent="true"
+		android:background="#00000000"
+        android:text="点击加载更多..." />
+
+    <RelativeLayout
+        android:id="@+id/loading_more"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="#00000000"
+        android:visibility="gone">
+        
+       <ProgressBar
+        android:id="@+id/loading_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/loading_text"
+        android:layout_marginRight="3dp"/>
+
+       <TextView
+           android:id="@+id/loading_text"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_centerInParent="true"
+           android:text="正在加载..." />
+
+    </RelativeLayout>
+
+</RelativeLayout>

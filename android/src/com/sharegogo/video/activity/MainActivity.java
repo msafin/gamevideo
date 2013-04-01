@@ -71,7 +71,7 @@ public class MainActivity extends BaseActivity{
         mOnlineVideoAdapter = new OnlineVideoAdapter(getSupportFragmentManager());
         mPager = (ViewPager)findViewById(R.id.pager);
         mPager.setAdapter(mOnlineVideoAdapter);
-
+        mPager.setOffscreenPageLimit(3);
         mIndicator = (TabPageIndicator)findViewById(R.id.indicator);
         mIndicator.setViewPager(mPager);
 
