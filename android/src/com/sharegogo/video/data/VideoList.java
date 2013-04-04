@@ -1,5 +1,8 @@
 package com.sharegogo.video.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -16,34 +19,54 @@ public class VideoList extends BaseResponse{
 	public int count;
 	public VideoListItem[] list;
 	
-	@DatabaseTable(tableName = "video")
 	static public class VideoListItem
 	{
-		@DatabaseField(id = true)
 		public long id;
 		
-		@DatabaseField
 		public String name;
 		
-		@DatabaseField
 		public String author;
 		
-		@DatabaseField
 		public String from;
 		
-		@DatabaseField
 		public long hot;
 		
-		@DatabaseField
 		public String img;
 		
-		@DatabaseField
 		public int state;
 		
-		@DatabaseField
 		public long lastUpdateTime;
 		
-		@DatabaseField
-		public String categoryName;
+		public VideoDetail toVideoDetail()
+		{
+			VideoDetail detail = new VideoDetail();
+			detail.id  = id;
+			detail.name = name;
+			detail.author = author;
+			detail.from = from;
+			detail.hot = hot;
+			detail.img = img;
+			detail.state = state;
+			detail.lastUpdateTime = lastUpdateTime;
+			
+			return detail;
+		}
+	}
+	
+	public List<VideoDetail> toVideoDetailList()
+	{
+		if(list != null && list.length > 0)
+		{
+			List<VideoDetail> detailList = new ArrayList<VideoDetail>();
+			
+			for(VideoListItem item : list)
+			{
+				detailList.add(item.toVideoDetail());
+			}
+			
+			return detailList;
+		}
+		
+		return null;
 	}
 }

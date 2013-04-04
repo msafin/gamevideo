@@ -26,6 +26,7 @@ import com.sharegogo.video.controller.FavoriteAdapter;
 import com.sharegogo.video.controller.FavoriteManager;
 import com.sharegogo.video.controller.HistoryManager;
 import com.sharegogo.video.data.Favorite;
+import com.sharegogo.video.data.VideoDetail;
 import com.sharegogo.video.data.VideoList.VideoListItem;
 import com.sharegogo.video.game.R;
 import com.sharegogo.video.utils.ResUtils;
@@ -209,6 +210,7 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 		
 		if(arg1 != null && arg1.size() > 0)
 		{
+			mAdapter.clearData();
 			mAdapter.addData(arg1);
 		
 			setListAdapter(mAdapter);
@@ -257,7 +259,7 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 		static final public int MODE_EDIT = 1;
 		
 		public long id;
-		public VideoListItem video;
+		public VideoDetail video;
 		public int mode;
 		
 		public FavoriteListItem()

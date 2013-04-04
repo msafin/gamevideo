@@ -49,6 +49,9 @@ public class AuthorFragment extends SherlockFragment implements OnItemClickListe
 			mParentId = args.getLong("parentId");
 			mCategoryName = args.getString("categoryName");
 		}
+		
+		mAuthorAdapter = new GameCategoryAdapter();
+		
 		//本地获取
 		this.getLoaderManager().initLoader(CATEGORYLIST_LOADER, null, this);
 	}
@@ -64,6 +67,7 @@ public class AuthorFragment extends SherlockFragment implements OnItemClickListe
 		pullListView.setMode(Mode.DISABLED);
 		mListView = pullListView.getRefreshableView();
 		mListView.setOnItemClickListener(this);
+		mListView.setAdapter(mAuthorAdapter);
 		
 		return view;
 	}
@@ -100,15 +104,7 @@ public class AuthorFragment extends SherlockFragment implements OnItemClickListe
 		
 		if(categoryList != null && categoryList.size() > 0)
 		{
-			if(mAuthorAdapter == null)
-			{
-				mAuthorAdapter = new GameCategoryAdapter();
-			}
-			else
-			{
-				mAuthorAdapter.clearData();
-			}
-			
+			mAuthorAdapter.clearData();
 			mAuthorAdapter.addData(categoryList);
 			mListView.setAdapter(mAuthorAdapter);
 		}

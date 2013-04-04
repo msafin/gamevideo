@@ -1,12 +1,14 @@
 package com.sharegogo.video.activity;
 
 import java.sql.SQLException;
-import java.util.Arrays;
+import java.util.List;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,39 +18,39 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockFragment;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnPullEventListener;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.State;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.j256.ormlite.dao.Dao;
 import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.controller.HistoryManager;
 import com.sharegogo.video.controller.VideoAdapter;
+import com.sharegogo.video.controller.VideoListLoader;
 import com.sharegogo.video.controller.VideoManager;
-import com.sharegogo.video.data.CategoryList;
 import com.sharegogo.video.data.History;
 import com.sharegogo.video.data.MySqliteHelper;
+import com.sharegogo.video.data.VideoDetail;
 import com.sharegogo.video.data.VideoList;
-import com.sharegogo.video.data.CategoryList.CategoryListItem;
 import com.sharegogo.video.data.VideoList.VideoListItem;
 import com.sharegogo.video.game.R;
 import com.sharegogo.video.http.ResponseHandler;
 import com.sharegogo.video.utils.NetworkUtils;
+import com.sharegogo.video.utils.ResUtils;
 import com.sharegogo.video.utils.UIUtils;
 
 public class VideoListFragment extends SherlockFragment implements OnItemClickListener,
-	LoaderManager.LoaderCallbacks<VideoList>, ResponseHandler,OnClickListener{
+	LoaderManager.LoaderCallbacks<List<VideoDetail>>, ResponseHandler,OnClickListener{
+	private static final int VIDEO_LOADER = 1;
 	private static final int PAGE_SIZE = 15;
 	private VideoAdapter mVideoAdapter = null;
 	private ListView mListView = null;
 	private View mLoadMore = null;
 	private View mLoading = null;
-	private long mCID = -1;
+	private long mCId = -1;
 	private int mListType = VideoList.TYPE_LIST_LATEST;
 	private String mCategoryName = null;
 	private int mVideoCount = 0;
-	private int mPageNum = 1;
+	private ProgressDialog mProgressDialog = null;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -64,14 +66,27 @@ public class VideoListFragment extends SherlockFragment implements OnItemClickLi
 		Bundle args = getArguments();
 		if(args != null)
 		{
-			mCID = args.getLong("cid");
+			mCId = args.getLong("cid");
 			mListType = args.getInt("listType");
 			mCategoryName = args.getString("categoryName");
 		}
 		
+		mVideoAdapter = new VideoAdapter();
+		
+		mProgressDialog = new ProgressDialog(activity);
+		mProgressDialog.setMessage(ResUtils.getString(R.string.loading));
+		
+		mProgressDialog.show();
+		
 		if(NetworkUtils.isNetworkAvailable())
 		{
-			VideoManager.getInstance().getVideoList(mCID, mListType,mPageNum , PAGE_SIZE, 1, this);
+			//加载第一页
+			VideoManager.getInstance().getVideoList(mCId, mListType,1 , PAGE_SIZE, 1, this);
+		}
+		else
+		{
+			//没有网络从数据库中一次性加载
+			this.getLoaderManager().initLoader(VIDEO_LOADER, null, this);
 		}
 	}
 
@@ -110,12 +125,15 @@ public class VideoListFragment extends SherlockFragment implements OnItemClickLi
 		mLoadMore = footerView.findViewById(R.id.load_more);
 		mLoading = footerView.findViewById(R.id.loading_more);
 		
+		mLoading.setOnClickListener(this);
 		mLoadMore.setOnClickListener(this);
 		
 		mListView = pullListView.getRefreshableView();
 		mListView.setOnItemClickListener(this);
 		mListView.addFooterView(footerView);
 		mListView.setFooterDividersEnabled(true);
+
+		mListView.setAdapter(mVideoAdapter);
 		
 		showLoadMore(false);
 		
@@ -150,14 +168,14 @@ public class VideoListFragment extends SherlockFragment implements OnItemClickLi
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		// TODO Auto-generated method stub
-		VideoListItem video = (VideoListItem)mVideoAdapter.getItem(arg2-1);
+		VideoDetail video = (VideoDetail)mVideoAdapter.getItem(arg2-1);
 		
 		UIUtils.gotoPlayActivity(video,getActivity());
 		
 		addHistory(video);
 	}
 	
-	private void addHistory(VideoListItem video)
+	private void addHistory(VideoDetail video)
 	{
 		History history = new History();
 		
@@ -168,45 +186,25 @@ public class VideoListFragment extends SherlockFragment implements OnItemClickLi
 	}
 
 	@Override
-	public Loader<VideoList> onCreateLoader(int arg0, Bundle arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void onLoadFinished(Loader<VideoList> arg0, VideoList arg1) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onLoaderReset(Loader<VideoList> arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
 	public void onSuccess(Object data) {
 		// TODO Auto-generated method stub
+		mProgressDialog.dismiss();
+		
 		VideoList videoList = (VideoList)data;
 		if(videoList != null && videoList.list != null && videoList.list.length > 0)
 		{
 			mVideoCount = videoList.count;
 			
-			if(mVideoAdapter == null)
-			{
-				mVideoAdapter = new VideoAdapter();
-				
-				mListView.setAdapter(mVideoAdapter);
-			}
-			
-			mVideoAdapter.addData(Arrays.asList(videoList.list));
-			
-			if(mVideoAdapter.getCount() < mVideoCount)
-			{
-				showLoadMore(true);
-			}
+			mVideoAdapter.addData(videoList.toVideoDetailList());
+		}
+		
+		if(mVideoAdapter.getCount() < mVideoCount)
+		{
+			showLoadMore(true);
+		}
+		else
+		{
+			showLoadMore(false);
 		}
 	}
 
@@ -214,7 +212,16 @@ public class VideoListFragment extends SherlockFragment implements OnItemClickLi
 	@Override
 	public void onFailed(int what, Object msg) {
 		// TODO Auto-generated method stub
+		mProgressDialog.dismiss();
 		
+		if(mVideoAdapter.getCount() < mVideoCount)
+		{
+			showLoadMore(true);
+		}
+		else
+		{
+			showLoadMore(false);
+		}
 	}
 
 
@@ -227,12 +234,15 @@ public class VideoListFragment extends SherlockFragment implements OnItemClickLi
 		if(videoList.list != null && videoList.list.length > 0)
 		{
 			try {
-				Dao<VideoListItem,String> dao = dbHelper.getDao(VideoListItem.class);
+				Dao<VideoDetail,String> dao = dbHelper.getDao(VideoDetail.class);
 				
 				for(VideoListItem item:videoList.list)
 				{
-					item.categoryName = mCategoryName;
-					dao.createOrUpdate(item);
+					VideoDetail detail = item.toVideoDetail();
+					detail.type = mCategoryName;
+					detail.cid = mCId;
+					
+					dao.createOrUpdate(detail);
 				}
 				
 				return true;
@@ -254,7 +264,38 @@ public class VideoListFragment extends SherlockFragment implements OnItemClickLi
 		{
 		case R.id.load_more:
 			showLoading();
+			int pageNum = mVideoAdapter.getCount() / PAGE_SIZE + 1;
+			Log.e("test","count = " + mVideoAdapter.getCount() + ",page = " + pageNum);
+			VideoManager.getInstance().getVideoList(mCId, mListType, pageNum, PAGE_SIZE, 1, this);
+			break;
+		case R.id.loading_more:
 			break;
 		}
+	}
+
+
+	@Override
+	public void onLoadFinished(Loader<List<VideoDetail>> arg0,
+			List<VideoDetail> arg1) {
+		// TODO Auto-generated method stub
+		mProgressDialog.dismiss();
+		
+		//没有网络的时候才会通过loader加载
+		mVideoAdapter.clearData();
+		mVideoAdapter.addData(arg1);
+	}
+
+
+	@Override
+	public void onLoaderReset(Loader<List<VideoDetail>> arg0) {
+		// TODO Auto-generated method stub
+		mProgressDialog.dismiss();
+	}
+
+
+	@Override
+	public Loader<List<VideoDetail>> onCreateLoader(int arg0, Bundle arg1) {
+		// TODO Auto-generated method stub
+		return new VideoListLoader(SharegogoVideoApplication.getApplication(),mCId,mListType);
 	}
 }

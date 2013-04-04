@@ -25,6 +25,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.sharegogo.video.controller.HistoryAdapter;
 import com.sharegogo.video.controller.HistoryManager;
 import com.sharegogo.video.data.History;
+import com.sharegogo.video.data.VideoDetail;
 import com.sharegogo.video.data.VideoList.VideoListItem;
 import com.sharegogo.video.game.R;
 import com.sharegogo.video.utils.ResUtils;
@@ -199,6 +200,7 @@ public class HistoryFragment extends SherlockListFragment implements LoaderManag
 		
 		if(arg1 != null && arg1.size() > 0)
 		{
+			mAdapter.clearData();
 			mAdapter.addData(arg1);
 		
 			setListAdapter(mAdapter);
@@ -246,7 +248,7 @@ public class HistoryFragment extends SherlockListFragment implements LoaderManag
 		static final public int MODE_EDIT = 1;
 		
 		public long id;
-		public VideoListItem video;
+		public VideoDetail video;
 		public int mode;
 		public long time;
 		

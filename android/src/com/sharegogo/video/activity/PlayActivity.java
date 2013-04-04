@@ -1,19 +1,27 @@
 package com.sharegogo.video.activity;
 
+import java.sql.SQLException;
 import java.util.List;
 
+import com.j256.ormlite.dao.Dao;
 import com.sharegogo.config.HttpConfig;
 import com.sharegogo.config.HttpConstants;
 import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.controller.FavoriteManager;
 import com.sharegogo.video.controller.VideoManager;
 import com.sharegogo.video.data.Favorite;
+import com.sharegogo.video.data.MySqliteHelper;
 import com.sharegogo.video.data.VideoDetail;
+import com.sharegogo.video.data.VideoList;
+import com.sharegogo.video.data.VideoList.VideoListItem;
 import com.sharegogo.video.game.R;
 import com.sharegogo.video.http.ResponseHandler;
+import com.sharegogo.video.utils.NetworkUtils;
+import com.sharegogo.video.utils.ResUtils;
 import com.sharegogo.video.utils.UIUtils;
 
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -62,6 +70,7 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	private ImageButton mBtnShare;
 	private Favorite mFavorite;
 	private View mDownloadNote;
+	private ProgressDialog mProgressDialog = null;
 	
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -92,6 +101,10 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		{
 			mBtnFavorite.setImageResource(R.drawable.ic_favorited);
 		}
+		
+		mProgressDialog = new ProgressDialog(this);
+		mProgressDialog.setMessage(getString(R.string.loading_video_detail));
+		mProgressDialog.show();
 		
 		mWebView.loadUrl("file:///android_asset/index.html");
         mWebView.getSettings().setPluginsEnabled(true);
@@ -357,7 +370,21 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 				// TODO Auto-generated method stub
 					super.onPageFinished(view, url);
 				
-					VideoManager.getInstance().getVideoDetail(mVideoId, PlayActivity.this);
+					
+					VideoDetail detail = VideoManager.getInstance().getVideoDetail(mVideoId);
+					if(detail != null && detail.flashUrl != null && detail.flashUrl.length() > 0)
+					{
+						onSuccess(detail);
+					}
+					else
+					{
+						VideoManager.getInstance().getVideoDetail(mVideoId, PlayActivity.this);
+					}
+					
+					if(!NetworkUtils.isNetworkAvailable())
+					{
+						Toast.makeText(PlayActivity.this, ResUtils.getString(R.string.cannot_play_for_network), 2000).show();
+					}
 				}
 	    	 });
 	        
@@ -562,6 +589,8 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	@Override
 	public void onSuccess(Object data) {
 		// TODO Auto-generated method stub
+		mProgressDialog.dismiss();
+		
 		VideoDetail videoDetail = (VideoDetail)data;
 		
 		mUrl = videoDetail.flashUrl;
@@ -574,12 +603,18 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		{
 			UIUtils.gotoBrowserActivity(this,videoDetail.playurl);
 		}
+		else
+		{
+			Toast.makeText(getApplicationContext(), getString(R.string.load_video_detail_failed), 1000).show();
+		}
 	}
 
 
 	@Override
 	public void onFailed(int what, Object msg) {
 		// TODO Auto-generated method stub
+		mProgressDialog.dismiss();
+		
 		if(msg != null && msg instanceof String)
 		{
 			Toast.makeText(getApplicationContext(), (String)msg, 1000).show();
@@ -590,6 +625,20 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	@Override
 	public boolean onPersistent(Object data) {
 		// TODO Auto-generated method stub
-		return true;
+		MySqliteHelper dbHelper = SharegogoVideoApplication.getApplication().getHelper();
+		VideoDetail videoDetail = (VideoDetail)data;
+		
+		try {
+			
+			Dao<VideoDetail,String> dao = dbHelper.getDao(VideoDetail.class);
+			dao.createOrUpdate(videoDetail);
+			
+			return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+			return false;
+		}
 	}
 }

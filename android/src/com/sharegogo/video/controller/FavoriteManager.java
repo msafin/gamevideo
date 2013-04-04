@@ -14,6 +14,7 @@ import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.activity.FavoriteFragment.FavoriteListItem;
 import com.sharegogo.video.data.Favorite;
 import com.sharegogo.video.data.MySqliteHelper;
+import com.sharegogo.video.data.VideoDetail;
 import com.sharegogo.video.data.VideoList.VideoListItem;
 import com.sharegogo.video.game.R;
 
@@ -148,10 +149,10 @@ public class FavoriteManager {
 		
 		if(favorite != null && favorite.size() > 0)
 		{
-			Dao<VideoListItem,String> videoDao = null;
+			Dao<VideoDetail,String> videoDao = null;
 			
 			try {
-				videoDao = helper.getDao(VideoListItem.class);
+				videoDao = helper.getDao(VideoDetail.class);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

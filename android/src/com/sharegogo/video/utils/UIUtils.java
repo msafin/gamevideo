@@ -10,7 +10,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.sharegogo.video.activity.PlayActivity;
-import com.sharegogo.video.data.VideoList.VideoListItem;
+import com.sharegogo.video.data.VideoDetail;
 import com.umeng.socialize.bean.SocializeConfig;
 import com.umeng.socialize.controller.RequestType;
 import com.umeng.socialize.controller.UMServiceFactory;
@@ -23,7 +23,7 @@ import com.umeng.socialize.controller.UMSocialService;
  */
 public class UIUtils {
 	
-	static public void gotoPlayActivity(VideoListItem video,Context context)
+	static public void gotoPlayActivity(VideoDetail video,Context context)
 	{
 		Intent intent = new Intent(Intent.ACTION_MAIN);
 		

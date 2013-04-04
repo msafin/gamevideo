@@ -1,5 +1,6 @@
 package com.sharegogo.video.controller;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,10 +11,14 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.j256.ormlite.dao.Dao;
 import com.sharegogo.config.HttpConstants;
+import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.data.CategoryList;
+import com.sharegogo.video.data.MySqliteHelper;
 import com.sharegogo.video.data.VideoDetail;
 import com.sharegogo.video.data.VideoList;
+import com.sharegogo.video.data.VideoList.VideoListItem;
 import com.sharegogo.video.http.BasicResponseHandler;
 import com.sharegogo.video.http.HttpManager;
 import com.sharegogo.video.http.HttpTask;
@@ -97,6 +102,23 @@ public class VideoManager {
 		params.add(cidPair);
 		
 		HttpManager.doRequest(httpRequest, params, handler, VideoDetail.class);
+	}
+	
+	public VideoDetail getVideoDetail(long videoId)
+	{
+		MySqliteHelper dbHelper = SharegogoVideoApplication.getApplication().getHelper();
+		
+		try {
+			Dao<VideoDetail,String> dao = dbHelper.getDao(VideoDetail.class);
+			
+			return dao.queryForId(String.valueOf(videoId));
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+			return null;
+		}
 	}
 	
 	static public void test()

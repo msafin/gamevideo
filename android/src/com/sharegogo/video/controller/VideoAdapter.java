@@ -1,15 +1,14 @@
 package com.sharegogo.video.controller;
 
-import com.sharegogo.video.data.VideoList.VideoListItem;
-import com.sharegogo.video.game.R;
-import com.sharegogo.video.utils.UIUtils;
-
-import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class VideoAdapter extends GameBaseAdapter<VideoListItem>{
+import com.sharegogo.video.data.VideoDetail;
+import com.sharegogo.video.game.R;
+import com.sharegogo.video.utils.UIUtils;
+
+public class VideoAdapter extends GameBaseAdapter<VideoDetail>{
 
 	public VideoAdapter()
 	{
@@ -39,7 +38,7 @@ public class VideoAdapter extends GameBaseAdapter<VideoListItem>{
 		// TODO Auto-generated method stub
 		ViewTag tag = (ViewTag)view.getTag();
 		
-		VideoListItem video = (VideoListItem)getItem(position);
+		VideoDetail video = (VideoDetail)getItem(position);
 		
 		tag.mTitle.setText(video.name);
 		if(video.from != null)

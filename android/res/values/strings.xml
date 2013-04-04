@@ -58,4 +58,8 @@
 	<string name="update_now">马上升级</string>
 	<string name="update_later">稍后升级</string>
 	
+	<string name="loading_video_detail">获取视频信息...</string>
+	<string name="load_video_detail_failed">获取视频信息失败</string>
+	<string name="cannot_play_for_network">没有网络无法播放视频</string>
+	
 </resources>

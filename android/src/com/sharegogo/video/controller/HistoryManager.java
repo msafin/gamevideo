@@ -10,6 +10,7 @@ import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.activity.HistoryFragment.HistoryListItem;
 import com.sharegogo.video.data.History;
 import com.sharegogo.video.data.MySqliteHelper;
+import com.sharegogo.video.data.VideoDetail;
 import com.sharegogo.video.data.VideoList.VideoListItem;
 
 /**
@@ -152,10 +153,10 @@ public class HistoryManager {
 		
 		if(historys != null && historys.size() > 0)
 		{
-			Dao<VideoListItem,String> videoDao = null;
+			Dao<VideoDetail,String> videoDao = null;
 			
 			try {
-				videoDao = helper.getDao(VideoListItem.class);
+				videoDao = helper.getDao(VideoDetail.class);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
