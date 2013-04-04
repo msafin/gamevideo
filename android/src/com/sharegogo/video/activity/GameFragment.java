@@ -15,7 +15,7 @@ import com.sharegogo.video.game.R;
 import com.viewpagerindicator.TabPageIndicator;
 
 public class GameFragment extends SherlockFragment{
-	private static final String[] CONTENT = new String[] { "解说", "最新", "最热", "专辑"};
+	private static final String[] CONTENT = new String[] { "解说", "最新", "最热"};
     private ViewPager mPager = null;
     private TabPageIndicator mIndicator = null;
     private FragmentStatePagerAdapter mGameAdapter = null;

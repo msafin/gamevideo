@@ -12,7 +12,7 @@ public class GameCategoryAdapter extends GameBaseAdapter<CategoryListItem>{
 
 	public GameCategoryAdapter()
 	{
-		this(R.layout.list_item);
+		this(R.layout.category_list_item);
 	}
 	
 	public GameCategoryAdapter(int layout) {

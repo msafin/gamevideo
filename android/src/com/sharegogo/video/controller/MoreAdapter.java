@@ -8,7 +8,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MoreAdapter extends GameBaseAdapter<String>{
-
+	private int[] mIcons = new int[]{
+			R.drawable.ic_share,
+			R.drawable.ic_setting,
+			R.drawable.ic_feedback,
+			R.drawable.ic_update,
+			R.drawable.ic_about,
+			R.drawable.ic_quit_list};
+	
 	public MoreAdapter()
 	{
 		this(R.layout.more_list_item);
@@ -38,31 +45,7 @@ public class MoreAdapter extends GameBaseAdapter<String>{
 		String title = (String)getItem(position);
 		
 		tag.mTitle.setText(title);
-		
-		if(position == 0)
-		{
-			tag.mLeftImageView.setImageResource(R.drawable.ic_good);
-		}
-		else if(position == 1)
-		{
-			tag.mLeftImageView.setImageResource(R.drawable.ic_share);
-		}
-		else if(position == 2)
-		{
-			tag.mLeftImageView.setImageResource(R.drawable.ic_setting);
-		}
-		else if(position == 3)
-		{
-			tag.mLeftImageView.setImageResource(R.drawable.ic_feedback);
-		}
-		else if(position == 4)
-		{
-			tag.mLeftImageView.setImageResource(R.drawable.ic_about);
-		}
-		else if(position == 5)
-		{
-			tag.mLeftImageView.setImageResource(R.drawable.ic_quit_list);
-		}
+		tag.mLeftImageView.setImageResource(mIcons[position]);
 		
 		return view;
 	}

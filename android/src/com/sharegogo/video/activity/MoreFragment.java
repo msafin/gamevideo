@@ -2,6 +2,9 @@ package com.sharegogo.video.activity;
 
 import java.util.Arrays;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -11,24 +14,28 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.controller.MoreAdapter;
+import com.sharegogo.video.controller.UpdateManager;
+import com.sharegogo.video.controller.UpdateManager.CheckUpdateObserver;
+import com.sharegogo.video.data.UpdateInfo;
 import com.sharegogo.video.game.R;
+import com.sharegogo.video.utils.ResUtils;
 import com.sharegogo.video.utils.UIUtils;
 import com.umeng.fb.UMFeedbackService;
-import com.umeng.socialize.bean.SocializeConfig;
-import com.umeng.socialize.controller.RequestType;
-import com.umeng.socialize.controller.UMServiceFactory;
-import com.umeng.socialize.controller.UMSocialService;
 import com.umeng.xp.common.ExchangeConstants;
 import com.umeng.xp.controller.ExchangeDataService;
 import com.umeng.xp.view.ExchangeViewManager;
 
-public class MoreFragment extends SherlockFragment implements OnItemClickListener{
+public class MoreFragment extends SherlockFragment implements OnItemClickListener, CheckUpdateObserver,OnClickListener{
 	private MoreAdapter mAdapter = null;
-	
+	private ProgressDialog mProgressDialog = null;
+	private UpdateInfo mUpdateInfo = null;
+    private GameDialogFragment mUpdateNote = null;
+    
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -42,6 +49,7 @@ public class MoreFragment extends SherlockFragment implements OnItemClickListene
 		String[] more = res.getStringArray(R.array.more);
 		
 		mAdapter.addData(Arrays.asList(more));
+		mProgressDialog = new ProgressDialog(getActivity());
 	}
 
 	@Override
@@ -101,26 +109,35 @@ public class MoreFragment extends SherlockFragment implements OnItemClickListene
 		new ExchangeViewManager(getActivity(),service) .addView(ExchangeConstants.type_list_curtain, null); 
 	}
 	
+	private void onCheckUpdate()
+	{
+		mProgressDialog.setMessage(ResUtils.getString(R.string.checking_update));
+		UpdateManager.getInstance().checkUpdate(this);
+	}
+	
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		// TODO Auto-generated method stub
 		switch(arg2)
 		{
 		//精品推荐
-		case 0:
-			gotoRecommendActivity();
-			break;
+		//case 0:
+		//	gotoRecommendActivity();
+		//	break;
 		//分享
-		case 1:
+		case 0:
 			UIUtils.gotoShareActivity(getActivity());
 			break;
 		//设置
-		case 2:
+		case 1:
 			gotoSettingActivity();
 			break;
 		//支持和反馈
-		case 3:
+		case 2:
 			gotoFeedbackActivity();
+			break;
+		case 3:
+			onCheckUpdate();
 			break;
 		//关于
 		case 4:
@@ -129,6 +146,53 @@ public class MoreFragment extends SherlockFragment implements OnItemClickListene
 		//退出
 		case 5:
 			SharegogoVideoApplication.getApplication().onApplicationExit();
+			break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void onCheckUpdateSuccess(UpdateInfo updateInfo) {
+		// TODO Auto-generated method stub
+		mProgressDialog.dismiss();
+		
+		mUpdateInfo = updateInfo;
+		
+		mUpdateNote = new GameDialogFragment(
+				R.drawable.ic_about,
+				R.string.update_note,
+				mUpdateInfo.desc,
+				R.string.update_now,
+				R.string.update_later,
+				this);
+		
+		mUpdateNote.show(getFragmentManager(), null);
+	}
+
+	@Override
+	public void onCheckUpdateFailed() {
+		// TODO Auto-generated method stub
+		mProgressDialog.dismiss();
+		Toast.makeText(getActivity(), ResUtils.getString(R.string.check_update_failed), 1000).show();
+	}
+
+	private void updateNow()
+	{
+		mUpdateNote.dismiss();
+		UIUtils.gotoBrowserActivity(getActivity(), mUpdateInfo.url);
+	}
+	
+	@Override
+	public void onClick(DialogInterface arg0, int arg1) {
+		// TODO Auto-generated method stub
+		switch(arg1)
+		{
+		case DialogInterface.BUTTON_POSITIVE:
+			updateNow();
+			break;
+		case DialogInterface.BUTTON_NEGATIVE:
+			
 			break;
 		default:
 			break;

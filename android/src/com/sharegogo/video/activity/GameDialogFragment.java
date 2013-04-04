@@ -1,10 +1,7 @@
 package com.sharegogo.video.activity;
 
-import com.sharegogo.video.game.R;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -13,21 +10,26 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.sharegogo.video.game.R;
+
 public class GameDialogFragment extends DialogFragment{
+	private int mIcon;
 	private int mTitleId;
-	private int mContentId;
+	private String mContent;
 	private int mPositiveId;
 	private int mNegativeId;
 	private OnClickListener mListener;
 	
-	public GameDialogFragment(int titleId,int contentId,int positiveId,int negativeId,OnClickListener listener)
+	public GameDialogFragment(int icon,int titleId,String content,int positiveId,int negativeId,OnClickListener listener)
 	{
+		mIcon = icon;
 		mTitleId = titleId;
-		mContentId = contentId;
+		mContent = content;
 		mPositiveId = positiveId;
 		mNegativeId = negativeId;
 		mListener = listener;
 	}
+	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -40,9 +42,12 @@ public class GameDialogFragment extends DialogFragment{
         TextView title = (TextView)view.findViewById(android.R.id.title);
         TextView content = (TextView)view.findViewById(R.id.dialog_content);
         
-        icon.setImageResource(R.drawable.ic_help);
+        icon.setImageResource(mIcon);
         title.setText(mTitleId);
-        content.setText(mContentId);
+        if(mContent != null)
+        {
+        	content.setText(mContent);
+        }
         
         builder.setView(view)
                .setPositiveButton(mPositiveId, mListener)

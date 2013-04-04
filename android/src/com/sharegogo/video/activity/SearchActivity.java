@@ -15,7 +15,7 @@ public class SearchActivity extends NoTitleActivity implements OnClickListener{
 		super.onCreate(arg0);
 		
 		setContentView(R.layout.search_activity);
-		ImageButton search = (ImageButton)findViewById(R.id.search);
+		ImageButton search = (ImageButton)findViewById(R.id.search_btn);
 		search.setOnClickListener(this);
 	}
 

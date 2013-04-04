@@ -23,11 +23,14 @@ import com.sharegogo.video.utils.HttpUtils;
  * @author Raymon
  *
  */
-public class UpdateManager {
+public class UpdateManager implements ResponseHandler {
 	static private UpdateManager mInstance;
+	private UpdateInfo mUpdateInfo = null;
+	private List<CheckUpdateObserver> mObservers = null;
 	
 	private UpdateManager()
 	{
+		mObservers = new ArrayList<CheckUpdateObserver>();
 	}
 	
 	static public UpdateManager getInstance()
@@ -46,7 +49,30 @@ public class UpdateManager {
 		return mInstance;
 	}
 	
-	public void checkUpate(ResponseHandler handler)
+	
+	public void checkUpdate(CheckUpdateObserver observer)
+	{
+		synchronized(mObservers)
+		{
+			if(observer != null)
+			{
+				mObservers.add(observer);
+				
+				if(mUpdateInfo != null)
+				{
+					observer.onCheckUpdateSuccess(mUpdateInfo);
+					mObservers.remove(observer);
+					
+					return;
+				}
+			}
+		}
+		
+		checkUpate();
+	}
+	
+	
+	public void checkUpate()
 	{
 		HttpRequest httpRequest = new BasicHttpRequest(HttpGet.METHOD_NAME, HttpConstants.URL_UPDATE);
 		
@@ -59,11 +85,60 @@ public class UpdateManager {
 		params.add(machinePair);
 		params.add(versionPair);
 		
-		HttpManager.doRequest(httpRequest, params, handler,UpdateInfo.class);
+		HttpManager.doRequest(httpRequest, params, this,UpdateInfo.class);
 	}
 	
 	static public void test()
 	{
-		getInstance().checkUpate(new BasicResponseHandler());
+		getInstance().checkUpate();
+	}
+
+	public UpdateInfo getUpdateInfo()
+	{
+		return mUpdateInfo;
+	}
+	
+	@Override
+	public void onSuccess(Object data) {
+		// TODO Auto-generated method stub
+		mUpdateInfo = (UpdateInfo)data;
+		
+		synchronized(mObservers)
+		{
+			for(CheckUpdateObserver observer : mObservers)
+			{
+				observer.onCheckUpdateSuccess(mUpdateInfo);
+			}
+			
+			mObservers.clear();
+		}
+	}
+
+	@Override
+	public void onFailed(int what, Object msg) {
+		// TODO Auto-generated method stub
+		mUpdateInfo = null;
+		
+		synchronized(mObservers)
+		{
+			for(CheckUpdateObserver observer : mObservers)
+			{
+				observer.onCheckUpdateFailed();
+			}
+			
+			mObservers.clear();
+		}
+	}
+
+	@Override
+	public boolean onPersistent(Object data) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+	
+	static public interface CheckUpdateObserver
+	{
+		public void onCheckUpdateSuccess(UpdateInfo updateInfo);
+		public void onCheckUpdateFailed();
 	}
 }

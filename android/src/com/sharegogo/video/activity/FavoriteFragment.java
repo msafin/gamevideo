@@ -114,8 +114,9 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 	private void showClearFavoriteDialog()
 	{
 		new GameDialogFragment(
+				R.drawable.ic_help,
 				R.string.clear_favorite,
-				R.string.clear_favorite_confirm,
+				ResUtils.getString(R.string.clear_favorite_confirm),
 				R.string.dialog_ok,
 				R.string.dialog_cancel,
 				this

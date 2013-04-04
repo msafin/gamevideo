@@ -1,30 +1,15 @@
 package com.sharegogo.video.activity;
 
-import com.sharegogo.video.SharegogoVideoApplication;
-import com.sharegogo.video.data.MySqliteHelper;
-import com.sharegogo.video.game.R;
-import java.sql.SQLException;
 import java.util.HashMap;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SubMenu;
-import com.actionbarsherlock.view.Window;
-import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.dao.Dao;
-import com.viewpagerindicator.IconPagerAdapter;
-import com.viewpagerindicator.TabPageIndicator;
-
-import android.os.Bundle;
-import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
@@ -32,19 +17,22 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TabHost;
-import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
+import com.actionbarsherlock.view.MenuItem;
+import com.sharegogo.video.SharegogoVideoApplication;
+import com.sharegogo.video.controller.UpdateManager;
+import com.sharegogo.video.data.UpdateInfo;
+import com.sharegogo.video.game.R;
+import com.sharegogo.video.utils.UIUtils;
 import com.umeng.analytics.MobclickAgent;
-import com.umeng.fb.UMFeedbackService;
+import com.viewpagerindicator.TabPageIndicator;
 
-public class MainActivity extends BaseActivity{
+public class MainActivity extends BaseActivity implements OnClickListener{
 	private static final String[] CONTENT = new String[] { "分类", "最新", "最热", "推荐"};
     private static final int[] ICONS = new int[] {
             R.drawable.perm_group_calendar,
@@ -58,13 +46,12 @@ public class MainActivity extends BaseActivity{
     private ViewPager mPager = null;
     private TabPageIndicator mIndicator = null;
     private FragmentStatePagerAdapter mOnlineVideoAdapter = null;
+    private UpdateInfo mUpdateInfo = null;
+    private GameDialogFragment mUpdateNote = null;
     
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        setSupportProgressBarIndeterminateVisibility(false);
         
         setContentView(R.layout.activity_main);
         
@@ -134,6 +121,23 @@ public class MainActivity extends BaseActivity{
 		// TODO Auto-generated method stub
 		super.onResume();
 		MobclickAgent.onResume(this);
+		mUpdateInfo = UpdateManager.getInstance().getUpdateInfo();
+		boolean hasShowUpdate = SharegogoVideoApplication.getApplication().bShowUpdate;
+		
+		if(mUpdateInfo != null && !hasShowUpdate)
+		{
+			mUpdateNote = new GameDialogFragment(
+					R.drawable.ic_about,
+					R.string.update_note,
+					mUpdateInfo.desc,
+					R.string.update_now,
+					R.string.update_later,
+					this);
+			
+			mUpdateNote.show(this.getSupportFragmentManager(), null);
+			
+			SharegogoVideoApplication.getApplication().bShowUpdate = true;
+		}
 	}
 
 
@@ -341,6 +345,29 @@ public class MainActivity extends BaseActivity{
             }
         }
     }
+
+	private void updateNow()
+	{
+		mUpdateNote.dismiss();
+		
+		UIUtils.gotoBrowserActivity(this, mUpdateInfo.url);
+	}
+	
+	@Override
+	public void onClick(DialogInterface dialog, int which) {
+		// TODO Auto-generated method stub
+		switch(which)
+		{
+		case DialogInterface.BUTTON_POSITIVE:
+			updateNow();
+			break;
+		case DialogInterface.BUTTON_NEGATIVE:
+			
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 

@@ -17,9 +17,7 @@ import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.data.AutoRegister;
 import com.sharegogo.video.http.BasicResponseHandler;
 import com.sharegogo.video.http.HttpManager;
-import com.sharegogo.video.http.ResponseHandler;
 import com.sharegogo.video.utils.DeviceInfo;
-import com.sharegogo.video.utils.LogUtils;
 
 public class UserManager extends BasicResponseHandler {
 	static private UserManager mInstance;

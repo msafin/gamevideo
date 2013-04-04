@@ -20,7 +20,7 @@
     </EditText>
 
     <ImageButton
-        android:id="@+id/search"
+        android:id="@+id/search_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/search_text"

@@ -27,6 +27,7 @@ import com.sharegogo.video.controller.HistoryManager;
 import com.sharegogo.video.data.History;
 import com.sharegogo.video.data.VideoList.VideoListItem;
 import com.sharegogo.video.game.R;
+import com.sharegogo.video.utils.ResUtils;
 import com.sharegogo.video.utils.UIUtils;
 
 public class HistoryFragment extends SherlockListFragment implements LoaderManager.LoaderCallbacks<List<HistoryFragment.HistoryListItem>>, OnClickListener{
@@ -112,8 +113,9 @@ public class HistoryFragment extends SherlockListFragment implements LoaderManag
 	private void showClearHistoryDialog()
 	{
 		new GameDialogFragment(
+				R.drawable.ic_help,
 				R.string.clear_history,
-				R.string.clear_history_confirm,
+				ResUtils.getString(R.string.clear_history_confirm),
 				R.string.dialog_ok,
 				R.string.dialog_cancel,
 				this

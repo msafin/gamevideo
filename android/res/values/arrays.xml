@@ -114,10 +114,10 @@
     </string-array>
     
     <string-array name="more">
-        <item>精品推荐</item>
         <item>分享</item>
         <item>设置</item>
         <item>支持和反馈</item>
+        <item>软件更新</item>
         <item>关于</item>
         <item>退出</item>
     </string-array>

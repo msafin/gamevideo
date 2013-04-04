@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.http.HttpRequest;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
@@ -37,6 +39,7 @@ import com.sharegogo.video.http.HttpManager;
 import com.sharegogo.video.http.HttpTask;
 import com.sharegogo.video.http.ResponseHandler;
 import com.sharegogo.video.utils.NetworkUtils;
+import com.sharegogo.video.utils.ResUtils;
 
 public class GameCategoryFragment extends SherlockFragment implements OnItemClickListener, 
 ResponseHandler, TokenObserver,LoaderManager.LoaderCallbacks<List<CategoryListItem>>{
@@ -45,6 +48,7 @@ ResponseHandler, TokenObserver,LoaderManager.LoaderCallbacks<List<CategoryListIt
 	private ListView mListView = null;
 	private HttpTask mHttpTask = null;
 	private HttpRequest mHttpRequest = null;
+	private ProgressDialog mProgressDialog = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -57,6 +61,12 @@ ResponseHandler, TokenObserver,LoaderManager.LoaderCallbacks<List<CategoryListIt
 	public void onAttach(Activity activity) {
 		// TODO Auto-generated method stub
 		super.onAttach(activity);
+		
+		mGamesAdapter = new GameCategoryAdapter();
+		
+		mProgressDialog = new ProgressDialog(activity);
+		mProgressDialog.setMessage(ResUtils.getString(R.string.loading));
+		mProgressDialog.show();
 		
 		if(NetworkUtils.isNetworkAvailable())
 		{
@@ -90,7 +100,7 @@ ResponseHandler, TokenObserver,LoaderManager.LoaderCallbacks<List<CategoryListIt
 		
 		mListView = pullListView.getRefreshableView();
 		mListView.setOnItemClickListener(this);
-		
+
 		return view;
 	}
 
@@ -207,7 +217,8 @@ ResponseHandler, TokenObserver,LoaderManager.LoaderCallbacks<List<CategoryListIt
 	@Override
 	public void onTokenFailed() {
 		// TODO Auto-generated method stub
-		
+		mProgressDialog.dismiss();
+		Toast.makeText(getActivity(), R.string.load_failed, 1000).show();
 	}
 
 	@Override
@@ -221,23 +232,20 @@ ResponseHandler, TokenObserver,LoaderManager.LoaderCallbacks<List<CategoryListIt
 	public void onLoadFinished(Loader<List<CategoryListItem>> arg0,
 			List<CategoryListItem> arg1) {
 		// TODO Auto-generated method stub
+		mProgressDialog.dismiss();
+		
 		List<CategoryListItem> categoryList = arg1;
 		
 		if(categoryList != null && categoryList.size() > 0)
 		{
-			if(mGamesAdapter == null)
-			{
-				mGamesAdapter = new GameCategoryAdapter();
-			}
-			else
-			{
-				mGamesAdapter.clearData();
-			}
-			
+			mGamesAdapter.clearData();
 			mGamesAdapter.addData(categoryList);
 			mListView.setAdapter(mGamesAdapter);
 		}
-		
+		else
+		{
+			Toast.makeText(getActivity(), R.string.load_failed, 1000).show();
+		}
 	}
 
 	@Override
