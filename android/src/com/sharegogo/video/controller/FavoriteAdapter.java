@@ -41,13 +41,13 @@ public class FavoriteAdapter extends GameBaseAdapter<FavoriteListItem>{
 		
 		if(item.mode == FavoriteListItem.MODE_EDIT)
 		{
-			tag.mPlay.setVisibility(View.GONE);
+			tag.mPlay.setVisibility(View.INVISIBLE);
 			tag.mDelete.setVisibility(View.VISIBLE);
 		}
 		else if(item.mode == FavoriteListItem.MODE_NORMAL)
 		{
 			tag.mPlay.setVisibility(View.VISIBLE);
-			tag.mDelete.setVisibility(View.GONE);
+			tag.mDelete.setVisibility(View.INVISIBLE);
 		}
 		
 		return view;

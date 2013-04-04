@@ -9,7 +9,7 @@ public class HttpConstants {
 	static final public String URL_CATEGORY_LIST = HTTP_HOST + "/getcategorylist.action";
 	static final public String URL_VIDEO_LIST = HTTP_HOST + "/getresourcelist.action";
 	static final public String URL_VIDEO_DETAIL = HTTP_HOST + "/getvideodetail.action";
-	static final public String URL_SEARCH = HTTP_HOST + "/search/videoSearch.action";
+	static final public String URL_SEARCH = HTTP_HOST + "/videosearch.action";
 	static final public String URL_UPDATE = HTTP_HOST + "/getupdateinfo.action";
 	static final public String URL_NOTIFY_LIST = HTTP_HOST + "/system/GetNotifyList.action";
 	

@@ -25,6 +25,11 @@ public class UIUtils {
 	
 	static public void gotoPlayActivity(VideoDetail video,Context context)
 	{
+		if(video == null)
+		{
+			return;
+		}
+		
 		Intent intent = new Intent(Intent.ACTION_MAIN);
 		
 		intent.setClass(context, PlayActivity.class);
@@ -32,6 +37,7 @@ public class UIUtils {
 		intent.putExtra(PlayActivity.KEY_VIDEO_AUTHOR, video.author);
 		intent.putExtra(PlayActivity.KEY_VIDEO_SOURCE, video.from);
 		intent.putExtra(PlayActivity.KEY_VIDEO_ID,video.id);
+		intent.putExtra(PlayActivity.KEY_FLASH_URL,video.flashUrl);
 		
 		context.startActivity(intent);
 	}

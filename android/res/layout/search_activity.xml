@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ptr="http://schemas.android.com/apk/res/com.sharegogo.video.game"
+    xmlns:adsmogo="http://www.adsmogo.com"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#999999" >
@@ -26,5 +28,28 @@
         android:layout_alignTop="@+id/search_text"
         android:layout_alignParentRight="true"
         android:src="@drawable/ic_action_search" />
-
+    
+   <com.handmark.pulltorefresh.library.PullToRefreshListView
+        android:id="@+id/pull_refresh_list"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/search_btn"
+        android:cacheColorHint="#00000000"
+        android:divider="#19000000"
+        android:dividerHeight="2dp"
+        android:fadingEdge="none"
+        android:fastScrollEnabled="false"
+        android:footerDividersEnabled="true"
+        android:headerDividersEnabled="false"
+        android:smoothScrollbar="true"
+        ptr:ptrMode="pullFromEnd"/>
+   <com.adsmogo.adview.AdsMogoLayout
+        android:id="@+id/adsMogoView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        adsmogo:appid="4d7c7927935149e99bafc99b730460c4"
+        adsmogo:express_mode="false" >
+    </com.adsmogo.adview.AdsMogoLayout>
 </RelativeLayout>

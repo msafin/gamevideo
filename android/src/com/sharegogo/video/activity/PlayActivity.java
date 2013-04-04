@@ -61,6 +61,7 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	static final public String KEY_VIDEO_NAME = "video_name";
 	static final public String KEY_VIDEO_SOURCE = "video_source";
 	static final public String KEY_VIDEO_ID = "video_id";
+	static final public String KEY_FLASH_URL = "flash_url";
 	
 	private WebView mWebView = null;
 	private String mUrl = null;
@@ -95,6 +96,7 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		
 		Intent intent = this.getIntent();
 		mVideoId = intent.getLongExtra(KEY_VIDEO_ID, -1);
+		mUrl = intent.getStringExtra(KEY_FLASH_URL);
 		
 		mFavorite = FavoriteManager.getInstance().getFavorite(mVideoId);
 		if(mFavorite != null)
@@ -370,6 +372,20 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 				// TODO Auto-generated method stub
 					super.onPageFinished(view, url);
 				
+					//从搜索结果页跳转过
+					if(mUrl != null)
+					{
+						mWebView.loadUrl("javascript:callJS()");  //java调用js的函数	
+						
+						if(!NetworkUtils.isNetworkAvailable())
+						{
+							Toast.makeText(PlayActivity.this, ResUtils.getString(R.string.cannot_play_for_network), 2000).show();
+						}
+						
+						mProgressDialog.dismiss();
+						
+						return;
+					}
 					
 					VideoDetail detail = VideoManager.getInstance().getVideoDetail(mVideoId);
 					if(detail != null && detail.flashUrl != null && detail.flashUrl.length() > 0)

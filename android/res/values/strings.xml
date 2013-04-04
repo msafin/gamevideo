@@ -62,4 +62,7 @@
 	<string name="load_video_detail_failed">获取视频信息失败</string>
 	<string name="cannot_play_for_network">没有网络无法播放视频</string>
 	
+	<string name="searching">正在搜索...</string>
+	<string name="no_search_result">搜索不到相关视频</string>
+	
 </resources>

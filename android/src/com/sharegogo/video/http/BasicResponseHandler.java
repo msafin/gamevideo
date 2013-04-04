@@ -9,7 +9,6 @@ public class BasicResponseHandler implements ResponseHandler{
 	@Override
 	public void onSuccess(Object data) {
 		// TODO Auto-generated method stub
-		Toast.makeText(SharegogoVideoApplication.getApplication(), "success", 1000).show();
 	}
 
 	@Override
