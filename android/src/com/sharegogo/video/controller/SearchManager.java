@@ -1,5 +1,7 @@
 package com.sharegogo.video.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +9,7 @@ import org.apache.http.HttpRequest;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -60,7 +63,14 @@ public class SearchManager {
 		
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		
-		NameValuePair keyPair = new BasicNameValuePair("keyWord",key); 
+		NameValuePair keyPair;
+		try {
+			keyPair = new BasicNameValuePair("keyWord",URLEncoder.encode(key, "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			keyPair = new BasicNameValuePair("keyWord",key);
+		} 
 		NameValuePair pageNumPair = new BasicNameValuePair("pageNum",String.valueOf(pageNum));
 		NameValuePair pageSizePair = new BasicNameValuePair("pageSize",String.valueOf(pageSize));
 		NameValuePair listTypePair = new BasicNameValuePair("listType",String.valueOf(TYPE_LIST_HOT));

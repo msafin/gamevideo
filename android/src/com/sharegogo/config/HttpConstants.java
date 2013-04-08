@@ -11,7 +11,7 @@ public class HttpConstants {
 	static final public String URL_VIDEO_DETAIL = HTTP_HOST + "/getvideodetail.action";
 	static final public String URL_SEARCH = HTTP_HOST + "/videosearch.action";
 	static final public String URL_UPDATE = HTTP_HOST + "/getupdateinfo.action";
-	static final public String URL_NOTIFY_LIST = HTTP_HOST + "/system/GetNotifyList.action";
+	static final public String URL_NOTIFY_LIST = HTTP_HOST + "/system/getnotifylist.action";
 	
 //	static final public String HTTP_HOST = "http://www.sharegogo.com";
 //	static final public String URL_AUTO_REGISTER = HTTP_HOST + "/json/autoregister.php";

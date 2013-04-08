@@ -7,6 +7,7 @@ import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.sharegogo.video.activity.BaseActivity;
+import com.sharegogo.video.controller.NotifyManager;
 import com.sharegogo.video.controller.UpdateManager;
 import com.sharegogo.video.controller.UserManager;
 import com.sharegogo.video.data.MySqliteHelper;
@@ -28,7 +29,7 @@ public class SharegogoVideoApplication extends Application{
 		mInstance = this;
 		UserManager.getInstance();
 		UpdateManager.getInstance().checkUpate();
-		
+		NotifyManager.getInstance().getNotify();
 		//GamePeople.makePhonyData(this);
 		//GameVideo.makePhonyData(this);
 		//Favorite.makePhonyData(this);

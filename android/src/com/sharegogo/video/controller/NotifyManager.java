@@ -18,9 +18,10 @@ import com.sharegogo.video.http.HttpManager;
 import com.sharegogo.video.http.ResponseHandler;
 import com.sharegogo.video.utils.HttpUtils;
 
-public class NotifyManager {
+public class NotifyManager implements ResponseHandler {
 	static private NotifyManager mInstance;
-
+	private NotifyList mNotifyList = null;
+	
 	private NotifyManager() 
 	{
 	}
@@ -52,8 +53,42 @@ public class NotifyManager {
 		HttpManager.doRequest(httpRequest, params, handler,NotifyList.class);
 	}
 	
+	public void getNotify()
+	{
+		HttpRequest httpRequest = new BasicHttpRequest(HttpGet.METHOD_NAME, HttpConstants.URL_NOTIFY_LIST);
+		
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		
+		params.add(HttpUtils.getTokenPair());
+		
+		HttpManager.doRequest(httpRequest, params, this,NotifyList.class);
+	}
+	
+	public NotifyList getNotifyList()
+	{
+		return mNotifyList;
+	}
+	
 	static public void test()
 	{
 		getInstance().getNotify(new BasicResponseHandler());
+	}
+
+	@Override
+	public void onSuccess(Object data) {
+		// TODO Auto-generated method stub
+		mNotifyList = (NotifyList)data;
+	}
+
+	@Override
+	public void onFailed(int what, Object msg) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean onPersistent(Object data) {
+		// TODO Auto-generated method stub
+		return true;
 	}
 }

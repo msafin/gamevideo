@@ -19,6 +19,14 @@
 			<include layout="@layout/viewpager_fragment"/>
 		</RelativeLayout>
 		
+		<include
+		    android:id="@+id/notify"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_above="@android:id/tabs"
+		    android:layout_marginBottom="3dp"
+		    layout="@layout/system_notify"/>
+		
        <TabWidget android:id="@android:id/tabs"
 	       android:layout_width="fill_parent"
 	       android:layout_height="64dip"

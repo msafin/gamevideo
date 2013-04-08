@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -17,6 +19,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
@@ -25,21 +28,25 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.view.MenuItem;
 import com.sharegogo.video.SharegogoVideoApplication;
+import com.sharegogo.video.controller.NotifyManager;
 import com.sharegogo.video.controller.UpdateManager;
+import com.sharegogo.video.data.NotifyList;
+import com.sharegogo.video.data.NotifyList.NotifyListItem;
 import com.sharegogo.video.data.UpdateInfo;
 import com.sharegogo.video.game.R;
 import com.sharegogo.video.utils.UIUtils;
 import com.umeng.analytics.MobclickAgent;
 import com.viewpagerindicator.TabPageIndicator;
 
-public class MainActivity extends BaseActivity implements OnClickListener{
-	private static final String[] CONTENT = new String[] { "分类", "最新", "最热", "推荐"};
+public class MainActivity extends BaseActivity implements OnClickListener, android.view.View.OnClickListener{
+	private static final String[] CONTENT = new String[] { "分类", "最新", "最热"};
     private static final int[] ICONS = new int[] {
             R.drawable.perm_group_calendar,
             R.drawable.perm_group_camera,
             R.drawable.perm_group_device_alarms,
             R.drawable.perm_group_location,
     };
+    private static final int MSG_CHANGE_NOTIFY = 1;
     
     private TabHost mTabHost = null;
     private TabManager mTabManager;
@@ -48,6 +55,46 @@ public class MainActivity extends BaseActivity implements OnClickListener{
     private FragmentStatePagerAdapter mOnlineVideoAdapter = null;
     private UpdateInfo mUpdateInfo = null;
     private GameDialogFragment mUpdateNote = null;
+    private View mNotify = null;
+    private ImageButton mClose = null;
+    private TextView mNotifyTitle = null;
+    private TextView mNotifyContent = null;
+    private	boolean bCloseByUser = false;
+    private NotifyList mNotifyList = null;
+    private int mNofityIndex = 0;
+    private Handler mHandler = new Handler()
+    {
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			switch(msg.what)
+			{
+				case MSG_CHANGE_NOTIFY:
+					changeNotify();
+					if(!bCloseByUser)
+					{
+						mHandler.sendEmptyMessageDelayed(MSG_CHANGE_NOTIFY, 3000);
+					}
+					break;
+				default:
+					break;
+			}
+			super.handleMessage(msg);
+		}
+    	
+    };
+    
+    private void changeNotify()
+    {
+    	mNofityIndex++;
+    	
+    	int index = mNofityIndex % mNotifyList.count;
+    	
+		NotifyListItem firstItem = mNotifyList.list[index];
+		
+		mNotifyTitle.setText(firstItem.notifyTitleString);
+		mNotifyContent.setText(firstItem.notifyContentString);
+    }
     
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,7 +108,13 @@ public class MainActivity extends BaseActivity implements OnClickListener{
         mPager.setOffscreenPageLimit(3);
         mIndicator = (TabPageIndicator)findViewById(R.id.indicator);
         mIndicator.setViewPager(mPager);
-
+        mNotify = findViewById(R.id.notify);
+        mNotify.setVisibility(View.GONE);
+        mClose = (ImageButton)findViewById(R.id.close);
+        mClose.setOnClickListener(this);
+        mNotifyTitle = (TextView)findViewById(R.id.title);
+        mNotifyContent = (TextView)findViewById(R.id.content);
+        
         mTabHost = (TabHost)findViewById(android.R.id.tabhost);
         
         setupTabHost();
@@ -137,6 +190,23 @@ public class MainActivity extends BaseActivity implements OnClickListener{
 			mUpdateNote.show(this.getSupportFragmentManager(), null);
 			
 			SharegogoVideoApplication.getApplication().bShowUpdate = true;
+		}
+		
+		mNotifyList = NotifyManager.getInstance().getNotifyList();
+		
+		if(mNotifyList != null && !bCloseByUser)
+		{
+			NotifyListItem firstItem = mNotifyList.list[0];
+			
+			mNotifyTitle.setText(firstItem.notifyTitleString);
+			mNotifyContent.setText(firstItem.notifyContentString);
+			
+			mNotify.setVisibility(View.VISIBLE);
+			
+			if(mNotifyList.count > 1)
+			{
+				mHandler.sendEmptyMessageDelayed(MSG_CHANGE_NOTIFY, 3000);
+			}
 		}
 	}
 
@@ -366,6 +436,21 @@ public class MainActivity extends BaseActivity implements OnClickListener{
 			break;
 		default:
 			break;
+		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch(v.getId())
+		{
+			case R.id.close:
+				bCloseByUser = true;
+				mNotify.setVisibility(View.GONE);
+				mHandler.removeMessages(MSG_CHANGE_NOTIFY);
+				break;
+			default:
+				break;
 		}
 	}
 }

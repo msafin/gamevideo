@@ -12,8 +12,8 @@ public class NotifyList extends BaseResponse{
 	static public class NotifyListItem
 	{
 		public long notifyId;
-		public String notifyTitle;
-		public String notifyContent;
+		public String notifyTitleString;
+		public String notifyContentString;
 		public long lastUpdateTime;
 	}
 }
