@@ -265,7 +265,7 @@ public class VideoListFragment extends SherlockFragment implements OnItemClickLi
 		case R.id.load_more:
 			showLoading();
 			int pageNum = mVideoAdapter.getCount() / PAGE_SIZE + 1;
-			Log.e("test","count = " + mVideoAdapter.getCount() + ",page = " + pageNum);
+			
 			VideoManager.getInstance().getVideoList(mCId, mListType, pageNum, PAGE_SIZE, 1, this);
 			break;
 		case R.id.loading_more:

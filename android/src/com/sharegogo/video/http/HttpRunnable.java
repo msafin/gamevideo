@@ -207,12 +207,11 @@ class HttpRunnable implements Runnable {
 		                byte[] paramsBuffer = new byte[count];
 		                
 		                entityInput.read(paramsBuffer);
+		                entityInput.close();
 	                	String formParams = new String(paramsBuffer);
 	                	
 	                	builder.append("?");
 	                	builder.append(formParams);
-	                	
-	                	LogUtils.e("http", "params = " + formParams);
             		}
             	}
             	
@@ -248,8 +247,6 @@ class HttpRunnable implements Runnable {
         			httpConn = (HttpURLConnection)url.openConnection();
         		}
             	
-                LogUtils.e("http", "url = " + builder.toString());
-                
                 httpConn.setDoInput(true);
                 
                 if(isGetRequest(httpRequest))

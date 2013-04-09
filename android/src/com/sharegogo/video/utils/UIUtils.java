@@ -8,6 +8,7 @@ import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.sharegogo.video.activity.PlayActivity;
 import com.sharegogo.video.data.VideoDetail;
@@ -64,6 +65,11 @@ public class UIUtils {
 	
 	static public void DisplayImage(String uri,ImageView imageView,int defaultImage)
 	{
+		DisplayImage(uri,imageView,defaultImage,null);
+	}
+	
+	static public void DisplayImage(String uri,ImageView imageView,int defaultImage,ImageLoadingListener listener)
+	{
 		DisplayImageOptions options = new DisplayImageOptions.Builder()
         .showStubImage(defaultImage)
         .resetViewBeforeLoading()
@@ -73,6 +79,13 @@ public class UIUtils {
         .imageScaleType(ImageScaleType.EXACTLY)
         .build();
 		
-		ImageLoader.getInstance().displayImage(uri, imageView, options);
+		if(listener != null)
+		{
+			ImageLoader.getInstance().displayImage(uri, imageView, options,listener);
+		}
+		else
+		{
+			ImageLoader.getInstance().displayImage(uri, imageView, options);
+		}
 	}
 }
