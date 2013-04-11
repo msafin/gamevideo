@@ -6,10 +6,11 @@
 
     <ImageView
         android:id="@android:id/icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="84dp"
+        android:layout_height="64dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        android:layout_marginLeft="3dp"
         android:src="@drawable/ic_launcher" />
 
     <TextView
@@ -20,7 +21,7 @@
         android:layout_alignTop="@android:id/icon"
         android:layout_toRightOf="@android:id/icon"
         android:layout_toLeftOf="@+id/play_btn"
-        android:layout_marginLeft="3dp"
+        android:layout_marginLeft="5dp"
         android:singleLine="true"
         android:ellipsize="end"
         android:text="标题" />

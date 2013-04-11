@@ -1,7 +1,10 @@
 package com.sharegogo.video.activity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -15,6 +18,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,15 +34,21 @@ import com.actionbarsherlock.view.MenuItem;
 import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.controller.NotifyManager;
 import com.sharegogo.video.controller.UpdateManager;
+import com.sharegogo.video.controller.VideoAdapter;
+import com.sharegogo.video.controller.VideoManager;
 import com.sharegogo.video.data.NotifyList;
+import com.sharegogo.video.data.VideoList;
+import com.sharegogo.video.data.CategoryList.CategoryListItem;
 import com.sharegogo.video.data.NotifyList.NotifyListItem;
 import com.sharegogo.video.data.UpdateInfo;
 import com.sharegogo.video.game.R;
+import com.sharegogo.video.utils.NetworkUtils;
+import com.sharegogo.video.utils.ResUtils;
 import com.sharegogo.video.utils.UIUtils;
 import com.umeng.analytics.MobclickAgent;
 import com.viewpagerindicator.TabPageIndicator;
 
-public class MainActivity extends BaseActivity implements OnClickListener, android.view.View.OnClickListener{
+public class MainActivity extends BaseActivity implements OnClickListener, android.view.View.OnClickListener, OnPageChangeListener{
 	private static final String[] CONTENT = new String[] { "分类", "最新", "最热"};
     private static final int[] ICONS = new int[] {
             R.drawable.perm_group_calendar,
@@ -62,6 +72,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, andro
     private	boolean bCloseByUser = false;
     private NotifyList mNotifyList = null;
     private int mNofityIndex = 0;
+    private List<VideoListFragmentEx> mFragments = new ArrayList<VideoListFragmentEx>();
     private Handler mHandler = new Handler()
     {
 		@Override
@@ -104,8 +115,8 @@ public class MainActivity extends BaseActivity implements OnClickListener, andro
         
         mOnlineVideoAdapter = new OnlineVideoAdapter(getSupportFragmentManager());
         mPager = (ViewPager)findViewById(R.id.pager);
+        mPager.setOffscreenPageLimit(2);
         mPager.setAdapter(mOnlineVideoAdapter);
-        mPager.setOffscreenPageLimit(3);
         mIndicator = (TabPageIndicator)findViewById(R.id.indicator);
         mIndicator.setViewPager(mPager);
         mNotify = findViewById(R.id.notify);
@@ -118,6 +129,8 @@ public class MainActivity extends BaseActivity implements OnClickListener, andro
         mTabHost = (TabHost)findViewById(android.R.id.tabhost);
         
         setupTabHost();
+        
+        mIndicator.setOnPageChangeListener(this);
     }
     
 	private void setupTabHost()
@@ -292,12 +305,37 @@ public class MainActivity extends BaseActivity implements OnClickListener, andro
 
         @Override
         public Fragment getItem(int position) {
-        	if(position == 0)
+        	switch(position)
         	{
+        	case 0:
+        		return new GameCategoryFragment();
+        	case 1:
+        	{
+        		VideoListFragmentEx videoListFragment = new VideoListFragmentEx();
+        		Bundle args = new Bundle();
+        		args.putLong("cid", 6);
+        		args.putInt("listType", VideoList.TYPE_LIST_LATEST);
+        		videoListFragment.setArguments(args);
+        		
+        		mFragments.add(videoListFragment);
+        		
+        		return videoListFragment;
+        	}
+        	case 2:
+        	{
+        		VideoListFragmentEx videoListFragment = new VideoListFragmentEx();
+        		Bundle args = new Bundle();
+        		args.putLong("cid", 6);
+        		args.putInt("listType", VideoList.TYPE_LIST_HOT);
+        		videoListFragment.setArguments(args);
+        		
+        		mFragments.add(videoListFragment);
+        		
+        		return videoListFragment;
+        	}
+        	default:
         		return new GameCategoryFragment();
         	}
-        	
-            return TestFragment.newInstance(CONTENT[position % CONTENT.length]);
         }
 
         @Override
@@ -451,6 +489,34 @@ public class MainActivity extends BaseActivity implements OnClickListener, andro
 				break;
 			default:
 				break;
+		}
+	}
+
+	@Override
+	public void onPageScrollStateChanged(int arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onPageScrolled(int arg0, float arg1, int arg2) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void onPageSelected(int arg0) {
+		// TODO Auto-generated method stub
+		if(arg0 == 0)
+		{
+			return;
+		}
+		
+		VideoListFragmentEx fragment = mFragments.get(arg0 - 1);
+		
+		VideoAdapter adapter = fragment.getAdapter();
+		if(adapter.getCount() <= 0)
+		{
+			fragment.startLoadVideo();
 		}
 	}
 }

@@ -50,8 +50,7 @@ public class HistoryAdapter extends GameBaseAdapter<HistoryListItem>{
 			if(item.video.author != null)
 				tag.mAuthorName.setText(item.video.author);
 			
-			if(item.video.img != null)
-				UIUtils.DisplayImage(item.video.img, tag.mLeftImageView, R.drawable.ic_launcher);
+			UIUtils.DisplayImage(item.video.img, tag.mLeftImageView, R.drawable.default_bg);
 			
 			if(item.video.type != null)
 				tag.mGameName.setText(item.video.type);

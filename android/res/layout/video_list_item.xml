@@ -5,11 +5,11 @@
 
 	<ImageView
         android:id="@android:id/icon"
-        android:layout_width="86dp"
+        android:layout_width="84dp"
         android:layout_height="64dp"
         android:layout_centerVertical="true"
 		android:layout_marginLeft="3dp"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/default_bg" />
 
 	<RelativeLayout 
 	    android:id="@+id/video_info"
@@ -18,7 +18,7 @@
 	    android:layout_toRightOf="@android:id/icon"
 	    android:layout_toLeftOf="@android:id/icon1"
 	    android:layout_centerVertical="true"
-	    android:layout_marginLeft="20dp">
+	    android:layout_marginLeft="5dp">
 		<TextView
 	        android:id="@android:id/title"
 	        android:layout_width="wrap_content"
@@ -26,9 +26,9 @@
 	        android:maxLines="3"
 	        android:textSize="16sp"
 	        android:textStyle="bold"
-	        android:textColor="#FFFFFF"
 	        android:ellipsize="end"
-	        android:text="TextView" />
+	        android:textColor="#FFFFFF"
+	        android:text="" />
 		<TextView
 	        android:id="@+id/source"
 	        android:layout_width="wrap_content"
@@ -38,10 +38,34 @@
 	        android:singleLine="true"
 	        android:textSize="13sp"
 	        android:textStyle="bold"
-	        android:textColor="#FFFFFF"
 	        android:ellipsize="end"
-	        android:text="TextView" />
-
+	        android:textColor="#FFFFFF"
+	        android:text="" />
+		<TextView 
+		    android:id="@+id/hot"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_below="@+id/source"
+		    android:singleLine="true"
+	        android:textSize="13sp"
+	        android:textStyle="bold"
+	        android:ellipsize="end"
+	        android:textColor="#FFFFFF"
+		    android:text=""/>
+		<TextView 
+		    android:id="@+id/update_time"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_below="@+id/source"
+		    android:layout_toRightOf="@+id/hot"
+		    android:layout_marginLeft="8dp"
+		    android:singleLine="true"
+	        android:textSize="13sp"
+	        android:textStyle="bold"
+	        android:ellipsize="end"
+	        android:textColor="#FFFFFF"
+		    android:text=""/>
+		
 	</RelativeLayout>
 	
     <ImageView

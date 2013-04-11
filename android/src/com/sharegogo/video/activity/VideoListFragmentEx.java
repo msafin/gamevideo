@@ -37,7 +37,7 @@ import com.sharegogo.video.utils.NetworkUtils;
 import com.sharegogo.video.utils.ResUtils;
 import com.sharegogo.video.utils.UIUtils;
 
-public class VideoListFragment extends SherlockFragment implements OnItemClickListener,
+public class VideoListFragmentEx extends SherlockFragment implements OnItemClickListener,
 	LoaderManager.LoaderCallbacks<List<VideoDetail>>, ResponseHandler,OnClickListener{
 	private static final int VIDEO_LOADER = 1;
 	private static final int PAGE_SIZE = 15;
@@ -75,7 +75,15 @@ public class VideoListFragment extends SherlockFragment implements OnItemClickLi
 		
 		mProgressDialog = new ProgressDialog(activity);
 		mProgressDialog.setMessage(ResUtils.getString(R.string.loading));
-		
+	}
+
+	public VideoAdapter getAdapter()
+	{
+		return mVideoAdapter;
+	}
+	
+	public void startLoadVideo()
+	{
 		mProgressDialog.show();
 		
 		if(NetworkUtils.isNetworkAvailable())
@@ -89,8 +97,7 @@ public class VideoListFragment extends SherlockFragment implements OnItemClickLi
 			this.getLoaderManager().initLoader(VIDEO_LOADER, null, this);
 		}
 	}
-
-
+	
 	private void showLoading()
 	{
 		mLoading.setVisibility(View.VISIBLE);
@@ -136,7 +143,7 @@ public class VideoListFragment extends SherlockFragment implements OnItemClickLi
 		mListView.setAdapter(mVideoAdapter);
 		
 		showLoadMore(false);
-	
+
 		return view;
 	}
 

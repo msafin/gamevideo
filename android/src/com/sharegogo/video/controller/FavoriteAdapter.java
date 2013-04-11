@@ -2,6 +2,7 @@ package com.sharegogo.video.controller;
 
 import com.sharegogo.video.activity.FavoriteFragment.FavoriteListItem;
 import com.sharegogo.video.game.R;
+import com.sharegogo.video.utils.UIUtils;
 
 import android.content.Context;
 import android.view.View;
@@ -38,6 +39,8 @@ public class FavoriteAdapter extends GameBaseAdapter<FavoriteListItem>{
 		ViewTag tag = (ViewTag)view.getTag();
 		
 		tag.mTitle.setText(item.video.name);
+		
+		UIUtils.DisplayImage(item.video.img, tag.mLeftImageView, R.drawable.default_bg);
 		
 		if(item.mode == FavoriteListItem.MODE_EDIT)
 		{
