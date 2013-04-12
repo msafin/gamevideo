@@ -75,18 +75,17 @@ public class AuthorFragment extends SherlockFragment implements OnItemClickListe
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		// TODO Auto-generated method stub
-		VideoListFragment videoListFragment = new VideoListFragment();
+		GameFragmentEx gameFragment = new GameFragmentEx();
 		Bundle args = new Bundle();
 		CategoryListItem item = (CategoryListItem)mAuthorAdapter.getItem(arg2 - 1);
-		args.putLong("cid", item.id);
-		args.putInt("listType", VideoList.TYPE_LIST_LATEST);
+		args.putLong("parentId", item.id);
 		args.putString("categoryName", mCategoryName);
 		
-		videoListFragment.setArguments(args);
+		gameFragment.setArguments(args);
 		
 		this.getFragmentManager().beginTransaction()
 			.addToBackStack(null)
-			.add(R.id.dynamic_content,videoListFragment)
+			.add(R.id.dynamic_content,gameFragment)
 			.commit();
 	}
 
