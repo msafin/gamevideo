@@ -103,7 +103,7 @@ public class GameFragment extends SherlockFragment implements OnPageChangeListen
 		        	{
 		        		VideoListFragmentEx videoListFragment = new VideoListFragmentEx();
 		        		Bundle args = new Bundle();
-		        		args.putLong("cid", 26);
+		        		args.putLong("cid", 20);
 		        		args.putInt("listType", VideoList.TYPE_LIST_LATEST);
 		        		videoListFragment.setArguments(args);
 		        		
@@ -115,7 +115,7 @@ public class GameFragment extends SherlockFragment implements OnPageChangeListen
 	        		{
 	            		VideoListFragmentEx videoListFragment = new VideoListFragmentEx();
 	            		Bundle args = new Bundle();
-	            		args.putLong("cid", 26);
+	            		args.putLong("cid", 20);
 	            		args.putInt("listType", VideoList.TYPE_LIST_HOT);
 	            		videoListFragment.setArguments(args);
 	            		

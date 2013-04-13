@@ -112,6 +112,7 @@ public class MoreFragment extends SherlockFragment implements OnItemClickListene
 	private void onCheckUpdate()
 	{
 		mProgressDialog.setMessage(ResUtils.getString(R.string.checking_update));
+		mProgressDialog.show();
 		UpdateManager.getInstance().checkUpdate(this);
 	}
 	
@@ -145,13 +146,43 @@ public class MoreFragment extends SherlockFragment implements OnItemClickListene
 			break;
 		//ÍË³ö
 		case 5:
-			SharegogoVideoApplication.getApplication().onApplicationExit();
+			showExitConfirm();
 			break;
 		default:
 			break;
 		}
 	}
 
+	private void showExitConfirm()
+	{
+		new GameDialogFragment(
+				R.drawable.ic_dialog_about,
+				R.string.exit_note,
+				getString(R.string.exit_confirm),
+				R.string.dialog_ok,
+				R.string.dialog_cancel,
+				new OnClickListener()
+				{
+
+					@Override
+					public void onClick(DialogInterface arg0, int arg1) {
+						// TODO Auto-generated method stub
+						switch(arg1)
+						{
+							case DialogInterface.BUTTON_POSITIVE:
+								SharegogoVideoApplication.getApplication().onApplicationExit();
+								break;
+							case DialogInterface.BUTTON_NEGATIVE:
+								
+								break;
+							default:
+								break;
+						}
+					}
+					
+				}).show(getFragmentManager(), null);
+	}
+	
 	@Override
 	public void onCheckUpdateSuccess(UpdateInfo updateInfo) {
 		// TODO Auto-generated method stub

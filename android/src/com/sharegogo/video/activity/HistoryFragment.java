@@ -114,7 +114,7 @@ public class HistoryFragment extends SherlockListFragment implements LoaderManag
 	private void showClearHistoryDialog()
 	{
 		new GameDialogFragment(
-				R.drawable.ic_help,
+				R.drawable.ic_dialog_help,
 				R.string.clear_history,
 				ResUtils.getString(R.string.clear_history_confirm),
 				R.string.dialog_ok,
