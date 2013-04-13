@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -28,6 +29,8 @@ public class GameFragmentEx extends SherlockFragment implements OnPageChangeList
     private long mParentId = -1;
     private String mCategoryName = null;
     private List<VideoListFragmentEx> mFragments = new ArrayList<VideoListFragmentEx>();
+    private boolean bFirst = true;
+    private Handler mHandler = new Handler();
     
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -45,10 +48,10 @@ public class GameFragmentEx extends SherlockFragment implements OnPageChangeList
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 		Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		View view = inflater.inflate(R.layout.game_fragment, null);
+		View view = inflater.inflate(R.layout.game_fragment_ex, null);
 		
 		mGameAdapter = new GameAdapter(getFragmentManager());
-        mPager = (ViewPager)view.findViewById(R.id.game_pager);
+        mPager = (ViewPager)view.findViewById(R.id.game_pager_ex);
         mPager.setOffscreenPageLimit(1);
         mPager.setAdapter(mGameAdapter);
         
@@ -83,6 +86,21 @@ public class GameFragmentEx extends SherlockFragment implements OnPageChangeList
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		if(bFirst)
+		{
+			mHandler.post(new Runnable()
+			{
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					onPageSelected(0);
+				}
+				
+			});
+			
+			bFirst = false;
+		}
 	}
 	
 	class GameAdapter extends FragmentStatePagerAdapter {
@@ -99,7 +117,6 @@ public class GameFragmentEx extends SherlockFragment implements OnPageChangeList
         		Bundle args = new Bundle();
         		args.putLong("cid", mParentId);
         		args.putString("categoryName", mCategoryName);
-        		Log.e("test","cid = " + mParentId);
         		
 	        	switch(position)
 	        	{
@@ -112,7 +129,6 @@ public class GameFragmentEx extends SherlockFragment implements OnPageChangeList
 		        	default:
 	        		{
 	            		args.putInt("listType", VideoList.TYPE_LIST_HOT);
-	            		break;
 	        		}
 	        	}
 	        	

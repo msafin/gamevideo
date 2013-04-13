@@ -12,9 +12,9 @@ import com.j256.ormlite.table.DatabaseTable;
  *
  */
 public class VideoList extends BaseResponse{
-	static final public int TYPE_LIST_HOT = 1;
-	static final public int TYPE_LIST_LATEST = 2;
-	static final public int TYPE_LIST_RECOMMEND = 3;
+	static final public int TYPE_LIST_HOT = 0;
+	static final public int TYPE_LIST_LATEST = 1;
+	static final public int TYPE_LIST_RECOMMEND = 2;
 	
 	public int count;
 	public VideoListItem[] list;
