@@ -69,9 +69,11 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	private ImageButton mBtnFavorite;
 	private ImageButton mBtnRecommend;
 	private ImageButton mBtnShare;
+	private Button mGotoBrowser;
 	private Favorite mFavorite;
 	private View mDownloadNote;
 	private ProgressDialog mProgressDialog = null;
+	private VideoDetail mVideoDetail = null;
 	
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -84,13 +86,14 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		mBtnRecommend = (ImageButton)findViewById(R.id.btn_recommend);
 		mBtnShare = (ImageButton)findViewById(R.id.btn_share);
 		mDownloadNote = findViewById(R.id.flash_downlaod_note);
+		mGotoBrowser = (Button)findViewById(R.id.btn_goto_browser);
 		ImageButton download = (ImageButton)findViewById(R.id.download);
 		download.setOnClickListener(this);
 		
 		mBtnFavorite.setOnClickListener(this);
 		mBtnRecommend.setOnClickListener(this);
 		mBtnShare.setOnClickListener(this);
-		
+		mGotoBrowser.setOnClickListener(this);
 		
 		mWebView = (WebView)findViewById(R.id.webView1);
 		
@@ -507,6 +510,12 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		case R.id.download:
 			downloadFlashPlugin();
 			break;
+		case R.id.btn_goto_browser:
+			if(mVideoDetail != null && mVideoDetail.playurl != null)
+			{
+				UIUtils.gotoBrowserActivity(this, mVideoDetail.playurl);
+			}
+			break;
 			default:
 			break;
 		}
@@ -609,6 +618,7 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		
 		VideoDetail videoDetail = (VideoDetail)data;
 		
+		mVideoDetail = videoDetail;
 		mUrl = videoDetail.flashUrl;
 		
 		if(mUrl != null)
