@@ -26,9 +26,6 @@ import com.sharegogo.video.game.R;
 import com.sharegogo.video.utils.ResUtils;
 import com.sharegogo.video.utils.UIUtils;
 import com.umeng.fb.UMFeedbackService;
-import com.umeng.xp.common.ExchangeConstants;
-import com.umeng.xp.controller.ExchangeDataService;
-import com.umeng.xp.view.ExchangeViewManager;
 
 public class MoreFragment extends SherlockFragment implements OnItemClickListener, CheckUpdateObserver,OnClickListener{
 	private MoreAdapter mAdapter = null;
@@ -105,8 +102,8 @@ public class MoreFragment extends SherlockFragment implements OnItemClickListene
 	
 	private void gotoRecommendActivity()
 	{
-		ExchangeDataService service = new ExchangeDataService();
-		new ExchangeViewManager(getActivity(),service) .addView(ExchangeConstants.type_list_curtain, null); 
+		//ExchangeDataService service = new ExchangeDataService();
+		//new ExchangeViewManager(getActivity(),service) .addView(ExchangeConstants.type_list_curtain, null); 
 	}
 	
 	private void onCheckUpdate()

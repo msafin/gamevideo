@@ -54,7 +54,14 @@ public class HistoryAdapter extends GameBaseAdapter<HistoryListItem>{
 				UIUtils.DisplayImage(item.video.img, tag.mLeftImageView, R.drawable.default_bg);
 			
 			if(item.video.type != null)
+			{
 				tag.mGameName.setText(item.video.type);
+				tag.mGameName.setVisibility(View.VISIBLE);
+			}
+			else
+			{
+				tag.mGameName.setVisibility(View.INVISIBLE);
+			}
 		}
 			
 		

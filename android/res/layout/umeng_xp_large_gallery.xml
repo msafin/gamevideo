@@ -9,13 +9,12 @@
         android:layout_height="fill_parent"
         android:visibility="gone" >
 
-        <com.umeng.xp.view.UGallery
+        <com.umeng.newxp.view.UGallery
             android:id="@+id/umeng_xp_gallery"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:animationDuration="300"
-            android:spacing="0.5dp" >
-        </com.umeng.xp.view.UGallery>
+            android:spacing="0.5dp" />
 
         <LinearLayout
             android:id="@+id/umeng_xp_gallery_pointer"

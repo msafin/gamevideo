@@ -12,6 +12,8 @@ import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.sharegogo.video.activity.PlayActivity;
 import com.sharegogo.video.data.VideoDetail;
+import com.sharegogo.video.settings.SharegogoVideoSettings;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.bean.SocializeConfig;
 import com.umeng.socialize.controller.RequestType;
 import com.umeng.socialize.controller.UMServiceFactory;
@@ -47,6 +49,7 @@ public class UIUtils {
 	{
 		SocializeConfig config = new SocializeConfig();
 		config.setShareMail(false);
+		config.setPlatforms(SHARE_MEDIA.TENCENT,SHARE_MEDIA.SINA);
 		UMSocialService controller = UMServiceFactory.getUMSocialService("sharegogo", RequestType.SOCIAL); 
 		controller.setConfig(config);
 		
@@ -65,6 +68,9 @@ public class UIUtils {
 	
 	static public void DisplayImage(String uri,ImageView imageView,int defaultImage)
 	{
+		if(SharegogoVideoSettings.getWifiFetchImage() == 0 ||
+			(SharegogoVideoSettings.getWifiFetchImage() == 1 && NetworkUtils.getNetType() == NetworkUtils.TYPE_WIFI))
+			
 		DisplayImage(uri,imageView,defaultImage,null);
 	}
 	

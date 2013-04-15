@@ -1,5 +1,6 @@
 package com.sharegogo.video.activity;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 
 import android.app.ProgressDialog;
@@ -19,14 +20,18 @@ import android.widget.Toast;
 
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.j256.ormlite.dao.Dao;
+import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.controller.HistoryManager;
 import com.sharegogo.video.controller.SearchManager;
 import com.sharegogo.video.controller.VideoAdapter;
 import com.sharegogo.video.controller.VideoManager;
 import com.sharegogo.video.data.History;
+import com.sharegogo.video.data.MySqliteHelper;
 import com.sharegogo.video.data.SearchResult;
 import com.sharegogo.video.data.VideoDetail;
 import com.sharegogo.video.data.VideoList;
+import com.sharegogo.video.data.VideoList.VideoListItem;
 import com.sharegogo.video.game.R;
 import com.sharegogo.video.http.ResponseHandler;
 import com.sharegogo.video.utils.UIUtils;
@@ -120,12 +125,12 @@ public class SearchActivity extends NoTitleActivity implements OnClickListener, 
 			mProgressDialog.show();
 			mKeyword = mEditText.getText().toString();
 			
-			SearchManager.getInstance().doSearch(mKeyword, 1, PAGE_SIZE, VideoList.TYPE_LIST_LATEST, 1, this);
+			SearchManager.getInstance().doSearch(mKeyword, 1, PAGE_SIZE, VideoList.TYPE_LIST_HOT, 0, this);
 			break;
 		case R.id.load_more:
 			showLoading();
 			int pageNum = mVideoAdapter.getCount() / PAGE_SIZE + 1;
-			SearchManager.getInstance().doSearch(mKeyword, pageNum, PAGE_SIZE, VideoList.TYPE_LIST_LATEST, 1, this);
+			SearchManager.getInstance().doSearch(mKeyword, pageNum, PAGE_SIZE, VideoList.TYPE_LIST_HOT, 0, this);
 			break;
 		case R.id.loading_more:
 			break;
@@ -175,6 +180,28 @@ public class SearchActivity extends NoTitleActivity implements OnClickListener, 
 	@Override
 	public boolean onPersistent(Object data) {
 		// TODO Auto-generated method stub
+		SearchResult result = (SearchResult)data;
+		MySqliteHelper dbHelper = SharegogoVideoApplication.getApplication().getHelper();
+		
+		if(result.list != null && result.list.length > 0)
+		{
+			try {
+				Dao<VideoDetail,String> dao = dbHelper.getDao(VideoDetail.class);
+				
+				for(VideoDetail item:result.list)
+				{
+					dao.createOrUpdate(item);
+				}
+				
+				return true;
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				
+				return false;
+			}
+		}
+		
 		return true;
 	}
 
@@ -197,7 +224,7 @@ public class SearchActivity extends NoTitleActivity implements OnClickListener, 
 		
 		HistoryManager.getInstance().addHistory(history);
 	}
-
+	
 	@Override
 	public void afterTextChanged(Editable s) {
 		// TODO Auto-generated method stub

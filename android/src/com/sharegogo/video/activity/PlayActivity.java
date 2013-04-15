@@ -113,301 +113,300 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.getSettings().setPluginState(PluginState.ON);
         mWebView.addJavascriptInterface(new VideoInterface(), "VideoInterface");
-        mWebView.setWebChromeClient(new WebChromeClient() {
-	        	   public void onProgressChanged(WebView view, int progress) {
-	        	     // Activities and WebViews measure progress with different scales.
-	        	     // The progress meter will automatically disappear when we reach 100%
-	        	   }
+        mWebView.setWebChromeClient(new MyWebChromeClient());
+        mWebView.setWebViewClient(new MyWebViewClient());
+	}
+    private class MyWebChromeClient extends WebChromeClient{
+    	   public void onProgressChanged(WebView view, int progress) {
+    	     // Activities and WebViews measure progress with different scales.
+    	     // The progress meter will automatically disappear when we reach 100%
+    	   }
 
-				@Override
-				public Bitmap getDefaultVideoPoster() {
-					// TODO Auto-generated method stub
-					return super.getDefaultVideoPoster();
-				}
+			@Override
+			public Bitmap getDefaultVideoPoster() {
+				// TODO Auto-generated method stub
+				return super.getDefaultVideoPoster();
+			}
 
-				@Override
-				public View getVideoLoadingProgressView() {
-					// TODO Auto-generated method stub
-					return super.getVideoLoadingProgressView();
-				}
+			@Override
+			public View getVideoLoadingProgressView() {
+				// TODO Auto-generated method stub
+				return super.getVideoLoadingProgressView();
+			}
 
-				@Override
-				public void getVisitedHistory(ValueCallback<String[]> callback) {
-					// TODO Auto-generated method stub
-					super.getVisitedHistory(callback);
-				}
+			@Override
+			public void getVisitedHistory(ValueCallback<String[]> callback) {
+				// TODO Auto-generated method stub
+				super.getVisitedHistory(callback);
+			}
 
-				@Override
-				public void onCloseWindow(WebView window) {
-					// TODO Auto-generated method stub
-					super.onCloseWindow(window);
-				}
+			@Override
+			public void onCloseWindow(WebView window) {
+				// TODO Auto-generated method stub
+				super.onCloseWindow(window);
+			}
 
-				@Override
-				public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-					// TODO Auto-generated method stub
-					return super.onConsoleMessage(consoleMessage);
-				}
+			@Override
+			public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+				// TODO Auto-generated method stub
+				return super.onConsoleMessage(consoleMessage);
+			}
 
-				@Override
-				public void onConsoleMessage(String message, int lineNumber,
-						String sourceID) {
-					// TODO Auto-generated method stub
-					super.onConsoleMessage(message, lineNumber, sourceID);
-				}
+			@Override
+			public void onConsoleMessage(String message, int lineNumber,
+					String sourceID) {
+				// TODO Auto-generated method stub
+				super.onConsoleMessage(message, lineNumber, sourceID);
+				Log.e("test", message);
+			}
 
-				@Override
-				public boolean onCreateWindow(WebView view, boolean isDialog,
-						boolean isUserGesture, Message resultMsg) {
-					// TODO Auto-generated method stub
-					return super.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
-				}
+			@Override
+			public boolean onCreateWindow(WebView view, boolean isDialog,
+					boolean isUserGesture, Message resultMsg) {
+				// TODO Auto-generated method stub
+				return super.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
+			}
 
-				@Override
-				public void onExceededDatabaseQuota(String url,
-						String databaseIdentifier, long quota,
-						long estimatedDatabaseSize, long totalQuota,
-						QuotaUpdater quotaUpdater) {
-					// TODO Auto-generated method stub
-					super.onExceededDatabaseQuota(url, databaseIdentifier, quota,
-							estimatedDatabaseSize, totalQuota, quotaUpdater);
-				}
+			@Override
+			public void onExceededDatabaseQuota(String url,
+					String databaseIdentifier, long quota,
+					long estimatedDatabaseSize, long totalQuota,
+					QuotaUpdater quotaUpdater) {
+				// TODO Auto-generated method stub
+				super.onExceededDatabaseQuota(url, databaseIdentifier, quota,
+						estimatedDatabaseSize, totalQuota, quotaUpdater);
+			}
 
-				@Override
-				public void onGeolocationPermissionsHidePrompt() {
-					// TODO Auto-generated method stub
-					super.onGeolocationPermissionsHidePrompt();
-				}
+			@Override
+			public void onGeolocationPermissionsHidePrompt() {
+				// TODO Auto-generated method stub
+				super.onGeolocationPermissionsHidePrompt();
+			}
 
-				@Override
-				public void onGeolocationPermissionsShowPrompt(String origin,
-						Callback callback) {
-					// TODO Auto-generated method stub
-					super.onGeolocationPermissionsShowPrompt(origin, callback);
-				}
+			@Override
+			public void onGeolocationPermissionsShowPrompt(String origin,
+					Callback callback) {
+				// TODO Auto-generated method stub
+				super.onGeolocationPermissionsShowPrompt(origin, callback);
+			}
 
-				@Override
-				public void onHideCustomView() {
-					// TODO Auto-generated method stub
-					super.onHideCustomView();
-				}
+			@Override
+			public void onHideCustomView() {
+				// TODO Auto-generated method stub
+				super.onHideCustomView();
+			}
 
-				@Override
-				public boolean onJsAlert(WebView view, String url, String message,
-						JsResult result) {
-					// TODO Auto-generated method stub
-					return super.onJsAlert(view, url, message, result);
-				}
+			@Override
+			public boolean onJsAlert(WebView view, String url, String message,
+					JsResult result) {
+				// TODO Auto-generated method stub
+				return super.onJsAlert(view, url, message, result);
+			}
 
-				@Override
-				public boolean onJsBeforeUnload(WebView view, String url,
-						String message, JsResult result) {
-					// TODO Auto-generated method stub
-					return super.onJsBeforeUnload(view, url, message, result);
-				}
+			@Override
+			public boolean onJsBeforeUnload(WebView view, String url,
+					String message, JsResult result) {
+				// TODO Auto-generated method stub
+				return super.onJsBeforeUnload(view, url, message, result);
+			}
 
-				@Override
-				public boolean onJsConfirm(WebView view, String url,
-						String message, JsResult result) {
-					// TODO Auto-generated method stub
-					return super.onJsConfirm(view, url, message, result);
-				}
+			@Override
+			public boolean onJsConfirm(WebView view, String url,
+					String message, JsResult result) {
+				// TODO Auto-generated method stub
+				return super.onJsConfirm(view, url, message, result);
+			}
 
-				@Override
-				public boolean onJsPrompt(WebView view, String url, String message,
-						String defaultValue, JsPromptResult result) {
-					// TODO Auto-generated method stub
-					return super.onJsPrompt(view, url, message, defaultValue, result);
-				}
+			@Override
+			public boolean onJsPrompt(WebView view, String url, String message,
+					String defaultValue, JsPromptResult result) {
+				// TODO Auto-generated method stub
+				return super.onJsPrompt(view, url, message, defaultValue, result);
+			}
 
-				@Override
-				public boolean onJsTimeout() {
-					// TODO Auto-generated method stub
-					return super.onJsTimeout();
-				}
+			@Override
+			public boolean onJsTimeout() {
+				// TODO Auto-generated method stub
+				return super.onJsTimeout();
+			}
 
-				@Override
-				public void onReachedMaxAppCacheSize(long requiredStorage,
-						long quota, QuotaUpdater quotaUpdater) {
-					// TODO Auto-generated method stub
-					super.onReachedMaxAppCacheSize(requiredStorage, quota, quotaUpdater);
-				}
+			@Override
+			public void onReachedMaxAppCacheSize(long requiredStorage,
+					long quota, QuotaUpdater quotaUpdater) {
+				// TODO Auto-generated method stub
+				super.onReachedMaxAppCacheSize(requiredStorage, quota, quotaUpdater);
+			}
 
-				@Override
-				public void onReceivedIcon(WebView view, Bitmap icon) {
-					// TODO Auto-generated method stub
-					super.onReceivedIcon(view, icon);
-				}
+			@Override
+			public void onReceivedIcon(WebView view, Bitmap icon) {
+				// TODO Auto-generated method stub
+				super.onReceivedIcon(view, icon);
+			}
 
-				@Override
-				public void onReceivedTitle(WebView view, String title) {
-					// TODO Auto-generated method stub
-					super.onReceivedTitle(view, title);
-				}
+			@Override
+			public void onReceivedTitle(WebView view, String title) {
+				// TODO Auto-generated method stub
+				super.onReceivedTitle(view, title);
+			}
 
-				@Override
-				public void onReceivedTouchIconUrl(WebView view, String url,
-						boolean precomposed) {
-					// TODO Auto-generated method stub
-					super.onReceivedTouchIconUrl(view, url, precomposed);
-				}
+			@Override
+			public void onReceivedTouchIconUrl(WebView view, String url,
+					boolean precomposed) {
+				// TODO Auto-generated method stub
+				super.onReceivedTouchIconUrl(view, url, precomposed);
+			}
 
-				@Override
-				public void onRequestFocus(WebView view) {
-					// TODO Auto-generated method stub
-					super.onRequestFocus(view);
-				}
-	        	   
-	        	 });
+			@Override
+			public void onRequestFocus(WebView view) {
+				// TODO Auto-generated method stub
+				super.onRequestFocus(view);
+			}
+        	   
+        }
 	        
-	        
-	        mWebView.setWebViewClient(new WebViewClient() {
-	    	   public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) 
-	    	   {
-	    	   }
+    private class MyWebViewClient extends WebViewClient{
+	   public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) 
+	   {
+	   }
 
-	    	   
-			@Override
-			public void doUpdateVisitedHistory(WebView view, String url,
-					boolean isReload) {
-				// TODO Auto-generated method stub
-				super.doUpdateVisitedHistory(view, url, isReload);
-			}
-
-
-			@Override
-			public void onFormResubmission(WebView view, Message dontResend,
-					Message resend) {
-				// TODO Auto-generated method stub
-				super.onFormResubmission(view, dontResend, resend);
-			}
-
-
-			@Override
-			public void onLoadResource(WebView view, String url) {
-				// TODO Auto-generated method stub
-				super.onLoadResource(view, url);
-			}
-
-
-			@Override
-			public void onPageStarted(WebView view, String url, Bitmap favicon) {
-				// TODO Auto-generated method stub
-				super.onPageStarted(view, url, favicon);
-			}
-
-
-			@Override
-			public void onReceivedHttpAuthRequest(WebView view,
-					HttpAuthHandler handler, String host, String realm) {
-				// TODO Auto-generated method stub
-				super.onReceivedHttpAuthRequest(view, handler, host, realm);
-			}
-
-
-			@TargetApi(12)
-			@Override
-			public void onReceivedLoginRequest(WebView view, String realm,
-					String account, String args) {
-				// TODO Auto-generated method stub
-				super.onReceivedLoginRequest(view, realm, account, args);
-			}
-
-
-			@Override
-			public void onReceivedSslError(WebView view, SslErrorHandler handler,
-					SslError error) {
-				// TODO Auto-generated method stub
-				super.onReceivedSslError(view, handler, error);
-			}
-
-
-			@Override
-			public void onScaleChanged(WebView view, float oldScale, float newScale) {
-				// TODO Auto-generated method stub
-				super.onScaleChanged(view, oldScale, newScale);
-			}
-
-
-			@Override
-			public void onTooManyRedirects(WebView view, Message cancelMsg,
-					Message continueMsg) {
-				// TODO Auto-generated method stub
-				super.onTooManyRedirects(view, cancelMsg, continueMsg);
-			}
-
-
-			@Override
-			public void onUnhandledKeyEvent(WebView view, KeyEvent event) {
-				// TODO Auto-generated method stub
-				super.onUnhandledKeyEvent(view, event);
-			}
-
-
-			@TargetApi(11)
-			@Override
-			public WebResourceResponse shouldInterceptRequest(WebView view,
-					String url) {
-				// TODO Auto-generated method stub
-				return super.shouldInterceptRequest(view, url);
-			}
-
-
-			@Override
-			public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
-				// TODO Auto-generated method stub
-				return super.shouldOverrideKeyEvent(view, event);
-			}
-
-
-			@Override
-			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				// TODO Auto-generated method stub
-				return super.shouldOverrideUrlLoading(view, url);
-			}
-
-
-			@Override
-			public void onPageFinished(WebView view, String url) {
-				// TODO Auto-generated method stub
-					super.onPageFinished(view, url);
-				
-					//从搜索结果页跳转过
-					if(mUrl != null)
-					{
-						mWebView.loadUrl("javascript:callJS()");  //java调用js的函数	
-						
-						if(!NetworkUtils.isNetworkAvailable())
-						{
-							Toast.makeText(PlayActivity.this, ResUtils.getString(R.string.cannot_play_for_network), 2000).show();
-						}
-						
-						mProgressDialog.dismiss();
-						
-						return;
-					}
-					
-					VideoDetail detail = VideoManager.getInstance().getVideoDetail(mVideoId);
-					if(detail != null && detail.flashUrl != null && detail.flashUrl.length() > 0)
-					{
-						onSuccess(detail);
-					}
-					else
-					{
-						VideoManager.getInstance().getVideoDetail(mVideoId, PlayActivity.this);
-					}
-					
-					if(!NetworkUtils.isNetworkAvailable())
-					{
-						Toast.makeText(PlayActivity.this, ResUtils.getString(R.string.cannot_play_for_network), 2000).show();
-					}
-				}
-	    	 });
-	        
-	        
-	        
+	   
+	@Override
+	public void doUpdateVisitedHistory(WebView view, String url,
+			boolean isReload) {
+		// TODO Auto-generated method stub
+		super.doUpdateVisitedHistory(view, url, isReload);
 	}
 
+
+	@Override
+	public void onFormResubmission(WebView view, Message dontResend,
+			Message resend) {
+		// TODO Auto-generated method stub
+		super.onFormResubmission(view, dontResend, resend);
+	}
+
+
+	@Override
+	public void onLoadResource(WebView view, String url) {
+		// TODO Auto-generated method stub
+		super.onLoadResource(view, url);
+	}
+
+
+	@Override
+	public void onPageStarted(WebView view, String url, Bitmap favicon) {
+		// TODO Auto-generated method stub
+		super.onPageStarted(view, url, favicon);
+	}
+
+
+	@Override
+	public void onReceivedHttpAuthRequest(WebView view,
+			HttpAuthHandler handler, String host, String realm) {
+		// TODO Auto-generated method stub
+		super.onReceivedHttpAuthRequest(view, handler, host, realm);
+	}
+
+
+	@TargetApi(12)
+	@Override
+	public void onReceivedLoginRequest(WebView view, String realm,
+			String account, String args) {
+		// TODO Auto-generated method stub
+		super.onReceivedLoginRequest(view, realm, account, args);
+	}
+
+
+	@Override
+	public void onReceivedSslError(WebView view, SslErrorHandler handler,
+			SslError error) {
+		// TODO Auto-generated method stub
+		super.onReceivedSslError(view, handler, error);
+	}
+
+
+	@Override
+	public void onScaleChanged(WebView view, float oldScale, float newScale) {
+		// TODO Auto-generated method stub
+		super.onScaleChanged(view, oldScale, newScale);
+	}
+
+
+	@Override
+	public void onTooManyRedirects(WebView view, Message cancelMsg,
+			Message continueMsg) {
+		// TODO Auto-generated method stub
+		super.onTooManyRedirects(view, cancelMsg, continueMsg);
+	}
+
+
+	@Override
+	public void onUnhandledKeyEvent(WebView view, KeyEvent event) {
+		// TODO Auto-generated method stub
+		super.onUnhandledKeyEvent(view, event);
+	}
+
+
+	@TargetApi(11)
+	@Override
+	public WebResourceResponse shouldInterceptRequest(WebView view,
+			String url) {
+		// TODO Auto-generated method stub
+		return super.shouldInterceptRequest(view, url);
+	}
+
+
+	@Override
+	public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
+		// TODO Auto-generated method stub
+		return super.shouldOverrideKeyEvent(view, event);
+	}
+
+
+	@Override
+	public boolean shouldOverrideUrlLoading(WebView view, String url) {
+		// TODO Auto-generated method stub
+		return super.shouldOverrideUrlLoading(view, url);
+	}
+
+
+	@Override
+	public void onPageFinished(WebView view, String url) {
+		// TODO Auto-generated method stub
+			super.onPageFinished(view, url);
+		
+			Log.e("test", "onPageFinished");
+			//从搜索结果页跳转过
+			if(mUrl != null)
+			{
+				mWebView.loadUrl("javascript:callJS()");  //java调用js的函数	
+				
+				if(!NetworkUtils.isNetworkAvailable())
+				{
+					Toast.makeText(PlayActivity.this, ResUtils.getString(R.string.cannot_play_for_network), 2000).show();
+				}
+				
+				mProgressDialog.dismiss();
+				
+				return;
+			}
+			
+			VideoDetail detail = VideoManager.getInstance().getVideoDetail(mVideoId);
+			if(detail != null && detail.flashUrl != null && detail.flashUrl.length() > 0)
+			{
+				onSuccess(detail);
+			}
+			else
+			{
+				VideoManager.getInstance().getVideoDetail(mVideoId, PlayActivity.this);
+			}
+			
+			if(!NetworkUtils.isNetworkAvailable())
+			{
+				Toast.makeText(PlayActivity.this, ResUtils.getString(R.string.cannot_play_for_network), 2000).show();
+			}
+		}
+    }
 	
 	@Override
 	protected void onPause() {
@@ -451,6 +450,7 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 
 	private String buildHtml()
 	{
+		Log.e("test", "buildHtml");
 		StringBuilder builder = new StringBuilder();
 		builder.append("<embed src=\"");
 		builder.append(mUrl);

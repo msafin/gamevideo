@@ -31,6 +31,7 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 
 import com.actionbarsherlock.view.MenuItem;
+import com.adsmogo.adview.AdsMogoLayout;
 import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.controller.NotifyManager;
 import com.sharegogo.video.controller.UpdateManager;
@@ -284,7 +285,8 @@ public class MainActivity extends BaseActivity implements OnClickListener, andro
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
-
+		AdsMogoLayout.clear();
+		
 		super.onDestroy();
 	}
 	

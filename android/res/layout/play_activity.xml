@@ -11,6 +11,7 @@
         android:layout_alignParentLeft="true"
         android:padding="0dp"
         android:layout_marginBottom="60dp"
+        android:layout_alignWithParentIfMissing="true"
         android:layout_above="@+id/adsMogoView"/>
     
      <RelativeLayout 
@@ -75,7 +76,7 @@
           android:layout_alignParentRight="true"
           android:layout_marginRight="10dp"
           android:src="@drawable/ic_share" />
-            
+      
       <com.adsmogo.adview.AdsMogoLayout
         android:id="@+id/adsMogoView"
         android:layout_width="wrap_content"
@@ -85,5 +86,5 @@
         adsmogo:appid="4d7c7927935149e99bafc99b730460c4"
         adsmogo:express_mode="false" >
     </com.adsmogo.adview.AdsMogoLayout>
-	
+           	
 </RelativeLayout>

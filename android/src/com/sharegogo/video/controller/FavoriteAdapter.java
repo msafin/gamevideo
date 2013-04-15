@@ -38,7 +38,40 @@ public class FavoriteAdapter extends GameBaseAdapter<FavoriteListItem>{
 		FavoriteListItem item = (FavoriteListItem)getItem(position);
 		ViewTag tag = (ViewTag)view.getTag();
 		
-		tag.mTitle.setText(item.video.name);
+		if(item.video == null)
+		{
+			return view;
+		}
+		
+		if(item.video.name != null)
+		{
+			tag.mTitle.setText(item.video.name);
+			tag.mTitle.setVisibility(View.VISIBLE);
+		}
+		else
+		{
+			tag.mTitle.setVisibility(View.INVISIBLE);
+		}
+		
+		if(item.video.type != null)
+		{
+			tag.mGameName.setText(item.video.type);
+			tag.mGameName.setVisibility(View.VISIBLE);
+		}
+		else
+		{
+			tag.mGameName.setVisibility(View.INVISIBLE);
+		}
+		
+		if(item.video.author != null)
+		{
+			tag.mAuthorName.setText(item.video.author);
+			tag.mAuthorName.setVisibility(View.VISIBLE);
+		}
+		else
+		{
+			tag.mAuthorName.setVisibility(View.INVISIBLE);
+		}
 		
 		if(item.video.img != null)
 			UIUtils.DisplayImage(item.video.img, tag.mLeftImageView, R.drawable.default_bg);

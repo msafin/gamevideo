@@ -6,8 +6,8 @@
         <CheckBoxPreference
                 android:key="@string/key_wifi_image"
                 android:title="@string/wifi_fetch_image"
-                android:summaryOff="@string/setting_on"
-                android:summaryOn="@string/setting_off"/>
+                android:summaryOff="@string/setting_off"
+                android:summaryOn="@string/setting_on"/>
         
     </PreferenceCategory>
     

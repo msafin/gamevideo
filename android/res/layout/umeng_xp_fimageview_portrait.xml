@@ -20,7 +20,7 @@
             android:layout_height="25dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/umeng_xp_greenbt_selector"
+            android:background="@drawable/umeng_xp_greenbg_selector"
             android:text="点此浏览"
             android:textColor="#ffffff"
             android:textSize="12sp" />
