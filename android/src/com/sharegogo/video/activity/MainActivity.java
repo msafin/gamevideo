@@ -207,7 +207,10 @@ public class MainActivity extends BaseActivity implements OnClickListener, andro
 		
 		mNotifyList = NotifyManager.getInstance().getNotifyList();
 		
-		if(mNotifyList != null && !bCloseByUser)
+		if(mNotifyList != null && 
+			mNotifyList.list != null &&
+			mNotifyList.list.length > 0 &&
+			!bCloseByUser)
 		{
 			NotifyListItem firstItem = mNotifyList.list[0];
 			

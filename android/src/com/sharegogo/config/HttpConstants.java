@@ -1,7 +1,7 @@
 package com.sharegogo.config;
 
 public class HttpConstants {	
-	static final public String FLASH_DOWNLOAD_URL = "http://hiapk.91rb.com/data/upload/2012/10_10/11/com.adobe.flashplayer_114008.apk";
+	static final public String FLASH_DOWNLOAD_URL = "http://wap3.ucweb.com/files/adbfs10/zh-cn/999/AdbFs10_V11.1.111.43_Android_pf145_(Build13022810).apk";
 	
 	//HTTP«Î«Ûµÿ÷∑
 	static final public String HTTP_HOST = "http://www.sharegogo.cn/yj2";

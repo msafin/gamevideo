@@ -1,9 +1,9 @@
 <resources>
 
-    <string name="app_name">游记视频</string>
+    <string name="app_name">游迹视频</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
-    <string name="title_activity_main">游记视频</string>
+    <string name="title_activity_main">游迹视频</string>
     
     <!-- 主界面 -->
     <string name="online_video">在线视频</string>
@@ -38,7 +38,7 @@
 	<string name="history_empty">^-^亲，还没有播放历史！</string>
 	
 	<string name="flash_not_installed">您未安装flash插件无法播放视频，点击下载安装</string>
-	<string name="flash_install_note">安装后如果无法播放，请退出应用重新进入</string>
+	<string name="flash_install_note">安装后如果无法播放，请退出应用后重新进入</string>
 	
 	<string name="dialog_ok">确定</string>
 	<string name="dialog_cancel">取消</string>
