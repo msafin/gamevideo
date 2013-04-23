@@ -11,8 +11,40 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
+import android.view.Window;
+import android.view.WindowManager;
+import android.webkit.ConsoleMessage;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings.PluginState;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.MediaController;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
+import android.widget.VideoView;
+
 import com.j256.ormlite.dao.Dao;
-import com.sharegogo.config.HttpConfig;
 import com.sharegogo.config.HttpConstants;
 import com.sharegogo.video.SharegogoVideoApplication;
 import com.sharegogo.video.controller.FavoriteManager;
@@ -20,56 +52,13 @@ import com.sharegogo.video.controller.VideoManager;
 import com.sharegogo.video.data.Favorite;
 import com.sharegogo.video.data.MySqliteHelper;
 import com.sharegogo.video.data.VideoDetail;
-import com.sharegogo.video.data.VideoList;
-import com.sharegogo.video.data.VideoList.VideoListItem;
 import com.sharegogo.video.game.R;
 import com.sharegogo.video.http.ResponseHandler;
 import com.sharegogo.video.utils.NetworkUtils;
 import com.sharegogo.video.utils.ResUtils;
 import com.sharegogo.video.utils.UIUtils;
 
-import android.annotation.TargetApi;
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
-import android.net.Uri;
-import android.net.http.SslError;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v4.app.FragmentActivity;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.Window;
-import android.webkit.ConsoleMessage;
-import android.webkit.GeolocationPermissions.Callback;
-import android.webkit.HttpAuthHandler;
-import android.webkit.JsPromptResult;
-import android.webkit.JsResult;
-import android.webkit.SslErrorHandler;
-import android.webkit.ValueCallback;
-import android.webkit.WebChromeClient;
-import android.webkit.WebResourceResponse;
-import android.webkit.WebStorage.QuotaUpdater;
-import android.webkit.WebView;
-import android.webkit.WebSettings.PluginState;
-import android.webkit.WebViewClient;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.Toast;
-
-public class PlayActivity extends FragmentActivity implements OnClickListener, ResponseHandler, android.view.SurfaceHolder.Callback{
+public class PlayActivity extends FragmentActivity implements OnClickListener, ResponseHandler, OnTouchListener{
 	static final public String KEY_VIDEO_AUTHOR = "video_author";
 	static final public String KEY_VIDEO_NAME = "video_name";
 	static final public String KEY_VIDEO_SOURCE = "video_source";
@@ -88,15 +77,12 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	private View mDownloadNote;
 	private ProgressDialog mProgressDialog = null;
 	private VideoDetail mVideoDetail = null;
-<<<<<<< HEAD
 	private boolean bFlashInstalled = false;
-	
-=======
 	private String mVId = null;
-	private SurfaceView mSurfaceView = null;
-	private MediaPlayer mp;
-	private SurfaceHolder holder;
-	Handler mainhandler = new Handler(){
+	private VideoView mVideoView = null;
+	private MediaController mMediaController = null;
+	private GestureDetector mGestureDetector = null;
+	private Handler mainhandler = new Handler(){
 
 		@Override
 		public void handleMessage(Message msg) {
@@ -104,26 +90,8 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 			{
 				case 10000:
 				{
-					if(mp !=null){
-			        	try {
-							mp.setDataSource("http://3g.youku.com/pvs?id="+mVId+"&format=3gphd");
-							mp.prepare();
-							mp.start();
-						} catch (IllegalArgumentException e) {
-
-							e.printStackTrace();
-						} catch (SecurityException e) {
-
-							e.printStackTrace();
-						} catch (IllegalStateException e) {
-
-							e.printStackTrace();
-						} catch (IOException e) {
-
-							e.printStackTrace();
-						}			
-						
-						}
+					mVideoView.setVideoURI(Uri.parse("http://3g.youku.com/pvs?id="+mVId+"&format=3gphd"));
+					mMediaController.show(10 * 1000);
 				}
 				break;
 				case 99:
@@ -135,7 +103,6 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 			
 	};
 
->>>>>>> b765c63162f64fa84996e05039fcb12c87e41ddf
 	@Override
 	protected void onCreate(Bundle arg0) {
 		// TODO Auto-generated method stub
@@ -157,13 +124,14 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		mGotoBrowser.setOnClickListener(this);
 		
 		mWebView = (WebView)findViewById(R.id.webView1);
-		mSurfaceView = (SurfaceView)findViewById(R.id.surfaceview);
+		mVideoView = (VideoView)findViewById(R.id.video_view);
 		
-		holder = mSurfaceView.getHolder();
-        holder.addCallback(this);
-        holder.setKeepScreenOn(true);
-        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        
+		mMediaController = new MediaController(this);
+		mMediaController.setMediaPlayer(mVideoView);
+		mMediaController.setAnchorView(mVideoView);
+		mVideoView.setMediaController(mMediaController);
+		mVideoView.setOnTouchListener(this);
+		
 		Intent intent = this.getIntent();
 		mVideoId = intent.getLongExtra(KEY_VIDEO_ID, -1);
 		mUrl = intent.getStringExtra(KEY_FLASH_URL);
@@ -174,30 +142,77 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 			mBtnFavorite.setImageResource(R.drawable.ic_favorited);
 		}
 		
+		mGestureDetector = new GestureDetector(this,new MyGestureListener());
+		
 		mProgressDialog = new ProgressDialog(this);
 		mProgressDialog.setMessage(getString(R.string.loading_video_detail));
 		mProgressDialog.show();
 		
-        if(isFlashInstalled())
-        {
-        	bFlashInstalled = true;
-        	
-        	mWebView.loadUrl("file:///android_asset/index.html");
-            mWebView.getSettings().setPluginsEnabled(true);
-            mWebView.getSettings().setJavaScriptEnabled(true);
-            mWebView.getSettings().setPluginState(PluginState.ON);
-            mWebView.addJavascriptInterface(new VideoInterface(), "VideoInterface");
-            mWebView.setWebChromeClient(new MyWebChromeClient());
-            mWebView.setWebViewClient(new MyWebViewClient());
-        }
-        else
-        {
-        	bFlashInstalled = false;
+		if(!isUseFlash())
+		{
+			mWebView.setVisibility(View.INVISIBLE);
+			
+			bFlashInstalled = false;
         	VideoManager.getInstance().getVideoDetail(mVideoId, PlayActivity.this);
-        }
+		}
+		else
+		{
+			mVideoView.setVisibility(View.INVISIBLE);
+			mMediaController.setVisibility(View.INVISIBLE);
+			
+	        if(isFlashInstalled())
+	        {
+	        	bFlashInstalled = true;
+	        	
+	        	mWebView.loadUrl("file:///android_asset/index.html");
+	            mWebView.getSettings().setPluginsEnabled(true);
+	            mWebView.getSettings().setJavaScriptEnabled(true);
+	            mWebView.getSettings().setPluginState(PluginState.ON);
+	            mWebView.addJavascriptInterface(new VideoInterface(), "VideoInterface");
+	            mWebView.setWebChromeClient(new MyWebChromeClient());
+	            mWebView.setWebViewClient(new MyWebViewClient());
+	        }
+	        else
+	        {
+	        	bFlashInstalled = false;
+	        	VideoManager.getInstance().getVideoDetail(mVideoId, PlayActivity.this);
+	        }
+		}
 	}
 	
-   public void get(){  
+	private boolean isUseFlash()
+	{
+		if(Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
+	private void showFullScreen()
+	{
+		mBtnFavorite.setVisibility(View.GONE);
+		mBtnShare.setVisibility(View.GONE);
+		mGotoBrowser.setVisibility(View.GONE);
+		
+		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+		int flags = WindowManager.LayoutParams.FLAG_FULLSCREEN;
+		getWindow().setFlags(flags, flags);
+	}
+	
+	private void exitFullScreen()
+	{
+		mBtnFavorite.setVisibility(View.VISIBLE);
+		mBtnShare.setVisibility(View.VISIBLE);
+		mGotoBrowser.setVisibility(View.VISIBLE);
+		
+		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		int flag=WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN;
+		getWindow().setFlags(flag, flag);
+	}
+	
+	public void get(){  
         BufferedReader in = null;  
         try{
             HttpClient client = new DefaultHttpClient();
@@ -221,15 +236,15 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
             }  
             
             in.close();  
-            Message msg = new Message();
+            Message msg = Message.obtain(mainhandler);
             if(mVId != null){
             	msg.what = 10000;
             }else
             {
             	msg.what = 99;
             }
-            mainhandler.handleMessage(msg);
-              
+             
+            msg.sendToTarget();
         }catch(Exception e){  
             e.printStackTrace();
         }finally{  
@@ -244,35 +259,7 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
     }
    
     private class MyWebChromeClient extends WebChromeClient{
-    	   public void onProgressChanged(WebView view, int progress) {
-    	     // Activities and WebViews measure progress with different scales.
-    	     // The progress meter will automatically disappear when we reach 100%
-    	   }
-
-			@Override
-			public Bitmap getDefaultVideoPoster() {
-				// TODO Auto-generated method stub
-				return super.getDefaultVideoPoster();
-			}
-
-			@Override
-			public View getVideoLoadingProgressView() {
-				// TODO Auto-generated method stub
-				return super.getVideoLoadingProgressView();
-			}
-
-			@Override
-			public void getVisitedHistory(ValueCallback<String[]> callback) {
-				// TODO Auto-generated method stub
-				super.getVisitedHistory(callback);
-			}
-
-			@Override
-			public void onCloseWindow(WebView window) {
-				// TODO Auto-generated method stub
-				super.onCloseWindow(window);
-			}
-
+    	   
 			@Override
 			public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
 				// TODO Auto-generated method stub
@@ -286,217 +273,9 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 				super.onConsoleMessage(message, lineNumber, sourceID);
 				Log.e("test", message);
 			}
-
-			@Override
-			public boolean onCreateWindow(WebView view, boolean isDialog,
-					boolean isUserGesture, Message resultMsg) {
-				// TODO Auto-generated method stub
-				return super.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
-			}
-
-			@Override
-			public void onExceededDatabaseQuota(String url,
-					String databaseIdentifier, long quota,
-					long estimatedDatabaseSize, long totalQuota,
-					QuotaUpdater quotaUpdater) {
-				// TODO Auto-generated method stub
-				super.onExceededDatabaseQuota(url, databaseIdentifier, quota,
-						estimatedDatabaseSize, totalQuota, quotaUpdater);
-			}
-
-			@Override
-			public void onGeolocationPermissionsHidePrompt() {
-				// TODO Auto-generated method stub
-				super.onGeolocationPermissionsHidePrompt();
-			}
-
-			@Override
-			public void onGeolocationPermissionsShowPrompt(String origin,
-					Callback callback) {
-				// TODO Auto-generated method stub
-				super.onGeolocationPermissionsShowPrompt(origin, callback);
-			}
-
-			@Override
-			public void onHideCustomView() {
-				// TODO Auto-generated method stub
-				super.onHideCustomView();
-			}
-
-			@Override
-			public boolean onJsAlert(WebView view, String url, String message,
-					JsResult result) {
-				// TODO Auto-generated method stub
-				return super.onJsAlert(view, url, message, result);
-			}
-
-			@Override
-			public boolean onJsBeforeUnload(WebView view, String url,
-					String message, JsResult result) {
-				// TODO Auto-generated method stub
-				return super.onJsBeforeUnload(view, url, message, result);
-			}
-
-			@Override
-			public boolean onJsConfirm(WebView view, String url,
-					String message, JsResult result) {
-				// TODO Auto-generated method stub
-				return super.onJsConfirm(view, url, message, result);
-			}
-
-			@Override
-			public boolean onJsPrompt(WebView view, String url, String message,
-					String defaultValue, JsPromptResult result) {
-				// TODO Auto-generated method stub
-				return super.onJsPrompt(view, url, message, defaultValue, result);
-			}
-
-			@Override
-			public boolean onJsTimeout() {
-				// TODO Auto-generated method stub
-				return super.onJsTimeout();
-			}
-
-			@Override
-			public void onReachedMaxAppCacheSize(long requiredStorage,
-					long quota, QuotaUpdater quotaUpdater) {
-				// TODO Auto-generated method stub
-				super.onReachedMaxAppCacheSize(requiredStorage, quota, quotaUpdater);
-			}
-
-			@Override
-			public void onReceivedIcon(WebView view, Bitmap icon) {
-				// TODO Auto-generated method stub
-				super.onReceivedIcon(view, icon);
-			}
-
-			@Override
-			public void onReceivedTitle(WebView view, String title) {
-				// TODO Auto-generated method stub
-				super.onReceivedTitle(view, title);
-			}
-
-			@Override
-			public void onReceivedTouchIconUrl(WebView view, String url,
-					boolean precomposed) {
-				// TODO Auto-generated method stub
-				super.onReceivedTouchIconUrl(view, url, precomposed);
-			}
-
-			@Override
-			public void onRequestFocus(WebView view) {
-				// TODO Auto-generated method stub
-				super.onRequestFocus(view);
-			}
-        	   
         }
 	        
     private class MyWebViewClient extends WebViewClient{
-	   public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) 
-	   {
-	   }
-
-	   
-	@Override
-	public void doUpdateVisitedHistory(WebView view, String url,
-			boolean isReload) {
-		// TODO Auto-generated method stub
-		super.doUpdateVisitedHistory(view, url, isReload);
-	}
-
-
-	@Override
-	public void onFormResubmission(WebView view, Message dontResend,
-			Message resend) {
-		// TODO Auto-generated method stub
-		super.onFormResubmission(view, dontResend, resend);
-	}
-
-
-	@Override
-	public void onLoadResource(WebView view, String url) {
-		// TODO Auto-generated method stub
-		super.onLoadResource(view, url);
-	}
-
-
-	@Override
-	public void onPageStarted(WebView view, String url, Bitmap favicon) {
-		// TODO Auto-generated method stub
-		super.onPageStarted(view, url, favicon);
-	}
-
-
-	@Override
-	public void onReceivedHttpAuthRequest(WebView view,
-			HttpAuthHandler handler, String host, String realm) {
-		// TODO Auto-generated method stub
-		super.onReceivedHttpAuthRequest(view, handler, host, realm);
-	}
-
-
-	@TargetApi(12)
-	@Override
-	public void onReceivedLoginRequest(WebView view, String realm,
-			String account, String args) {
-		// TODO Auto-generated method stub
-		super.onReceivedLoginRequest(view, realm, account, args);
-	}
-
-
-	@Override
-	public void onReceivedSslError(WebView view, SslErrorHandler handler,
-			SslError error) {
-		// TODO Auto-generated method stub
-		super.onReceivedSslError(view, handler, error);
-	}
-
-
-	@Override
-	public void onScaleChanged(WebView view, float oldScale, float newScale) {
-		// TODO Auto-generated method stub
-		super.onScaleChanged(view, oldScale, newScale);
-	}
-
-
-	@Override
-	public void onTooManyRedirects(WebView view, Message cancelMsg,
-			Message continueMsg) {
-		// TODO Auto-generated method stub
-		super.onTooManyRedirects(view, cancelMsg, continueMsg);
-	}
-
-
-	@Override
-	public void onUnhandledKeyEvent(WebView view, KeyEvent event) {
-		// TODO Auto-generated method stub
-		super.onUnhandledKeyEvent(view, event);
-	}
-
-
-	@TargetApi(11)
-	@Override
-	public WebResourceResponse shouldInterceptRequest(WebView view,
-			String url) {
-		// TODO Auto-generated method stub
-		return super.shouldInterceptRequest(view, url);
-	}
-
-
-	@Override
-	public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
-		// TODO Auto-generated method stub
-		return super.shouldOverrideKeyEvent(view, event);
-	}
-
-
-	@Override
-	public boolean shouldOverrideUrlLoading(WebView view, String url) {
-		// TODO Auto-generated method stub
-		return super.shouldOverrideUrlLoading(view, url);
-	}
-
-
 	@Override
 	public void onPageFinished(WebView view, String url) {
 		// TODO Auto-generated method stub
@@ -539,16 +318,23 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		if(isFlashInstalled())
+		if(!isUseFlash())
 		{
-			try {
-	            Class.forName("android.webkit.WebView")
-	                    .getMethod("onPause", (Class[]) null)
-	                    .invoke(mWebView, (Object[]) null);
-	        } catch (Exception e) {
-	        	e.printStackTrace();
-	        }
-			mWebView.pauseTimers();
+			mVideoView.pause();
+		}
+		else
+		{
+			if(isFlashInstalled())
+			{
+				try {
+		            Class.forName("android.webkit.WebView")
+		                    .getMethod("onPause", (Class[]) null)
+		                    .invoke(mWebView, (Object[]) null);
+		        } catch (Exception e) {
+		        	e.printStackTrace();
+		        }
+				mWebView.pauseTimers();
+			}
 		}
 	}
 
@@ -557,44 +343,51 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		//进入的时候flash没有安装
-		if(!bFlashInstalled && isFlashInstalled())
+		if(!isUseFlash())
 		{
-			mWebView.loadUrl("file:///android_asset/index.html");
-	        mWebView.getSettings().setPluginsEnabled(true);
-	        mWebView.getSettings().setJavaScriptEnabled(true);
-	        mWebView.getSettings().setPluginState(PluginState.ON);
-	        mWebView.addJavascriptInterface(new VideoInterface(), "VideoInterface");
-	        mWebView.setWebChromeClient(new MyWebChromeClient());
-	        mWebView.setWebViewClient(new MyWebViewClient());
+			mVideoView.resume();
 		}
-		
-		if(isFlashInstalled())
+		else
 		{
-	        try{
-		        Class.forName("android.webkit.WebView")
-		        .getMethod("onResume", (Class[]) null)
-		        .invoke(mWebView, (Object[]) null);
-			} catch (Exception e) {
-				e.printStackTrace();
+			//进入的时候flash没有安装
+			if(!bFlashInstalled && isFlashInstalled())
+			{
+				mWebView.loadUrl("file:///android_asset/index.html");
+		        mWebView.getSettings().setPluginsEnabled(true);
+		        mWebView.getSettings().setJavaScriptEnabled(true);
+		        mWebView.getSettings().setPluginState(PluginState.ON);
+		        mWebView.addJavascriptInterface(new VideoInterface(), "VideoInterface");
+		        mWebView.setWebChromeClient(new MyWebChromeClient());
+		        mWebView.setWebViewClient(new MyWebViewClient());
 			}
 			
-			mWebView.resumeTimers();
+			if(isFlashInstalled())
+			{
+		        try{
+			        Class.forName("android.webkit.WebView")
+			        .getMethod("onResume", (Class[]) null)
+			        .invoke(mWebView, (Object[]) null);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				mWebView.resumeTimers();
+				
+				bFlashInstalled = true;
+			}
+			else
+			{
+				bFlashInstalled = false;
+			}
 			
-			bFlashInstalled = true;
-		}
-		else
-		{
-			bFlashInstalled = false;
-		}
-		
-		if(isFlashInstalled())
-		{
-			mDownloadNote.setVisibility(View.INVISIBLE);
-		}
-		else
-		{
-			mDownloadNote.setVisibility(View.VISIBLE);
+			if(isFlashInstalled())
+			{
+				mDownloadNote.setVisibility(View.INVISIBLE);
+			}
+			else
+			{
+				mDownloadNote.setVisibility(View.VISIBLE);
+			}
 		}
 	}
 
@@ -624,11 +417,6 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		
-		if(mp != null)
-		{
-           mp.release();
-		}
 	}
 
 	private class VideoInterface {
@@ -775,32 +563,33 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		mUrl = videoDetail.flashUrl;
 		mPlayUrl = videoDetail.playurl;
 		
-		if(mUrl != null)
+		if(!isUseFlash())
 		{
-<<<<<<< HEAD
-			if(isFlashInstalled())
-				mWebView.loadUrl("javascript:callJS()");  //java调用js的函数
-=======
-			//mWebView.loadUrl("javascript:callJS()");  //java调用js的函数
->>>>>>> b765c63162f64fa84996e05039fcb12c87e41ddf
-		}
-		else if(videoDetail.playurl != null)
-		{
-			UIUtils.gotoBrowserActivity(this,videoDetail.playurl);
+			new Thread(){
+
+				@Override
+				public void run() {
+					get();
+				}
+	    		
+	    	}.start();
 		}
 		else
 		{
-			Toast.makeText(getApplicationContext(), getString(R.string.load_video_detail_failed), 1000).show();
-		}
-		
-		new Thread(){
-
-			@Override
-			public void run() {
-				get();
+			if(mUrl != null)
+			{
+				if(isFlashInstalled())
+					mWebView.loadUrl("javascript:callJS()");  //java调用js的函数
 			}
-    		
-    	}.start();
+			else if(videoDetail.playurl != null)
+			{
+				UIUtils.gotoBrowserActivity(this,videoDetail.playurl);
+			}
+			else
+			{
+				Toast.makeText(getApplicationContext(), getString(R.string.load_video_detail_failed), 1000).show();
+			}
+		}
 	}
 
 
@@ -836,33 +625,44 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		}
 	}
 
-
 	@Override
-	public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
+	public boolean onTouch(View arg0, MotionEvent arg1) {
 		// TODO Auto-generated method stub
+		mGestureDetector.onTouchEvent(arg1);
 		
+		return true;
 	}
 
+	private class MyGestureListener extends GestureDetector.SimpleOnGestureListener
+	{
+		@Override
+		public boolean onDoubleTap(MotionEvent e) {
+			// TODO Auto-generated method stub
+			if(mBtnFavorite.getVisibility() == View.VISIBLE)
+			{
+				showFullScreen();
+			}
+			else
+			{
+				exitFullScreen();
+			}
+			
+			return true;
+		}
 
-	@Override
-	public void surfaceCreated(SurfaceHolder holder) {
-		// TODO Auto-generated method stub
-		mp = new MediaPlayer();
-		mp.setDisplay(holder);
-        mp.setOnCompletionListener(new OnCompletionListener(){
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                mp.release();
-            }
-
-         });
-	}
-
-
-	@Override
-	public void surfaceDestroyed(SurfaceHolder holder) {
-		// TODO Auto-generated method stub
-		if(mp != null)
-			mp.release();
+		@Override
+		public boolean onSingleTapUp(MotionEvent e) {
+			// TODO Auto-generated method stub
+			if(mMediaController.isShown())
+			{
+				mMediaController.hide();
+			}
+			else
+			{
+				mMediaController.show();
+			}
+			
+			return true;
+		}
 	}
 }

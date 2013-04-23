@@ -10,25 +10,26 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:padding="0dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="3dp"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_above="@+id/adsMogoView"/>
+        android:layout_above="@+id/btn_favorite"/>
     
-    <SurfaceView 
-	    android:id="@+id/surfaceview"
+    <VideoView 
+	    android:id="@+id/video_view"
 	    android:layout_width="fill_parent"
     	android:layout_height="fill_parent"
-    	android:layout_marginBottom="60dp"
+    	android:layout_centerHorizontal="true"
+    	android:layout_marginBottom="3dp"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_above="@+id/adsMogoView"/>/>
-    
+        android:layout_above="@+id/btn_favorite"/>
+
      <RelativeLayout 
         android:id="@+id/flash_downlaod_note"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:padding="0dp"
-        android:layout_marginBottom="60dp"
+        android:layout_above="@+id/btn_favorite"
         android:visibility="gone">
         
         <TextView
@@ -102,5 +103,5 @@
         adsmogo:appid="4d7c7927935149e99bafc99b730460c4"
         adsmogo:express_mode="false" >
     </com.adsmogo.adview.AdsMogoLayout>
-           	
+
 </RelativeLayout>
