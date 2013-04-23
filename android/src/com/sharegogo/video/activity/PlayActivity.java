@@ -74,6 +74,7 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	private View mDownloadNote;
 	private ProgressDialog mProgressDialog = null;
 	private VideoDetail mVideoDetail = null;
+	private boolean bFlashInstalled = false;
 	
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -111,13 +112,23 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		mProgressDialog.setMessage(getString(R.string.loading_video_detail));
 		mProgressDialog.show();
 		
-		mWebView.loadUrl("file:///android_asset/index.html");
-        mWebView.getSettings().setPluginsEnabled(true);
-        mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.getSettings().setPluginState(PluginState.ON);
-        mWebView.addJavascriptInterface(new VideoInterface(), "VideoInterface");
-        mWebView.setWebChromeClient(new MyWebChromeClient());
-        mWebView.setWebViewClient(new MyWebViewClient());
+        if(isFlashInstalled())
+        {
+        	bFlashInstalled = true;
+        	
+        	mWebView.loadUrl("file:///android_asset/index.html");
+            mWebView.getSettings().setPluginsEnabled(true);
+            mWebView.getSettings().setJavaScriptEnabled(true);
+            mWebView.getSettings().setPluginState(PluginState.ON);
+            mWebView.addJavascriptInterface(new VideoInterface(), "VideoInterface");
+            mWebView.setWebChromeClient(new MyWebChromeClient());
+            mWebView.setWebViewClient(new MyWebViewClient());
+        }
+        else
+        {
+        	bFlashInstalled = false;
+        	VideoManager.getInstance().getVideoDetail(mVideoId, PlayActivity.this);
+        }
 	}
     private class MyWebChromeClient extends WebChromeClient{
     	   public void onProgressChanged(WebView view, int progress) {
@@ -415,14 +426,17 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		try {
-            Class.forName("android.webkit.WebView")
-                    .getMethod("onPause", (Class[]) null)
-                    .invoke(mWebView, (Object[]) null);
-        } catch (Exception e) {
-        	e.printStackTrace();
-        }
-		mWebView.pauseTimers();
+		if(isFlashInstalled())
+		{
+			try {
+	            Class.forName("android.webkit.WebView")
+	                    .getMethod("onPause", (Class[]) null)
+	                    .invoke(mWebView, (Object[]) null);
+	        } catch (Exception e) {
+	        	e.printStackTrace();
+	        }
+			mWebView.pauseTimers();
+		}
 	}
 
 
@@ -430,16 +444,37 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-        try{
-	        Class.forName("android.webkit.WebView")
-	        .getMethod("onResume", (Class[]) null)
-	        .invoke(mWebView, (Object[]) null);
-		} catch (Exception e) {
-			e.printStackTrace();
+		//进入的时候flash没有安装
+		if(!bFlashInstalled && isFlashInstalled())
+		{
+			mWebView.loadUrl("file:///android_asset/index.html");
+	        mWebView.getSettings().setPluginsEnabled(true);
+	        mWebView.getSettings().setJavaScriptEnabled(true);
+	        mWebView.getSettings().setPluginState(PluginState.ON);
+	        mWebView.addJavascriptInterface(new VideoInterface(), "VideoInterface");
+	        mWebView.setWebChromeClient(new MyWebChromeClient());
+	        mWebView.setWebViewClient(new MyWebViewClient());
 		}
 		
-		mWebView.resumeTimers();
-
+		if(isFlashInstalled())
+		{
+	        try{
+		        Class.forName("android.webkit.WebView")
+		        .getMethod("onResume", (Class[]) null)
+		        .invoke(mWebView, (Object[]) null);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			mWebView.resumeTimers();
+			
+			bFlashInstalled = true;
+		}
+		else
+		{
+			bFlashInstalled = false;
+		}
+		
 		if(isFlashInstalled())
 		{
 			mDownloadNote.setVisibility(View.INVISIBLE);
@@ -623,7 +658,8 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		
 		if(mUrl != null)
 		{
-			mWebView.loadUrl("javascript:callJS()");  //java调用js的函数
+			if(isFlashInstalled())
+				mWebView.loadUrl("javascript:callJS()");  //java调用js的函数
 		}
 		else if(videoDetail.playurl != null)
 		{

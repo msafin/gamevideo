@@ -166,7 +166,13 @@ public class GameFragment extends SherlockFragment implements OnPageChangeListen
 			return;
 		}
 		
-		VideoListFragmentEx fragment = mFragments.get(arg0 - 1);
+		int index = arg0 - 1;
+		if(index >= mFragments.size())
+		{
+			return;
+		}
+		
+		VideoListFragmentEx fragment = mFragments.get(index);
 		
 		VideoAdapter adapter = fragment.getAdapter();
 		if(adapter.getCount() <= 0)

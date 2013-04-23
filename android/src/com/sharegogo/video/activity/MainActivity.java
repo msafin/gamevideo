@@ -516,7 +516,13 @@ public class MainActivity extends BaseActivity implements OnClickListener, andro
 			return;
 		}
 		
-		VideoListFragmentEx fragment = mFragments.get(arg0 - 1);
+		int index = arg0 - 1;
+		if(index >= mFragments.size())
+		{
+			return;
+		}
+		
+		VideoListFragmentEx fragment = mFragments.get(index);
 		
 		VideoAdapter adapter = fragment.getAdapter();
 		if(adapter.getCount() <= 0)

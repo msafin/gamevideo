@@ -171,6 +171,11 @@ public class GameFragmentEx extends SherlockFragment implements OnPageChangeList
 	@Override
 	public void onPageSelected(int arg0) {
 		// TODO Auto-generated method stub
+		if(arg0 >= mFragments.size())
+		{
+			return;
+		}
+		
 		VideoListFragmentEx fragment = mFragments.get(arg0);
 		
 		VideoAdapter adapter = fragment.getAdapter();
