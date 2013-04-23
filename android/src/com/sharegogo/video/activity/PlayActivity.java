@@ -1,7 +1,15 @@
 package com.sharegogo.video.activity;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.j256.ormlite.dao.Dao;
 import com.sharegogo.config.HttpConfig;
@@ -26,9 +34,12 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -36,6 +47,8 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -56,7 +69,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-public class PlayActivity extends FragmentActivity implements OnClickListener, ResponseHandler{
+public class PlayActivity extends FragmentActivity implements OnClickListener, ResponseHandler, android.view.SurfaceHolder.Callback{
 	static final public String KEY_VIDEO_AUTHOR = "video_author";
 	static final public String KEY_VIDEO_NAME = "video_name";
 	static final public String KEY_VIDEO_SOURCE = "video_source";
@@ -65,6 +78,7 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	
 	private WebView mWebView = null;
 	private String mUrl = null;
+	private String mPlayUrl = null;
 	private long mVideoId = -1;
 	private ImageButton mBtnFavorite;
 	private ImageButton mBtnRecommend;
@@ -74,7 +88,49 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	private View mDownloadNote;
 	private ProgressDialog mProgressDialog = null;
 	private VideoDetail mVideoDetail = null;
-	
+	private String mVId = null;
+	private SurfaceView mSurfaceView = null;
+	private MediaPlayer mp;
+	private SurfaceHolder holder;
+	Handler mainhandler = new Handler(){
+
+		@Override
+		public void handleMessage(Message msg) {
+			switch(msg.what)
+			{
+				case 10000:
+				{
+					if(mp !=null){
+			        	try {
+							mp.setDataSource("http://3g.youku.com/pvs?id="+mVId+"&format=3gphd");
+							mp.prepare();
+							mp.start();
+						} catch (IllegalArgumentException e) {
+
+							e.printStackTrace();
+						} catch (SecurityException e) {
+
+							e.printStackTrace();
+						} catch (IllegalStateException e) {
+
+							e.printStackTrace();
+						} catch (IOException e) {
+
+							e.printStackTrace();
+						}			
+						
+						}
+				}
+				break;
+				case 99:
+					break;
+				default:
+					break;
+			}
+		}
+			
+	};
+
 	@Override
 	protected void onCreate(Bundle arg0) {
 		// TODO Auto-generated method stub
@@ -96,7 +152,13 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		mGotoBrowser.setOnClickListener(this);
 		
 		mWebView = (WebView)findViewById(R.id.webView1);
+		mSurfaceView = (SurfaceView)findViewById(R.id.surfaceview);
 		
+		holder = mSurfaceView.getHolder();
+        holder.addCallback(this);
+        holder.setKeepScreenOn(true);
+        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        
 		Intent intent = this.getIntent();
 		mVideoId = intent.getLongExtra(KEY_VIDEO_ID, -1);
 		mUrl = intent.getStringExtra(KEY_FLASH_URL);
@@ -119,6 +181,53 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
         mWebView.setWebChromeClient(new MyWebChromeClient());
         mWebView.setWebViewClient(new MyWebViewClient());
 	}
+	
+   public void get(){  
+        BufferedReader in = null;  
+        try{
+            HttpClient client = new DefaultHttpClient();
+            HttpGet request = new HttpGet(mPlayUrl);  
+            request.addHeader("user-agent", 
+            		"Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543 Safari/419.3");
+            HttpResponse response = client.execute(request);   
+            in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));       
+            String line = "";  
+ 
+            while((line = in.readLine()) != null){  
+                int pos = line.indexOf("vc-vid=");
+                if(pos >0){
+                String temp = line.substring(pos, pos+100);
+                String vidt = temp.split("&sct=")[0];
+                
+                mVId = vidt.split("=")[1];
+                break;
+                
+                }                
+            }  
+            
+            in.close();  
+            Message msg = new Message();
+            if(mVId != null){
+            	msg.what = 10000;
+            }else
+            {
+            	msg.what = 99;
+            }
+            mainhandler.handleMessage(msg);
+              
+        }catch(Exception e){  
+            e.printStackTrace();
+        }finally{  
+            if(in != null){  
+                try{  
+                    in.close();  
+                }catch(IOException ioe){  
+                    Log.e("", ioe.toString());  
+                }  
+            }  
+        }  
+    }
+   
     private class MyWebChromeClient extends WebChromeClient{
     	   public void onProgressChanged(WebView view, int progress) {
     	     // Activities and WebViews measure progress with different scales.
@@ -476,6 +585,11 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
+		
+		if(mp != null)
+		{
+           mp.release();
+		}
 	}
 
 	private class VideoInterface {
@@ -620,10 +734,11 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		
 		mVideoDetail = videoDetail;
 		mUrl = videoDetail.flashUrl;
+		mPlayUrl = videoDetail.playurl;
 		
 		if(mUrl != null)
 		{
-			mWebView.loadUrl("javascript:callJS()");  //java调用js的函数
+			//mWebView.loadUrl("javascript:callJS()");  //java调用js的函数
 		}
 		else if(videoDetail.playurl != null)
 		{
@@ -633,6 +748,15 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		{
 			Toast.makeText(getApplicationContext(), getString(R.string.load_video_detail_failed), 1000).show();
 		}
+		
+		new Thread(){
+
+			@Override
+			public void run() {
+				get();
+			}
+    		
+    	}.start();
 	}
 
 
@@ -666,5 +790,35 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 			
 			return false;
 		}
+	}
+
+
+	@Override
+	public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void surfaceCreated(SurfaceHolder holder) {
+		// TODO Auto-generated method stub
+		mp = new MediaPlayer();
+		mp.setDisplay(holder);
+        mp.setOnCompletionListener(new OnCompletionListener(){
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.release();
+            }
+
+         });
+	}
+
+
+	@Override
+	public void surfaceDestroyed(SurfaceHolder holder) {
+		// TODO Auto-generated method stub
+		if(mp != null)
+			mp.release();
 	}
 }
