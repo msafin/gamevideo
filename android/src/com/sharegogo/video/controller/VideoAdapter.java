@@ -62,8 +62,7 @@ public class VideoAdapter extends GameBaseAdapter<VideoDetail>{
 			tag.mUpdateTime.setText(time);
 		}
 		
-		if(video.img != null)
-			UIUtils.DisplayImage(video.img, tag.mLeftImageView, R.drawable.default_bg);
+		UIUtils.DisplayImage(video.img, tag.mLeftImageView, R.drawable.default_bg);
 		
 		return view;
 	}

@@ -80,6 +80,7 @@ public class UIUtils {
         .showStubImage(defaultImage)
         .resetViewBeforeLoading()
         .delayBeforeLoading(1000)
+        .showImageForEmptyUri(defaultImage)
         .cacheInMemory()
         .cacheOnDisc()
         .imageScaleType(ImageScaleType.EXACTLY)

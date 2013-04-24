@@ -73,8 +73,7 @@ public class FavoriteAdapter extends GameBaseAdapter<FavoriteListItem>{
 			tag.mAuthorName.setVisibility(View.INVISIBLE);
 		}
 		
-		if(item.video.img != null)
-			UIUtils.DisplayImage(item.video.img, tag.mLeftImageView, R.drawable.default_bg);
+		UIUtils.DisplayImage(item.video.img, tag.mLeftImageView, R.drawable.default_bg);
 		
 		if(item.mode == FavoriteListItem.MODE_EDIT)
 		{
