@@ -94,7 +94,6 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	private ImageButton mBtnFullScreen = null;
 	private boolean mIsFullScreen = false;
 	private Handler mHandler = new Handler(){
-
 		@Override
 		public void handleMessage(Message msg) {
 			switch(msg.what)
@@ -359,10 +358,7 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		if(!isUseFlash())
 		{
 			mPosition = mVideoView.getCurrentPosition();
-			if(mVideoView.isPlaying())
-			{
-				mVideoView.suspend();
-			}
+			mVideoView.suspend();
 		}
 		else
 		{
@@ -387,11 +383,7 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		super.onResume();
 		if(!isUseFlash())
 		{
-			if(!mProgressDialog.isShowing())
-			{
-				mProgressDialog.setMessage(getString(R.string.loading_video));
-				mProgressDialog.show();
-			}
+			mVideoView.resume();
 		}
 		else
 		{
