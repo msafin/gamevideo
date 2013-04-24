@@ -69,6 +69,7 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	static final public String KEY_VIDEO_SOURCE = "video_source";
 	static final public String KEY_VIDEO_ID = "video_id";
 	static final public String KEY_FLASH_URL = "flash_url";
+	static final public String KEY_VIDEO_VID = "video_vid";
 	
 	private WebView mWebView = null;
 	private String mUrl = null;
@@ -93,24 +94,6 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	private ImageButton mBtnPlay = null;
 	private ImageButton mBtnFullScreen = null;
 	private boolean mIsFullScreen = false;
-	private Handler mHandler = new Handler(){
-		@Override
-		public void handleMessage(Message msg) {
-			switch(msg.what)
-			{
-				case 10000:
-				{
-					mVideoView.setVideoURI(Uri.parse("http://3g.youku.com/pvs?id="+mVId+"&format=3gphd"));
-				}
-				break;
-				case 99:
-					break;
-				default:
-					break;
-			}
-		}
-			
-	};
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -156,6 +139,7 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		Intent intent = this.getIntent();
 		mVideoId = intent.getLongExtra(KEY_VIDEO_ID, -1);
 		mUrl = intent.getStringExtra(KEY_FLASH_URL);
+		mVId = intent.getStringExtra(KEY_VIDEO_VID);
 		
 		mFavorite = FavoriteManager.getInstance().getFavorite(mVideoId);
 		if(mFavorite != null)
@@ -249,52 +233,6 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		getWindow().setFlags(flag, flag);
 	}
 	
-	public void get(){  
-        BufferedReader in = null;  
-        try{
-            HttpClient client = new DefaultHttpClient();
-            HttpGet request = new HttpGet(mPlayUrl);  
-            request.addHeader("user-agent", 
-            		"Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543 Safari/419.3");
-            HttpResponse response = client.execute(request);   
-            in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));       
-            String line = "";  
- 
-            while((line = in.readLine()) != null){  
-                int pos = line.indexOf("vc-vid=");
-                if(pos >0){
-                String temp = line.substring(pos, pos+100);
-                String vidt = temp.split("&sct=")[0];
-                
-                mVId = vidt.split("=")[1];
-                break;
-                
-                }                
-            }  
-            
-            in.close();  
-            Message msg = Message.obtain(mHandler);
-            if(mVId != null){
-            	msg.what = 10000;
-            }else
-            {
-            	msg.what = 99;
-            }
-             
-            msg.sendToTarget();
-        }catch(Exception e){  
-            e.printStackTrace();
-        }finally{  
-            if(in != null){  
-                try{  
-                    in.close();  
-                }catch(IOException ioe){  
-                    Log.e("", ioe.toString());  
-                }  
-            }  
-        }  
-    }
-   
     private class MyWebChromeClient extends WebChromeClient{
     	   
 			@Override
@@ -455,8 +393,6 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		mHandler.removeMessages(10000);
-		mHandler.removeMessages(99);
 	}
 
 	private class VideoInterface {
@@ -614,14 +550,13 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		{
 			mProgressDialog.setMessage(getString(R.string.loading_video));
 			
-			new Thread(){
-
-				@Override
-				public void run() {
-					get();
-				}
-	    		
-	    	}.start();
+			String vid = videoDetail.getVideoId();
+			if(vid != null)
+			{
+				mVId = vid;
+			}
+			
+			mVideoView.setVideoURI(Uri.parse("http://3g.youku.com/pvs?id="+mVId+"&format=3gphd"));
 		}
 		else
 		{

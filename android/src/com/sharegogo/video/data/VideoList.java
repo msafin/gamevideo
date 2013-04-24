@@ -37,6 +37,8 @@ public class VideoList extends BaseResponse{
 		
 		public long lastUpdateTime;
 		
+		public String extra_data;
+		
 		public VideoDetail toVideoDetail()
 		{
 			VideoDetail detail = new VideoDetail();
@@ -47,6 +49,7 @@ public class VideoList extends BaseResponse{
 			detail.hot = hot;
 			detail.img = img;
 			detail.state = state;
+			detail.extra_data = extra_data;
 			detail.lastUpdateTime = lastUpdateTime;
 			
 			return detail;

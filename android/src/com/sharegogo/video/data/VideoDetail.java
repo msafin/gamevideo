@@ -57,4 +57,23 @@ public class VideoDetail extends BaseResponse{
 	
 	@DatabaseField
 	public long cid;
+	
+	@DatabaseField
+	public String extra_data;
+	
+	
+	public String getVideoId()
+	{
+		if(extra_data != null)
+		{
+			String[] pairs = extra_data.split("=");
+			
+			if(pairs != null && pairs.length > 1)
+			{
+				return pairs[1];
+			}
+		}
+		
+		return null;
+	}
 }

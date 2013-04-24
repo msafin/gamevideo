@@ -41,6 +41,7 @@ public class UIUtils {
 		intent.putExtra(PlayActivity.KEY_VIDEO_SOURCE, video.from);
 		intent.putExtra(PlayActivity.KEY_VIDEO_ID,video.id);
 		intent.putExtra(PlayActivity.KEY_FLASH_URL,video.flashUrl);
+		intent.putExtra(PlayActivity.KEY_VIDEO_VID,video.getVideoId());
 		
 		context.startActivity(intent);
 	}
