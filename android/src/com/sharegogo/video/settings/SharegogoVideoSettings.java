@@ -25,4 +25,15 @@ public class SharegogoVideoSettings {
 	{
 		return getSharedPreferences().getInt(ResUtils.getString(R.string.key_wifi_image), 0);
 	}
+	
+	
+	static public void setUseFlash(int value)
+	{
+		getSharedPreferences().edit().putInt(ResUtils.getString(R.string.key_use_flash), value).commit();
+	}
+	
+	static public int getUseFlash()
+	{
+		return getSharedPreferences().getInt(ResUtils.getString(R.string.key_use_flash), 0);
+	}
 }

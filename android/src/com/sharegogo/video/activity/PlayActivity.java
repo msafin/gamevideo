@@ -55,6 +55,7 @@ import com.sharegogo.video.data.MySqliteHelper;
 import com.sharegogo.video.data.VideoDetail;
 import com.sharegogo.video.game.R;
 import com.sharegogo.video.http.ResponseHandler;
+import com.sharegogo.video.settings.SharegogoVideoSettings;
 import com.sharegogo.video.utils.DeviceInfo;
 import com.sharegogo.video.utils.NetworkUtils;
 import com.sharegogo.video.utils.ResUtils;
@@ -89,7 +90,6 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	private GestureDetector mGestureDetector = null;
 	private boolean mRestored = false;
 	private int mPosition = 0;
-	private boolean mPausedByUser = false;
 	private ImageButton mBtnPlay = null;
 	private ImageButton mBtnFullScreen = null;
 	private boolean mIsFullScreen = false;
@@ -204,6 +204,11 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	
 	private boolean isUseFlash()
 	{
+		if(SharegogoVideoSettings.getUseFlash() == 1)
+		{
+			return true;
+		}
+		
 		return false;
 	}
 	
@@ -218,10 +223,6 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 		int flags = WindowManager.LayoutParams.FLAG_FULLSCREEN;
 		getWindow().setFlags(flags, flags);
-		
-		int desiredSize = DeviceInfo.getScreenWidth(this);
-		
-		mVideoView.resolveAdjustedSize(desiredSize, MeasureSpec.EXACTLY);
 		
 		mIsFullScreen = true;
 	}
@@ -349,11 +350,10 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		super.onPause();
 		if(!isUseFlash())
 		{
-			mPausedByUser = !mVideoView.isPlaying();
 			mPosition = mVideoView.getCurrentPosition();
 			if(mVideoView.isPlaying())
 			{
-				mVideoView.pause();
+				mVideoView.suspend();
 			}
 		}
 		else
@@ -383,11 +383,6 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 			{
 				mProgressDialog.setMessage(getString(R.string.loading_video));
 				mProgressDialog.show();
-			}
-			
-			if(!mPausedByUser)
-			{
-				mVideoView.resume();
 			}
 		}
 		else

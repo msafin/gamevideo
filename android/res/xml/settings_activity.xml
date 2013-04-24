@@ -8,7 +8,15 @@
                 android:title="@string/wifi_fetch_image"
                 android:summaryOff="@string/setting_off"
                 android:summaryOn="@string/setting_on"/>
-        
+    </PreferenceCategory>
+    
+    <PreferenceCategory
+        android:title="@string/play_setting">
+        <CheckBoxPreference
+                android:key="@string/key_use_flash"
+                android:title="@string/use_flash"
+                android:summaryOff="@string/flash_off"
+                android:summaryOn="@string/flash_on"/>
     </PreferenceCategory>
     
 </PreferenceScreen>

@@ -1,5 +1,6 @@
 package com.sharegogo.video.activity;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -17,6 +18,7 @@ import com.sharegogo.video.utils.ResUtils;
 
 public class SettingsActivity extends PreferenceActivity implements OnPreferenceChangeListener{
 	private Preference mWifiImage = null;
+	private Preference mUseFlash = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +48,15 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 		});
 		
 		mWifiImage = findPreference(ResUtils.getString(R.string.key_wifi_image));
-		
 		mWifiImage.setOnPreferenceChangeListener(this);
+		
+		mUseFlash = findPreference(ResUtils.getString(R.string.key_use_flash));
+		mUseFlash.setOnPreferenceChangeListener(this);
+		
+		if(Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
+		{
+			mUseFlash.setEnabled(false);
+		}
 	}
 
 	@Override
@@ -68,6 +77,18 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 			else
 			{
 				SharegogoVideoSettings.setWifiFetchImage(0);
+			}
+		}
+		else if(preference == mUseFlash)
+		{
+
+			if((Boolean)newValue == true)
+			{
+				SharegogoVideoSettings.setUseFlash(1);
+			}
+			else
+			{
+				SharegogoVideoSettings.setUseFlash(0);
 			}
 		}
 		

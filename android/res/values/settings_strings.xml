@@ -6,4 +6,10 @@
     <string name="setting_off">已关闭(所有网络下都拉取图片)</string>
     <string name="key_wifi_image">wifi_fetch_image</string>
     
+    <string name="play_setting">播放设置</string>
+    <string name="use_flash">使用flash播放</string>
+    <string name="flash_on">已开启(使用flash播放视频)</string>
+    <string name="flash_off">已关闭(不使用flash播放视频)</string>
+    <string name="key_use_flash">use_flash</string>
+    
 </resources>
