@@ -1,5 +1,7 @@
 package com.sharegogo.video.view;
 
+import com.sharegogo.video.utils.DeviceInfo;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.VideoView;
@@ -7,7 +9,10 @@ import android.widget.VideoView;
 public class VideoViewEx extends VideoView {
 
     private PlayPauseListener mListener;
-
+    private boolean mFullScreen = false;
+    private int mWidth = 0;
+    private int mHeight = 0;
+    
     public VideoViewEx(Context context) {
         super(context);
     }
@@ -20,7 +25,19 @@ public class VideoViewEx extends VideoView {
         super(context, attrs, defStyle);
     }
 
-    public void setPlayPauseListener(PlayPauseListener listener) {
+    
+    @Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		// TODO Auto-generated method stub
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		
+		if(mFullScreen)
+		{
+			setMeasuredDimension(mWidth,mHeight);
+		}
+	}
+
+	public void setPlayPauseListener(PlayPauseListener listener) {
         mListener = listener;
     }
 
@@ -40,6 +57,13 @@ public class VideoViewEx extends VideoView {
         }
     }
 
+    public void setFullScreen(boolean fullScreen,int width,int height)
+    {
+    	mFullScreen = fullScreen;
+    	mWidth = width;
+    	mHeight = height;
+    }
+    
    static public interface PlayPauseListener {
         void onVideoPlay();
         void onVideoPause();

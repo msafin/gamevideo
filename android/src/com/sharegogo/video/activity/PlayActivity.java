@@ -214,6 +214,12 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	
 	private void showFullScreen()
 	{
+		mIsFullScreen = true;
+		
+		int width = DeviceInfo.getScreenWidth(this);
+		int height = DeviceInfo.getScreenHeight(this);
+		mVideoView.setFullScreen(true, width, height);
+		
 		mBtnFavorite.setVisibility(View.GONE);
 		mBtnShare.setVisibility(View.GONE);
 		mGotoBrowser.setVisibility(View.GONE);
@@ -223,12 +229,16 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 		int flags = WindowManager.LayoutParams.FLAG_FULLSCREEN;
 		getWindow().setFlags(flags, flags);
-		
-		mIsFullScreen = true;
 	}
 	
 	private void exitFullScreen()
 	{
+		mIsFullScreen = false;
+		
+		int width = DeviceInfo.getScreenWidth(this);
+		int height = DeviceInfo.getScreenHeight(this);
+		mVideoView.setFullScreen(false, width, height);
+		
 		mBtnFavorite.setVisibility(View.VISIBLE);
 		mBtnShare.setVisibility(View.VISIBLE);
 		mGotoBrowser.setVisibility(View.VISIBLE);
@@ -238,8 +248,6 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		int flag=WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN;
 		getWindow().setFlags(flag, flag);
-		
-		mIsFullScreen = false;
 	}
 	
 	public void get(){  
