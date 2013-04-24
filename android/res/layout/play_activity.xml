@@ -14,7 +14,7 @@
         android:layout_alignWithParentIfMissing="true"
         android:layout_above="@+id/btn_favorite"/>
     
-    <VideoView 
+    <com.sharegogo.video.view.VideoViewEx
 	    android:id="@+id/video_view"
 	    android:layout_width="fill_parent"
     	android:layout_height="fill_parent"
@@ -22,6 +22,23 @@
     	android:layout_marginBottom="3dp"
         android:layout_alignWithParentIfMissing="true"
         android:layout_above="@+id/btn_favorite"/>
+    
+    <ImageButton
+          android:id="@+id/full_screen"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignTop="@+id/video_view"
+          android:layout_alignLeft="@+id/video_view"
+          android:src="@drawable/ic_full_screen"
+          android:background="#00FFFFFF"/>
+    	
+	<ImageButton
+          android:id="@+id/play"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerInParent="true"
+          android:src="@drawable/ic_play_dark"
+          android:background="#00FFFFFF"/>
 
      <RelativeLayout 
         android:id="@+id/flash_downlaod_note"

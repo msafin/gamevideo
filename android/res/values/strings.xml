@@ -67,4 +67,9 @@
 	
 	<string name="exit_note">温馨提示</string>
 	<string name="exit_confirm">您确认退出游记视频吗？</string>
+	
+	<string name="loading_video">正在加载视频...</string>
+	<string name="load_video_failed">加载视频失败</string>
+	<string name="double_full_screen">双击全屏</string>
+	
 </resources>

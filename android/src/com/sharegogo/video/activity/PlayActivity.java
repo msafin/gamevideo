@@ -15,8 +15,10 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnErrorListener;
+import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -28,6 +30,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
@@ -40,9 +43,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.MediaController;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.j256.ormlite.dao.Dao;
 import com.sharegogo.config.HttpConstants;
@@ -54,11 +55,14 @@ import com.sharegogo.video.data.MySqliteHelper;
 import com.sharegogo.video.data.VideoDetail;
 import com.sharegogo.video.game.R;
 import com.sharegogo.video.http.ResponseHandler;
+import com.sharegogo.video.utils.DeviceInfo;
 import com.sharegogo.video.utils.NetworkUtils;
 import com.sharegogo.video.utils.ResUtils;
 import com.sharegogo.video.utils.UIUtils;
+import com.sharegogo.video.view.VideoViewEx;
+import com.sharegogo.video.view.VideoViewEx.PlayPauseListener;
 
-public class PlayActivity extends FragmentActivity implements OnClickListener, ResponseHandler, OnTouchListener{
+public class PlayActivity extends FragmentActivity implements OnClickListener, ResponseHandler, OnTouchListener, OnPreparedListener, OnErrorListener, PlayPauseListener{
 	static final public String KEY_VIDEO_AUTHOR = "video_author";
 	static final public String KEY_VIDEO_NAME = "video_name";
 	static final public String KEY_VIDEO_SOURCE = "video_source";
@@ -79,10 +83,17 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	private VideoDetail mVideoDetail = null;
 	private boolean bFlashInstalled = false;
 	private String mVId = null;
-	private VideoView mVideoView = null;
+	private VideoViewEx mVideoView = null;
+	private View mAdsView = null;
 	private MediaController mMediaController = null;
 	private GestureDetector mGestureDetector = null;
-	private Handler mainhandler = new Handler(){
+	private boolean mRestored = false;
+	private int mPosition = 0;
+	private boolean mPausedByUser = false;
+	private ImageButton mBtnPlay = null;
+	private ImageButton mBtnFullScreen = null;
+	private boolean mIsFullScreen = false;
+	private Handler mHandler = new Handler(){
 
 		@Override
 		public void handleMessage(Message msg) {
@@ -91,7 +102,6 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 				case 10000:
 				{
 					mVideoView.setVideoURI(Uri.parse("http://3g.youku.com/pvs?id="+mVId+"&format=3gphd"));
-					mMediaController.show(10 * 1000);
 				}
 				break;
 				case 99:
@@ -110,11 +120,19 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		super.onCreate(arg0);
 		setContentView(R.layout.play_activity);
 		
+		mRestored = arg0 != null;
+		
+		mAdsView = findViewById(R.id.adsMogoView);
 		mBtnFavorite = (ImageButton)findViewById(R.id.btn_favorite);
 		mBtnRecommend = (ImageButton)findViewById(R.id.btn_recommend);
 		mBtnShare = (ImageButton)findViewById(R.id.btn_share);
 		mDownloadNote = findViewById(R.id.flash_downlaod_note);
 		mGotoBrowser = (Button)findViewById(R.id.btn_goto_browser);
+		mBtnPlay = (ImageButton)findViewById(R.id.play);
+		mBtnFullScreen = (ImageButton)findViewById(R.id.full_screen);
+		mBtnPlay.setOnClickListener(this);
+		mBtnPlay.setVisibility(View.GONE);
+		mBtnFullScreen.setOnClickListener(this);
 		ImageButton download = (ImageButton)findViewById(R.id.download);
 		download.setOnClickListener(this);
 		
@@ -124,13 +142,17 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		mGotoBrowser.setOnClickListener(this);
 		
 		mWebView = (WebView)findViewById(R.id.webView1);
-		mVideoView = (VideoView)findViewById(R.id.video_view);
+		mVideoView = (VideoViewEx)findViewById(R.id.video_view);
+		mVideoView.setPlayPauseListener(this);
 		
 		mMediaController = new MediaController(this);
 		mMediaController.setMediaPlayer(mVideoView);
 		mMediaController.setAnchorView(mVideoView);
 		mVideoView.setMediaController(mMediaController);
 		mVideoView.setOnTouchListener(this);
+		mVideoView.setOnPreparedListener(this);
+		mVideoView.setOnErrorListener(this);
+		mMediaController.hide();
 		
 		Intent intent = this.getIntent();
 		mVideoId = intent.getLongExtra(KEY_VIDEO_ID, -1);
@@ -182,12 +204,7 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	
 	private boolean isUseFlash()
 	{
-		if(Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
-		{
-			return false;
-		}
-		
-		return true;
+		return false;
 	}
 	
 	private void showFullScreen()
@@ -195,10 +212,18 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		mBtnFavorite.setVisibility(View.GONE);
 		mBtnShare.setVisibility(View.GONE);
 		mGotoBrowser.setVisibility(View.GONE);
+		mAdsView.setVisibility(View.GONE);
+		mBtnFullScreen.setVisibility(View.GONE);
 		
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 		int flags = WindowManager.LayoutParams.FLAG_FULLSCREEN;
 		getWindow().setFlags(flags, flags);
+		
+		int desiredSize = DeviceInfo.getScreenWidth(this);
+		
+		mVideoView.resolveAdjustedSize(desiredSize, MeasureSpec.EXACTLY);
+		
+		mIsFullScreen = true;
 	}
 	
 	private void exitFullScreen()
@@ -206,10 +231,14 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		mBtnFavorite.setVisibility(View.VISIBLE);
 		mBtnShare.setVisibility(View.VISIBLE);
 		mGotoBrowser.setVisibility(View.VISIBLE);
+		mAdsView.setVisibility(View.VISIBLE);
+		mBtnFullScreen.setVisibility(View.VISIBLE);
 		
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		int flag=WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN;
 		getWindow().setFlags(flag, flag);
+		
+		mIsFullScreen = false;
 	}
 	
 	public void get(){  
@@ -236,7 +265,7 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
             }  
             
             in.close();  
-            Message msg = Message.obtain(mainhandler);
+            Message msg = Message.obtain(mHandler);
             if(mVId != null){
             	msg.what = 10000;
             }else
@@ -320,6 +349,8 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		super.onPause();
 		if(!isUseFlash())
 		{
+			mPausedByUser = !mVideoView.isPlaying();
+			mPosition = mVideoView.getCurrentPosition();
 			mVideoView.pause();
 		}
 		else
@@ -345,7 +376,16 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		super.onResume();
 		if(!isUseFlash())
 		{
-			mVideoView.resume();
+			if(!mProgressDialog.isShowing())
+			{
+				mProgressDialog.setMessage(getString(R.string.loading_video));
+				mProgressDialog.show();
+			}
+			
+			if(!mPausedByUser)
+			{
+				mVideoView.resume();
+			}
 		}
 		else
 		{
@@ -417,16 +457,18 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
+		mHandler.removeMessages(10000);
+		mHandler.removeMessages(99);
 	}
 
 	private class VideoInterface {
-		
-		    public String getFlash() 
-		    { 
-		    	return buildHtml(); 
-		    }
-		 }
-
+	
+	    public String getFlash() 
+	    { 
+	    	return buildHtml(); 
+	    }
+	}
+	
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
@@ -456,6 +498,15 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 			{
 				UIUtils.gotoBrowserActivity(this, mVideoDetail.playurl);
 			}
+			break;
+		case R.id.play:
+			if(!mVideoView.isPlaying())
+			{
+				mVideoView.start();
+			}
+			break;
+		case R.id.full_screen:
+			onFullScreen();
 			break;
 			default:
 			break;
@@ -555,8 +606,6 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	@Override
 	public void onSuccess(Object data) {
 		// TODO Auto-generated method stub
-		mProgressDialog.dismiss();
-		
 		VideoDetail videoDetail = (VideoDetail)data;
 		
 		mVideoDetail = videoDetail;
@@ -565,6 +614,8 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		
 		if(!isUseFlash())
 		{
+			mProgressDialog.setMessage(getString(R.string.loading_video));
+			
 			new Thread(){
 
 				@Override
@@ -576,6 +627,8 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		}
 		else
 		{
+			mProgressDialog.dismiss();
+			
 			if(mUrl != null)
 			{
 				if(isFlashInstalled())
@@ -592,11 +645,11 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		}
 	}
 
-
 	@Override
 	public void onFailed(int what, Object msg) {
 		// TODO Auto-generated method stub
-		mProgressDialog.dismiss();
+		if(mProgressDialog.isShowing())
+			mProgressDialog.dismiss();
 		
 		if(msg != null && msg instanceof String)
 		{
@@ -633,19 +686,24 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		return true;
 	}
 
+	private void onFullScreen()
+	{
+		if(mBtnFavorite.getVisibility() == View.VISIBLE)
+		{
+			showFullScreen();
+		}
+		else
+		{
+			exitFullScreen();
+		}
+	}
+	
 	private class MyGestureListener extends GestureDetector.SimpleOnGestureListener
 	{
 		@Override
 		public boolean onDoubleTap(MotionEvent e) {
 			// TODO Auto-generated method stub
-			if(mBtnFavorite.getVisibility() == View.VISIBLE)
-			{
-				showFullScreen();
-			}
-			else
-			{
-				exitFullScreen();
-			}
+			onFullScreen();
 			
 			return true;
 		}
@@ -662,7 +720,61 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 				mMediaController.show();
 			}
 			
-			return true;
+			if(mIsFullScreen)
+			{
+				if(mBtnFullScreen.getVisibility() == View.VISIBLE)
+				{
+					mBtnFullScreen.setVisibility(View.GONE);
+				}
+				else
+				{
+					mBtnFullScreen.setVisibility(View.VISIBLE);
+				}
+			}
+			
+			return false;
 		}
+	}
+
+	@Override
+	public void onPrepared(MediaPlayer arg0) {
+		// TODO Auto-generated method stub
+		if(!mRestored)
+		{
+			mVideoView.seekTo(100);
+		}
+		
+		if(mPosition > 0)
+		{
+			mVideoView.seekTo(mPosition);
+		}
+		
+		mProgressDialog.dismiss();
+		
+		mMediaController.show(10 * 1000);
+		mBtnPlay.setVisibility(View.VISIBLE);
+		
+		Toast.makeText(this, R.string.double_full_screen, 2000).show();
+	}
+
+	@Override
+	public boolean onError(MediaPlayer arg0, int arg1, int arg2) {
+		// TODO Auto-generated method stub
+		mProgressDialog.dismiss();
+		Toast.makeText(this, R.string.load_video_failed, 1000).show();
+		
+		return true;
+	}
+
+	@Override
+	public void onVideoPlay() {
+		// TODO Auto-generated method stub
+		mBtnPlay.setVisibility(View.GONE);
+	}
+
+	@Override
+	public void onVideoPause() {
+		// TODO Auto-generated method stub
+		mBtnPlay.setVisibility(View.VISIBLE);
 	}
 }

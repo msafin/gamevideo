@@ -3,11 +3,13 @@ package com.sharegogo.video.utils;
 import java.io.IOException;
 import java.io.InputStream;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.Build;
 import android.telephony.TelephonyManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.sharegogo.video.SharegogoVideoApplication;
@@ -91,6 +93,22 @@ public class DeviceInfo {
 		}
 		
 		return "default";
+	}
+	
+	static public int getScreenWidth(Activity activity)
+	{
+		DisplayMetrics metrics = new DisplayMetrics();
+		activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		
+		return metrics.widthPixels;
+	}
+	
+	static public int getScreenHeight(Activity activity)
+	{
+		DisplayMetrics metrics = new DisplayMetrics();
+		activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		
+		return metrics.heightPixels;
 	}
 	
 	static public void test()
