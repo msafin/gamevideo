@@ -351,7 +351,10 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		{
 			mPausedByUser = !mVideoView.isPlaying();
 			mPosition = mVideoView.getCurrentPosition();
-			mVideoView.pause();
+			if(mVideoView.isPlaying())
+			{
+				mVideoView.pause();
+			}
 		}
 		else
 		{
