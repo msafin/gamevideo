@@ -1,15 +1,7 @@
 package com.sharegogo.video.activity;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.util.List;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -20,8 +12,6 @@ import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -207,6 +197,8 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		mBtnShare.setVisibility(View.GONE);
 		mGotoBrowser.setVisibility(View.GONE);
 		mAdsView.setVisibility(View.GONE);
+		mBtnFullScreen.setImageDrawable(getResources().getDrawable(R.drawable.ic_return_from_full_screen));
+		mBtnFullScreen.resolveSize(96, MeasureSpec.UNSPECIFIED);
 		mBtnFullScreen.setVisibility(View.GONE);
 		
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
@@ -226,6 +218,8 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		mBtnShare.setVisibility(View.VISIBLE);
 		mGotoBrowser.setVisibility(View.VISIBLE);
 		mAdsView.setVisibility(View.VISIBLE);
+		mBtnFullScreen.setImageDrawable(getResources().getDrawable(R.drawable.ic_full_screen));
+		mBtnFullScreen.resolveSize(96, MeasureSpec.UNSPECIFIED);
 		mBtnFullScreen.setVisibility(View.VISIBLE);
 		
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -296,7 +290,8 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		if(!isUseFlash())
 		{
 			mPosition = mVideoView.getCurrentPosition();
-			mVideoView.suspend();
+			mVideoView.pause();
+//			mVideoView.suspend();
 		}
 		else
 		{
@@ -321,7 +316,8 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		super.onResume();
 		if(!isUseFlash())
 		{
-			mVideoView.resume();
+			mVideoView.start();
+//			mVideoView.resume();
 		}
 		else
 		{

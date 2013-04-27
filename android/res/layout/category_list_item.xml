@@ -13,13 +13,14 @@
     <TextView
         android:id="@android:id/title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@android:id/icon"
         android:layout_toLeftOf="@android:id/icon1"
         android:layout_marginLeft="10dp"
         android:layout_alignWithParentIfMissing="true"
         android:textSize="20sp"
+        android:gravity="center_vertical"
         android:textStyle="bold"
         android:textColor="#FFFFFF"
         android:text="TextView" />

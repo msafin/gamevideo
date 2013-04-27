@@ -43,8 +43,19 @@ public class VideoAdapter extends GameBaseAdapter<VideoDetail>{
 		ViewTag tag = (ViewTag)view.getTag();
 		
 		VideoDetail video = (VideoDetail)getItem(position);
-		
-		tag.mTitle.setText(video.name);
+		String name = null;
+		try{
+			String videoName = video.name.split("在线播放")[0];
+			name = videoName.substring(0, videoName.length()-1);
+		}catch(Exception ee)
+		{
+			ee.printStackTrace();
+		}
+		if(name == null || name.equals(""))
+		{
+			name = video.name;
+		}
+		tag.mTitle.setText(name);
 		if(video.from != null)
 			tag.mSource.setText("来自:" + video.from.trim());
 		
@@ -59,7 +70,7 @@ public class VideoAdapter extends GameBaseAdapter<VideoDetail>{
 		if(time != null)
 		{
 			time = time.replace('-', '.');
-			tag.mUpdateTime.setText(time);
+			tag.mUpdateTime.setText("时间:"+time);
 		}
 		
 		UIUtils.DisplayImage(video.img, tag.mLeftImageView, R.drawable.default_bg);

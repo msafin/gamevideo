@@ -1,12 +1,11 @@
 package com.sharegogo.video.controller;
 
-import com.sharegogo.video.data.CategoryList.CategoryListItem;
-import com.sharegogo.video.game.R;
-
-import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.sharegogo.video.data.CategoryList.CategoryListItem;
+import com.sharegogo.video.game.R;
 
 public class GameCategoryAdapter extends GameBaseAdapter<CategoryListItem>{
 

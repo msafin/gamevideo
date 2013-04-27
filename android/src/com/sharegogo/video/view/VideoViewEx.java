@@ -1,9 +1,8 @@
 package com.sharegogo.video.view;
 
-import com.sharegogo.video.utils.DeviceInfo;
-
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.VideoView;
 
 public class VideoViewEx extends VideoView {
@@ -54,6 +53,12 @@ public class VideoViewEx extends VideoView {
         super.start();
         if (mListener != null) {
             mListener.onVideoPlay();
+        }
+    }
+    @Override
+    protected void onWindowVisibilityChanged(int visibility) {
+        if (visibility == View.VISIBLE) { 
+            super.onWindowVisibilityChanged(visibility);
         }
     }
 
