@@ -152,9 +152,13 @@ ResponseHandler, TokenObserver,LoaderManager.LoaderCallbacks<List<CategoryListIt
 		gameFragment.setArguments(bundle);
 		
 		this.getFragmentManager().beginTransaction()
-			.addToBackStack(null)
+			.addToBackStack(ResUtils.getString(R.string.online_video))//为了在弹出的时候设置title
 			.add(R.id.dynamic_content,gameFragment)
 			.commit();
+		
+        getSherlockActivity().getSupportActionBar().setHomeButtonEnabled(true);
+        getSherlockActivity().getSupportActionBar().setIcon(R.drawable.ic_back);
+        getSherlockActivity().setTitle(item.name);
 	}
 
 	@Override

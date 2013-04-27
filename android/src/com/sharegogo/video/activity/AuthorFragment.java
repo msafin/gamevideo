@@ -83,10 +83,16 @@ public class AuthorFragment extends SherlockFragment implements OnItemClickListe
 		
 		gameFragment.setArguments(args);
 		
+		String title = getSherlockActivity().getTitle().toString();
 		this.getFragmentManager().beginTransaction()
-			.addToBackStack(null)
+			.addToBackStack(title)
 			.add(R.id.dynamic_content,gameFragment)
 			.commit();
+		
+		title = new String(title + "/" + item.name);
+		getSherlockActivity().getSupportActionBar().setHomeButtonEnabled(true);
+        getSherlockActivity().getSupportActionBar().setIcon(R.drawable.ic_back);
+        getSherlockActivity().setTitle(title);
 	}
 
 	@Override

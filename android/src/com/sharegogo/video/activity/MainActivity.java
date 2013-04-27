@@ -15,6 +15,8 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentManager.BackStackEntry;
+import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
@@ -30,6 +32,7 @@ import android.widget.TabHost.TabSpec;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.adsmogo.adview.AdsMogoLayout;
 import com.sharegogo.video.SharegogoVideoApplication;
@@ -142,19 +145,19 @@ public class MainActivity extends BaseActivity implements OnClickListener, andro
 		
 		TabSpec online = mTabHost.newTabSpec("online");
 		online.setIndicator(getIndicatorView(getString(R.string.online_video),R.drawable.ic_video));
-		mTabManager.addTab(online, null, null);
+		mTabManager.addTab(online, null, null,0);
 		
 		TabSpec history = mTabHost.newTabSpec("history");
 		history.setIndicator(getIndicatorView(getString(R.string.play_history),R.drawable.ic_history));
-		mTabManager.addTab(history, HistoryFragment.class, null);
+		mTabManager.addTab(history, HistoryFragment.class, null,1);
 		
 		TabSpec favorite = mTabHost.newTabSpec("favorite");
 		favorite.setIndicator(getIndicatorView(getString(R.string.my_favorite),R.drawable.ic_favorite));
-		mTabManager.addTab(favorite, FavoriteFragment.class, null);
+		mTabManager.addTab(favorite, FavoriteFragment.class, null,2);
 		
 		TabSpec more = mTabHost.newTabSpec("more");
 		more.setIndicator(getIndicatorView(getString(R.string.more_info),R.drawable.ic_more));
-		mTabManager.addTab(more, MoreFragment.class, null);
+		mTabManager.addTab(more, MoreFragment.class, null,3);
 		
 		TabWidget tabWidget = mTabHost.getTabWidget();
 		tabWidget.setStripEnabled(true);
@@ -242,8 +245,8 @@ public class MainActivity extends BaseActivity implements OnClickListener, andro
 			}
 			
 			//如果是online如果是最后一层
+			onPopBackStack();
 			int count = this.getSupportFragmentManager().getBackStackEntryCount();
-			
 			if(count == 0)
 			{
 				this.finish();
@@ -268,7 +271,25 @@ public class MainActivity extends BaseActivity implements OnClickListener, andro
         return true;
 	}
 
-    
+	private void onPopBackStack()
+	{
+		int count = this.getSupportFragmentManager().getBackStackEntryCount();
+		BackStackEntry entry = null;
+		if(count > 0)
+		{
+			entry = this.getSupportFragmentManager().getBackStackEntryAt(count - 1);
+		}
+		
+		if(count <= 1)
+		{
+			getSupportActionBar().setHomeButtonEnabled(false);
+			getSupportActionBar().setIcon(R.drawable.ic_launcher);
+		}
+		
+		if(entry != null && entry.getName() != null)
+			setTitle(entry.getName());
+	}
+	
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		// TODO Auto-generated method stub
@@ -276,6 +297,10 @@ public class MainActivity extends BaseActivity implements OnClickListener, andro
 		{
 		case R.id.menu_id_search:
 			gotoSearchActivity();
+			break;
+		case android.R.id.home:
+			onPopBackStack();
+			this.getSupportFragmentManager().popBackStack();
 			break;
 			default:
 				break;
@@ -372,11 +397,14 @@ public class MainActivity extends BaseActivity implements OnClickListener, andro
             private final Class<?> clss;
             private final Bundle args;
             private Fragment fragment;
-
-            TabInfo(String _tag, Class<?> _class, Bundle _args) {
+            private int index;
+            private String title;
+            
+            TabInfo(String _tag, Class<?> _class, Bundle _args,int _index) {
                 tag = _tag;
                 clss = _class;
                 args = _args;
+                index = _index;
             }
         }
 
@@ -403,11 +431,11 @@ public class MainActivity extends BaseActivity implements OnClickListener, andro
             mTabHost.setOnTabChangedListener(this);
         }
 
-        public void addTab(TabHost.TabSpec tabSpec, Class<?> clss, Bundle args) {
+        public void addTab(TabHost.TabSpec tabSpec, Class<?> clss, Bundle args,int index) {
             tabSpec.setContent(new DummyTabFactory(mActivity));
             String tag = tabSpec.getTag();
 
-            TabInfo info = new TabInfo(tag, clss, args);
+            TabInfo info = new TabInfo(tag, clss, args,index);
 
             // Check to see if we already have a fragment for this tab, probably
             // from a previously saved state.  If so, deactivate it, because our
@@ -444,7 +472,14 @@ public class MainActivity extends BaseActivity implements OnClickListener, andro
                     		ft.attach(newTab.fragment);
                     }
                 }
-
+                
+                //如果是在线视频，记录当前title
+                if(mLastTab != null && mLastTab.index == 0)
+                {
+                	TabInfo onlineTab = mTabs.get("online");
+                	onlineTab.title = mActivity.getTitle().toString();
+                }
+                
                 mLastTab = newTab;
                 ft.commit();
                 mActivity.getSupportFragmentManager().executePendingTransactions();
@@ -453,8 +488,33 @@ public class MainActivity extends BaseActivity implements OnClickListener, andro
                 TabWidget tabWidget = mTabHost.getTabWidget();
                 View view = tabWidget.getChildTabViewAt(index);
                 TextView title = (TextView)view .findViewById(android.R.id.title);
-                
                 mActivity.setTitle(title.getText());
+                
+                SherlockFragmentActivity sherlocFragmentkActivity = (SherlockFragmentActivity)mActivity;
+                if(index != 0)
+                {
+                	sherlocFragmentkActivity.getSupportActionBar().setHomeButtonEnabled(false);
+                	sherlocFragmentkActivity.getSupportActionBar().setIcon(R.drawable.ic_launcher);
+                }
+                else
+                {
+        			int count = sherlocFragmentkActivity.getSupportFragmentManager().getBackStackEntryCount();
+        			
+        			if(count > 0)
+        			{
+        				sherlocFragmentkActivity.getSupportActionBar().setHomeButtonEnabled(true);
+                    	sherlocFragmentkActivity.getSupportActionBar().setIcon(R.drawable.ic_back);
+        			}
+        			else
+        			{
+        				sherlocFragmentkActivity.getSupportActionBar().setHomeButtonEnabled(false);
+                    	sherlocFragmentkActivity.getSupportActionBar().setIcon(R.drawable.ic_launcher);
+        			}
+        			
+        			TabInfo onlineTab = mTabs.get("online");
+        			if(onlineTab.title != null)
+        				mActivity.setTitle(onlineTab.title);
+                }
             }
         }
     }
