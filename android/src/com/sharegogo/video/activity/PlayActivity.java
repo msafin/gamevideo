@@ -702,7 +702,7 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		//Toast.makeText(this, R.string.load_video_failed, 1000).show();
 		
 		new GameDialogFragment(
-				R.drawable.ic_about,
+				R.drawable.ic_dialog_about,
 				R.string.load_video_failed,
 				ResUtils.getString(R.string.play_by_browser),
 				R.string.dialog_ok,
