@@ -1,17 +1,15 @@
 package com.sharegogo.video.controller;
 
-import com.sharegogo.video.SharegogoVideoApplication;
-import com.sharegogo.video.activity.HistoryFragment.HistoryListItem;
-import com.sharegogo.video.game.R;
-import com.sharegogo.video.utils.UIUtils;
-
-import android.content.Context;
-import android.support.v4.util.TimeUtils;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.sharegogo.video.SharegogoVideoApplication;
+import com.sharegogo.video.activity.HistoryFragment.HistoryListItem;
+import com.sharegogo.video.game.R;
+import com.sharegogo.video.utils.UIUtils;
 
 public class HistoryAdapter extends GameBaseAdapter<HistoryListItem>{
 
@@ -27,7 +25,7 @@ public class HistoryAdapter extends GameBaseAdapter<HistoryListItem>{
 		
 		tag.mLeftImageView = (ImageView)view.findViewById(android.R.id.icon);
 		tag.mTitle = (TextView)view.findViewById(android.R.id.title);
-		tag.mGameName = (TextView)view.findViewById(R.id.game_name);
+//		tag.mGameName = (TextView)view.findViewById(R.id.game_name);
 		tag.mAuthorName = (TextView)view.findViewById(R.id.author_name);
 		tag.mTime = (TextView)view.findViewById(R.id.time);
 		tag.mPlay = (ImageButton)view.findViewById(R.id.play_btn);
@@ -44,22 +42,35 @@ public class HistoryAdapter extends GameBaseAdapter<HistoryListItem>{
 		
 		if(item.video != null)
 		{
-			if(item.video.name != null)
-				tag.mTitle.setText(item.video.name);
+			if(item.video.name != null){
+				String name = null;
+				try{
+					String videoName = item.video.name.split("在线播放")[0];
+					name = videoName.substring(0, videoName.length()-1);
+				}catch(Exception ee)
+				{
+					ee.printStackTrace();
+				}
+				if(name == null || name.equals(""))
+				{
+					name = item.video.name;
+				}
+				tag.mTitle.setText(name);
+			}
 			
 			if(item.video.author != null)
-				tag.mAuthorName.setText(item.video.author);
+				tag.mAuthorName.setText("作者:"+item.video.author);
 			
 			UIUtils.DisplayImage(item.video.img, tag.mLeftImageView, R.drawable.default_bg);
 			
 			if(item.video.type != null)
 			{
-				tag.mGameName.setText(item.video.type);
-				tag.mGameName.setVisibility(View.VISIBLE);
+//				tag.mGameName.setText(item.video.type);
+//				tag.mGameName.setVisibility(View.VISIBLE);
 			}
 			else
 			{
-				tag.mGameName.setVisibility(View.INVISIBLE);
+//				tag.mGameName.setVisibility(View.INVISIBLE);
 			}
 		}
 			
@@ -72,7 +83,7 @@ public class HistoryAdapter extends GameBaseAdapter<HistoryListItem>{
 				DateUtils.FORMAT_SHOW_DATE |
 				DateUtils.FORMAT_SHOW_YEAR |
 				DateUtils.FORMAT_24HOUR);
-		tag.mTime.setText(time);
+		tag.mTime.setText("时间:"+time);
 		
 		if(item.mode == HistoryListItem.MODE_EDIT)
 		{
@@ -135,7 +146,7 @@ public class HistoryAdapter extends GameBaseAdapter<HistoryListItem>{
 	{
 		public ImageView mLeftImageView;
 		public TextView mTitle;
-		public TextView mGameName;
+//		public TextView mGameName;
 		public TextView mAuthorName;
 		public TextView mTime;
 		public ImageButton mPlay;

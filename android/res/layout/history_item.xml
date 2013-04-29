@@ -22,11 +22,14 @@
         android:layout_toRightOf="@android:id/icon"
         android:layout_toLeftOf="@+id/play_btn"
         android:layout_marginLeft="5dp"
-        android:maxLines="2"
+        android:layout_marginTop="5dp"
+        android:maxLines="3"
+        android:textSize="16sp"
+        android:textColor="#FFFFFF"
         android:ellipsize="end"
         android:text="标题" />
 
-    <TextView
+    <!--  TextView
         android:id="@+id/game_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,29 +38,30 @@
         android:layout_marginLeft="5dp"
         android:singleLine="true"
         android:ellipsize="end"
-        android:text="游戏名字" />
+        android:text="游戏名字" />-->
 
     <TextView
         android:id="@+id/author_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/game_name"
-        android:layout_alignBottom="@+id/game_name"
-        android:layout_toRightOf="@+id/game_name"
+        android:layout_below="@android:id/title"
+        android:layout_toRightOf="@android:id/icon"
+        android:layout_toLeftOf="@+id/play_btn"
         android:layout_marginLeft="5dp"
         android:singleLine="true"
         android:ellipsize="end"
+        android:textSize="12sp"	  
         android:text="作者" />
 
     <TextView
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/author_name"
-        android:layout_alignBottom="@+id/author_name"
-        android:layout_toRightOf="@+id/author_name"
+        android:layout_below="@+id/author_name"
+        android:layout_toRightOf="@android:id/icon"
         android:layout_toLeftOf="@+id/play_btn"
         android:layout_marginLeft="5dp"
+        android:textSize="12sp"	  
         android:singleLine="true"
         android:ellipsize="end"
         android:text="时间" />

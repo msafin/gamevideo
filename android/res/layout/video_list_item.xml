@@ -36,9 +36,10 @@
 	       	android:layout_below="@android:id/title"
 	        android:layout_alignLeft="@android:id/title"
 	        android:singleLine="true"
-	        android:textSize="13sp"
+	        android:textSize="12sp"
 	        android:textStyle="bold"
 	        android:ellipsize="end"
+	        android:visibility="gone"
 	        android:textColor="#FFFFFF"
 	        android:text="" />
 		<TextView 
@@ -47,10 +48,9 @@
 		    android:layout_height="wrap_content"
 		    android:layout_below="@+id/source"
 		    android:singleLine="true"
-	        android:textSize="13sp"
-	        android:textStyle="bold"
+	        android:textSize="12sp"	        
 	        android:ellipsize="end"
-	        android:textColor="#FFFFFF"
+
 		    android:text=""/>
 		<TextView 
 		    android:id="@+id/update_time"
@@ -60,10 +60,9 @@
 		    android:layout_toRightOf="@+id/hot"
 		    android:layout_marginLeft="8dp"
 		    android:singleLine="true"
-	        android:textSize="13sp"
-	        android:textStyle="bold"
+	        android:textSize="12sp"
 	        android:ellipsize="end"
-	        android:textColor="#FFFFFF"
+
 		    android:text=""/>
 		
 	</RelativeLayout>

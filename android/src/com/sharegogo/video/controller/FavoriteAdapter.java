@@ -24,7 +24,7 @@ public class FavoriteAdapter extends GameBaseAdapter<FavoriteListItem>{
 		
 		tag.mLeftImageView = (ImageView)view.findViewById(android.R.id.icon);
 		tag.mTitle = (TextView)view.findViewById(android.R.id.title);
-		tag.mGameName = (TextView)view.findViewById(R.id.game_name);
+//		tag.mGameName = (TextView)view.findViewById(R.id.game_name);
 		tag.mAuthorName = (TextView)view.findViewById(R.id.author_name);
 		tag.mPlay = (ImageButton)view.findViewById(R.id.play_btn);
 		tag.mDelete = (ImageButton)view.findViewById(R.id.delete_btn);
@@ -45,7 +45,19 @@ public class FavoriteAdapter extends GameBaseAdapter<FavoriteListItem>{
 		
 		if(item.video.name != null)
 		{
-			tag.mTitle.setText(item.video.name);
+			String name = null;
+			try{
+				String videoName = item.video.name.split("在线播放")[0];
+				name = videoName.substring(0, videoName.length()-1);
+			}catch(Exception ee)
+			{
+				ee.printStackTrace();
+			}
+			if(name == null || name.equals(""))
+			{
+				name = item.video.name;
+			}
+			tag.mTitle.setText(name);
 			tag.mTitle.setVisibility(View.VISIBLE);
 		}
 		else
@@ -53,19 +65,19 @@ public class FavoriteAdapter extends GameBaseAdapter<FavoriteListItem>{
 			tag.mTitle.setVisibility(View.INVISIBLE);
 		}
 		
-		if(item.video.type != null)
-		{
-			tag.mGameName.setText(item.video.type);
-			tag.mGameName.setVisibility(View.VISIBLE);
-		}
-		else
-		{
-			tag.mGameName.setVisibility(View.INVISIBLE);
-		}
+//		if(item.video.type != null)
+//		{
+//			tag.mGameName.setText(item.video.type);
+//			tag.mGameName.setVisibility(View.VISIBLE);
+//		}
+//		else
+//		{
+//			tag.mGameName.setVisibility(View.INVISIBLE);
+//		}
 		
 		if(item.video.author != null)
 		{
-			tag.mAuthorName.setText(item.video.author);
+			tag.mAuthorName.setText("作者:"+item.video.author);
 			tag.mAuthorName.setVisibility(View.VISIBLE);
 		}
 		else
@@ -136,7 +148,7 @@ public class FavoriteAdapter extends GameBaseAdapter<FavoriteListItem>{
 	{
 		public ImageView mLeftImageView;
 		public TextView mTitle;
-		public TextView mGameName;
+//		public TextView mGameName;
 		public TextView mAuthorName;
 		public ImageButton mPlay;
 		public ImageButton mDelete;
