@@ -71,5 +71,6 @@
 	<string name="loading_video">正在加载视频...</string>
 	<string name="load_video_failed">加载视频失败</string>
 	<string name="double_full_screen">双击全屏</string>
+	<string name="play_by_browser">是否跳转浏览器播放？</string>
 	
 </resources>

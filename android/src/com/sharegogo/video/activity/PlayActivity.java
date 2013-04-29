@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -54,7 +55,7 @@ import com.sharegogo.video.utils.UIUtils;
 import com.sharegogo.video.view.VideoViewEx;
 import com.sharegogo.video.view.VideoViewEx.PlayPauseListener;
 
-public class PlayActivity extends FragmentActivity implements OnClickListener, ResponseHandler, OnTouchListener, OnPreparedListener, OnErrorListener, PlayPauseListener{
+public class PlayActivity extends FragmentActivity implements OnClickListener, ResponseHandler, OnTouchListener, OnPreparedListener, OnErrorListener, PlayPauseListener, android.content.DialogInterface.OnClickListener{
 	static final public String KEY_VIDEO_AUTHOR = "video_author";
 	static final public String KEY_VIDEO_NAME = "video_name";
 	static final public String KEY_VIDEO_SOURCE = "video_source";
@@ -85,7 +86,8 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	private ImageButton mBtnPlay = null;
 	private ImageButton mBtnFullScreen = null;
 	private boolean mIsFullScreen = false;
-
+	private boolean mIsPausedByUser = true;
+	
 	@Override
 	protected void onCreate(Bundle arg0) {
 		// TODO Auto-generated method stub
@@ -290,9 +292,9 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		super.onPause();
 		if(!isUseFlash())
 		{
+			mIsPausedByUser = !mVideoView.isPlaying();
 			mPosition = mVideoView.getCurrentPosition();
 			mVideoView.pause();
-//			mVideoView.suspend();
 		}
 		else
 		{
@@ -317,8 +319,12 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 		super.onResume();
 		if(!isUseFlash())
 		{
-			mVideoView.start();
-//			mVideoView.resume();
+			if(!mIsPausedByUser)
+			{
+				mVideoView.start();
+				
+				mIsPausedByUser = true;
+			}
 		}
 		else
 		{
@@ -611,7 +617,10 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	@Override
 	public boolean onTouch(View arg0, MotionEvent arg1) {
 		// TODO Auto-generated method stub
-		mGestureDetector.onTouchEvent(arg1);
+		if(!isUseFlash())
+		{
+			mGestureDetector.onTouchEvent(arg1);
+		}
 		
 		return true;
 	}
@@ -691,7 +700,16 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	public boolean onError(MediaPlayer arg0, int arg1, int arg2) {
 		// TODO Auto-generated method stub
 		mProgressDialog.dismiss();
-		Toast.makeText(this, R.string.load_video_failed, 1000).show();
+		//Toast.makeText(this, R.string.load_video_failed, 1000).show();
+		
+		new GameDialogFragment(
+				R.drawable.ic_dialog_about,
+				R.string.load_video_failed,
+				ResUtils.getString(R.string.play_by_browser),
+				R.string.dialog_ok,
+				R.string.dialog_cancel,
+				this
+				).show(getSupportFragmentManager(), null);
 		
 		return true;
 	}
@@ -706,5 +724,20 @@ public class PlayActivity extends FragmentActivity implements OnClickListener, R
 	public void onVideoPause() {
 		// TODO Auto-generated method stub
 		mBtnPlay.setVisibility(View.VISIBLE);
+	}
+
+	@Override
+	public void onClick(DialogInterface dialog, int which) {
+		// TODO Auto-generated method stub
+		switch(which)
+		{
+		case DialogInterface.BUTTON_POSITIVE:
+			finish();
+			UIUtils.gotoBrowserActivity(this, mPlayUrl);
+			break;
+		case DialogInterface.BUTTON_NEGATIVE:
+			
+			break;
+		}
 	}
 }
