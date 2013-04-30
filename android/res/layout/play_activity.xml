@@ -27,7 +27,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_alignTop="@+id/video_view"
-          android:layout_alignLeft="@+id/video_view"
+          android:layout_alignRight="@+id/video_view"
           android:src="@drawable/ic_full_screen"
           android:background="#00FFFFFF"/>
     	
