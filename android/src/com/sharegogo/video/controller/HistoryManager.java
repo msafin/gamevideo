@@ -169,8 +169,8 @@ public class HistoryManager {
 		}
 		
 		try {
-			historys = historyDao.queryForAll();
-
+//			historys = historyDao.queryForAll();
+			historys = historyDao.queryBuilder().orderBy("update", false).query();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
