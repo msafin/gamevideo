@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.util.Log;
+
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.table.TableUtils;
 import com.sharegogo.video.SharegogoVideoApplication;
@@ -37,12 +39,14 @@ public class HistoryManager {
 		return mInstance;
 	}
 	
-	public boolean addHistory(long videoId)
+	public boolean addHistory(long videoId,long progress)
 	{
+//		Log.i("jardge", "video id="+videoId+" progress="+progress);
 		History history = new History();
 		
 		history.video_id = videoId;
 		history.update = System.currentTimeMillis();
+		history.pos = progress;
 		
 		return addHistory(history);
 	}
@@ -53,9 +57,30 @@ public class HistoryManager {
 		
 		try {
 			
+//			Log.i("jardge", "addHistory vid="+history.video_id+" pos ="+history.pos);
+			
 			Dao<History,String> dao = helper.getDao(History.class);
 			
-			dao.createOrUpdate(history);
+			List<History> historys = dao.queryForEq("video_id", history.video_id);
+			
+			History oldhistory = null; 
+			
+			if(historys != null && historys.size() > 0)
+			{
+				oldhistory = historys.get(0);
+			}
+			
+			if(oldhistory != null && oldhistory.video_id == history.video_id)
+			{
+				oldhistory.update = history.update;
+				oldhistory.pos = history.pos;
+//				dao.updateId(oldhistory, ""+history.pos);
+				dao.update(oldhistory);
+//				Log.i("jardge", "dao.update(history) vid="+history.video_id+" pos ="+history.pos);
+			}else{
+				dao.createIfNotExists(history);
+//				Log.i("jardge", "return ");
+			}		
 			
 			return true;
 		} 
@@ -172,7 +197,8 @@ public class HistoryManager {
 				
 					historyItem.id = item.id;
 					historyItem.time = item.update;
-					
+//					Log.i("jardge", "history add id="+item.video_id+" pos="+item.pos);
+					historyItem.progress = item.pos;					
 					try {
 						historyItem.video = videoDao.queryForId(String.valueOf(item.video_id));
 					} catch (SQLException e) {

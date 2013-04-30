@@ -26,7 +26,7 @@ import com.umeng.socialize.controller.UMSocialService;
  */
 public class UIUtils {
 	
-	static public void gotoPlayActivity(VideoDetail video,Context context)
+	static public void gotoPlayActivity(VideoDetail video,Context context,long progress)
 	{
 		if(video == null)
 		{
@@ -42,6 +42,7 @@ public class UIUtils {
 		intent.putExtra(PlayActivity.KEY_VIDEO_ID,video.id);
 		intent.putExtra(PlayActivity.KEY_FLASH_URL,video.flashUrl);
 		intent.putExtra(PlayActivity.KEY_VIDEO_VID,video.getVideoId());
+		intent.putExtra(PlayActivity.KEY_VIDEO_PROGRESS, progress);
 		
 		context.startActivity(intent);
 	}

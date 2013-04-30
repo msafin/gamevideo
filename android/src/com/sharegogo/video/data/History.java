@@ -13,4 +13,7 @@ public class History {
 	
 	@DatabaseField
 	public long update;
+	
+	@DatabaseField
+	public long pos;
 }

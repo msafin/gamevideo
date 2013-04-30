@@ -210,21 +210,23 @@ public class SearchActivity extends NoTitleActivity implements OnClickListener, 
 		// TODO Auto-generated method stub
 		VideoDetail video = (VideoDetail)mVideoAdapter.getItem(arg2-1);
 		
-		UIUtils.gotoPlayActivity(video,this);
+		UIUtils.gotoPlayActivity(video,this,-1);
 		
-		addHistory(video);
+		HistoryManager.getInstance().addHistory(video.id,0);
+//		addHistory(video);
 	}
-	
+	/*
 	private void addHistory(VideoDetail video)
 	{
 		History history = new History();
 		
 		history.video_id = video.id;
 		history.update = System.currentTimeMillis();
+		history.progress = 0;
 		
 		HistoryManager.getInstance().addHistory(history);
 	}
-	
+	*/
 	@Override
 	public void afterTextChanged(Editable s) {
 		// TODO Auto-generated method stub

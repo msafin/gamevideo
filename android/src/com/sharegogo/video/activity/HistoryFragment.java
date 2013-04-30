@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -167,7 +168,9 @@ public class HistoryFragment extends SherlockListFragment implements LoaderManag
 		
 		if(item.mode == HistoryListItem.MODE_NORMAL)
 		{
-			UIUtils.gotoPlayActivity(item.video,getActivity());
+//			item.video.progress = item.progress;
+//			Log.i("jardge", "progress = "+item.progress);
+			UIUtils.gotoPlayActivity(item.video,getActivity(),item.progress);
 		}
 		else if(item.mode == HistoryListItem.MODE_EDIT)
 		{
@@ -251,6 +254,7 @@ public class HistoryFragment extends SherlockListFragment implements LoaderManag
 		public VideoDetail video;
 		public int mode;
 		public long time;
+		public long progress;
 		
 		public HistoryListItem()
 		{

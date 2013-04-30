@@ -168,9 +168,9 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 		
 		if(item.mode == FavoriteListItem.MODE_NORMAL)
 		{
-			UIUtils.gotoPlayActivity(item.video,getActivity());
+			UIUtils.gotoPlayActivity(item.video,getActivity(),-1);
 			
-			if(HistoryManager.getInstance().addHistory(item.video.id))
+			if(HistoryManager.getInstance().addHistory(item.video.id,0))
 			{
 				Toast.makeText(getActivity(), "success", 1000).show();
 			}
