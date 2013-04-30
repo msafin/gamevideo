@@ -36,6 +36,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.MediaController;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.j256.ormlite.dao.Dao;
@@ -93,6 +94,7 @@ public class PlayActivity extends FragmentActivity implements OnClickListener,
 	private boolean mIsFullScreen = false;
 	private boolean mIsPausedByUser = true;
 	private long mHistoryProgress = -1;
+	private TextView titleView = null;
 	
 	private Handler mhandler = new Handler();
 	
@@ -115,6 +117,7 @@ public class PlayActivity extends FragmentActivity implements OnClickListener,
 
 		mRestored = arg0 != null;
 
+		titleView = (TextView)findViewById(R.id.textView1);		
 		mAdsView = findViewById(R.id.adsMogoView);
 		mBtnFavorite = (ImageButton) findViewById(R.id.btn_favorite);
 		mBtnRecommend = (ImageButton) findViewById(R.id.btn_recommend);
@@ -153,6 +156,20 @@ public class PlayActivity extends FragmentActivity implements OnClickListener,
 		mVId = intent.getStringExtra(KEY_VIDEO_VID);
 		mHistoryProgress = intent.getLongExtra(KEY_VIDEO_PROGRESS, -1);
 //		Log.i("jardge", "mHistoryProgress = "+mHistoryProgress);
+		String sname = intent.getStringExtra(KEY_VIDEO_NAME);
+		String name = null;
+		try{
+			String videoName = sname.split("ÔÚÏß²¥·Å")[0];
+			name = videoName.substring(0, videoName.length()-1);
+		}catch(Exception ee)
+		{
+			ee.printStackTrace();
+		}
+		if(name == null || name.equals(""))
+		{
+			name = sname;
+		}
+		titleView.setText(name);
 
 		mFavorite = FavoriteManager.getInstance().getFavorite(mVideoId);
 		if (mFavorite != null) {
@@ -213,6 +230,7 @@ public class PlayActivity extends FragmentActivity implements OnClickListener,
 		mBtnShare.setVisibility(View.GONE);
 		mGotoBrowser.setVisibility(View.GONE);
 		mAdsView.setVisibility(View.GONE);
+		titleView.setVisibility(View.GONE);
 		mBtnFullScreen.setImageDrawable(getResources().getDrawable(
 				R.drawable.ic_return_from_full_screen));
 		mBtnFullScreen.resolveSize(96, MeasureSpec.UNSPECIFIED);
@@ -233,8 +251,9 @@ public class PlayActivity extends FragmentActivity implements OnClickListener,
 
 		mBtnFavorite.setVisibility(View.VISIBLE);
 		mBtnShare.setVisibility(View.VISIBLE);
-		mGotoBrowser.setVisibility(View.VISIBLE);
+//		mGotoBrowser.setVisibility(View.VISIBLE);
 		mAdsView.setVisibility(View.VISIBLE);
+		titleView.setVisibility(View.VISIBLE);
 		mBtnFullScreen.setImageDrawable(getResources().getDrawable(
 				R.drawable.ic_full_screen));
 		mBtnFullScreen.resolveSize(96, MeasureSpec.UNSPECIFIED);
