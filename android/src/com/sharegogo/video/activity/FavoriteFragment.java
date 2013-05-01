@@ -172,11 +172,11 @@ public class FavoriteFragment extends SherlockListFragment implements LoaderMana
 			
 			if(HistoryManager.getInstance().addHistory(item.video.id,0))
 			{
-				Toast.makeText(getActivity(), "success", 1000).show();
+//				Toast.makeText(getActivity(), "success", 1000).show();
 			}
 			else
 			{
-				Toast.makeText(getActivity(), "failed", 1000).show();
+//				Toast.makeText(getActivity(), "failed", 1000).show();
 			}
 		}
 		else if(item.mode == FavoriteListItem.MODE_EDIT)
